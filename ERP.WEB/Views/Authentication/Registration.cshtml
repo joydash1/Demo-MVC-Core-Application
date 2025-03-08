@@ -1,74 +1,155 @@
-﻿@{
+﻿@using ERP.DataAccess.Domains
+@model ApplicationUser
+@{
     ViewData["Title"] = "Registration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="auth-main">
-    <div class="auth-wrapper v3">
-        <div class="auth-form">
-            <div class="card my-5">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-end mb-4">
-                        <h3 class="mb-0"><b>Sign up</b></h3>
-                        <a href="#" class="link-primary">Already have an account?</a>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">First Name*</label>
-                                <input type="text" class="form-control" placeholder="First Name">
+<form method="post" asp-action="UserRegistration" asp-controller="Authentication">
+    <div class="auth-main">
+        <div class="auth-wrapper v3">
+            <div class="auth-form">
+                <div class="card my-5">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-end mb-4">
+                            <h3 class="mb-0"><b>Sign up</b></h3>
+                            <a href="#" class="link-primary">Already have an account?</a>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">First Name*</label>
+                                    <input type="text" asp-for="FirstName" class="form-control" placeholder="First Name">
+                                    <span asp-validation-for="FirstName" style="color:red;display:block; text-align:right;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" asp-for="LastName" class="form-control" placeholder="Last Name">
+                                    <span asp-validation-for="LastName" style="color:red;display:block; text-align:right;"></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Last Name</label>
-                                <input type="text" class="form-control" placeholder="Last Name">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Employee Code*</label>
+                                    <input type="text" asp-for="EmployeeCode" class="form-control" placeholder="Employee Code">
+                                    <span asp-validation-for="EmployeeCode" style="color:red;display:block; text-align:right;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Mobile No</label>
+                                    <input type="text" asp-for="MobileNo" class="form-control" placeholder="Mobile No">
+                                    <span asp-validation-for="MobileNo" style="color:red;display:block; text-align:right;"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Company</label>
-                        <input type="text" class="form-control" placeholder="Company">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Email Address*</label>
-                        <input type="email" class="form-control" placeholder="Email Address">
-                        <span style="color:red;display:block; text-align:right;">***Email Address is required.</span>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-control" placeholder="Password">
-                    </div>
-                    <p class="mt-4 text-sm text-muted">By Signing up, you agree to our <a href="#" class="text-primary"> Terms of Service </a> and <a href="#" class="text-primary"> Privacy Policy</a></p>
-                    <div class="d-grid mt-3">
-                        <button type="button" class="btn btn-primary">Create Account</button>
-                    </div>
-                    <div class="saprator mt-3">
-                        <span>Sign up with</span>
-                    </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <div class="d-grid">
-                                <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                                    <img src="../assets/images/authentication/google.svg" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
-                                </button>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Email Address*</label>
+                            <input type="email" asp-for="Email" class="form-control" placeholder="Email Address">
+                            <span asp-validation-for="Email" style="color:red;display:block; text-align:right;"></span>
+                        </div>
+                        <div class="form-group mb-3 position-relative">
+                            <label class="form-label">Password*</label>
+                            <div class="input-group">
+                                <input type="password" asp-for="Password" class="form-control" id="password" placeholder="Password">
+                                <span class="input-group-text">
+                                    <i class="fa fa-eye-slash toggle-password" data-target="#password" style="cursor: pointer;color:#1890ff;"></i>
+                                </span>
+                            </div>
+                            <span asp-validation-for="Password" style="color:red;display:block; text-align:right;"></span>
+                        </div>
+
+                        <div class="form-group mb-3 position-relative">
+                            <label class="form-label">Confirm Password*</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
+                                <span class="input-group-text">
+                                    <i class="fa fa-eye-slash toggle-password" data-target="#confirmPassword" style="cursor: pointer; color:#1890ff;"></i>
+                                </span>
+                            </div>
+                            <span style="color:red;display:block; text-align:right; display:none;" id="passwordError">Password and Confirm Password do not match.</span>
+                        </div>
+                        <div class="form-group mb-3 preview-div" style="display:none;">
+                            <div>
+                                <img id="profilePreview" src="" alt="Profile Picture" class="img-thumbnail" width="80">
                             </div>
                         </div>
-                        <div class="col-4">
-                            <div class="d-grid">
-                                <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                                    <img src="../assets/images/authentication/twitter.svg" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
-                                </button>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Profile Picture</label>
+                            <input type="file" asp-for="ProfilePicture" id="profilePictureInput" class="form-control" accept="image/*">
                         </div>
-                        <div class="col-4">
-                            <div class="d-grid">
-                                <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                                    <img src="../assets/images/authentication/facebook.svg" alt="img"> <span class="d-none d-sm-inline-block"> Facebook</span>
-                                </button>
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-primary">Create Account</button>
+                        </div>
+                        <div class="saprator mt-3">
+                            <span>Sign up with</span>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="d-grid">
+                                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
+                                        <img src="../assets/images/authentication/google.svg" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="d-grid">
+                                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
+                                        <img src="../assets/images/authentication/twitter.svg" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="d-grid">
+                                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
+                                        <img src="../assets/images/authentication/facebook.svg" alt="img"> <span class="d-none d-sm-inline-block"> Facebook</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>           
+            </div>
         </div>
     </div>
-</div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#profilePictureInput").on("change", function (event) {
+                var file = event.target.files[0];
+
+                if (file) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $("#profilePreview").attr("src", e.target.result);
+                        $(".preview-div").show();
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+            $("#confirmPassword").on("keyup", function () {
+                var password = $("#password").val();
+                var confirmPassword = $(this).val();
+
+                if (password !== confirmPassword) {
+                    $("#passwordError").show();
+                } else {
+                    $("#passwordError").hide();
+                }
+            });
+            $(".toggle-password").click(function () {
+                var target = $($(this).attr("data-target"));
+                var type = target.attr("type") === "password" ? "text" : "password";
+                target.attr("type", type);
+                $(this).toggleClass("fa-eye fa-eye-slash");
+            });
+        });
+    </script>
+}

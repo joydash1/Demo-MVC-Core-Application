@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ERP.Infrastructure\ERP.Infrastructure.csproj" />
+    <ProjectReference Include="..\ERP.Services\ERP.Repositories.csproj" />
+    <ProjectReference Include="..\ERP.Utility\ERP.Utility.csproj" />
   </ItemGroup>
 
 </Project>

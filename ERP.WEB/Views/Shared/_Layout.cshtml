@@ -61,12 +61,6 @@
                         <label>Authenticatios</label>
                         <i class="ti ti-news"></i>
                     </li>
-                    @*                     <li class="pc-item">
-                        <a href="../pages/login.html" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-lock"></i></span>
-                            <span class="pc-mtext">Login</span>
-                        </a>
-                    </li> *@
                     <li class="pc-item">
                         <a asp-action="Registration" asp-controller="Authentication" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
@@ -301,10 +295,11 @@
                 <div class="page-block">
                     <div class="row align-items-center">
                         <div class="col-md-12">
-                            <div class="page-header-title">
+                            @* <div class="page-header-title">
                                 <h5 class="m-b-10">Dashboard</h5>
-                            </div>
+                            </div> *@
                             <ul class="breadcrumb">
+                                <li class="breadcrumb-item">Dashboard</li>
                                 <li class="breadcrumb-item"><a href="">@controllerName</a></li>
                                 <li class="breadcrumb-item" aria-current="page">@actionName</li>
                             </ul>
@@ -322,15 +317,15 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
-                    <p class="m-0">Copyright © <a href="#">Codedthemes</a></p>
+                    <p class="m-0">Copyright ©Joy - @DateTime.UtcNow</p>
                 </div>
-                <div class="col-auto my-1">
+                @* <div class="col-auto my-1">
                     <ul class="list-inline footer-link mb-0">
                         <li class="list-inline-item"><a href="#">Home</a></li>
                         <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
                         <li class="list-inline-item"><a href="#">Contact us</a></li>
                     </ul>
-                </div>
+                </div> *@
             </div>
         </div>
     </footer>
@@ -338,6 +333,7 @@
     @* <script src="~/assets/js/pages/dashboard-default.js"></script> *@
     <!-- [Page Specific JS] end -->
     <!-- Required Js -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/assets/js/plugins/popper.min.js"></script>
     <script src="~/assets/js/plugins/simplebar.min.js"></script>
     <script src="~/assets/js/plugins/bootstrap.min.js"></script>

@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ERP.DataAccess\ERP.DataAccess.csproj" />
+    <ProjectReference Include="..\ERP.Infrastructure\ERP.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
