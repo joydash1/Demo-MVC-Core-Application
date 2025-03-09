@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ERP.WEB</title>
+    <link rel="icon" href="~/assets/images/favicon.svg" type="image/x-icon"> <!-- [Google Font] Family -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
+    <!-- [Tabler Icons] https://tablericons.com -->
+    <link rel="stylesheet" href="~/assets/fonts/tabler-icons.min.css">
+    <!-- [Feather Icons] https://feathericons.com -->
+    <link rel="stylesheet" href="~/assets/fonts/feather.css">
+    <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+    <link rel="stylesheet" href="~/assets/fonts/fontawesome.css">
+    <!-- [Material Icons] https://fonts.google.com/icons -->
+    <link rel="stylesheet" href="~/assets/fonts/material.css">
+    <!-- [Template CSS Files] -->
+    <link rel="stylesheet" href="~/assets/css/style.css" id="main-style-link">
+    <link rel="stylesheet" href="~/assets/css/style-preset.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
+    <style type="text/css">
+        .pc-container {
+            position: relative;
+            top: 0px;
+            margin-left: 0px;
+            min-height: calc(100vh);
+        }
+
+        .pc-container .pc-content {
+            padding-left: 0px;
+            padding-right: 0px;
+            padding-top: 0px;
+        }
+
+        .pc-footer {
+            position: relative;
+            z-index: 995;
+            margin-left: 0px;
+            margin-top: 0px;
+            padding: 15px 0;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.8), 0 -6px 12px 0 rgba(0, 0, 0, 0.02);
+        }
+    </style>
+</head>
+<body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
+    <div class="pc-container">
+        <div class="pc-content">
+            <partial name="_SweetAlertPartial"></partial>
+            <partial name="_ValidationScriptsPartial"></partial>
+            @RenderBody()
+        </div>
+    </div>
+    <footer class="pc-footer">
+        <div class="footer-wrapper container-fluid">
+            <div class="row">
+                <div class="col-sm my-1">
+                    <p class="m-0">Copyright ©Joy - @DateTime.UtcNow</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- [Page Specific JS] end -->
+    <!-- Required Js -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
+    <script src="~/assets/js/plugins/popper.min.js"></script>
+    <script src="~/assets/js/plugins/simplebar.min.js"></script>
+    <script src="~/assets/js/plugins/bootstrap.min.js"></script>
+    <script src="~/assets/js/fonts/custom-font.js"></script>
+    <script src="~/assets/js/plugins/feather.min.js"></script>
+    <script>layout_change('light');</script>
+    <script>change_box_container('false');</script>
+    <script>layout_rtl_change('false');</script>
+    <script>preset_change("preset-1");</script>
+    <script>font_change("Public-Sans");</script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

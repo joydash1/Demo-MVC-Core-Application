@@ -48,5 +48,8 @@ namespace ERP.DataAccess.Domains
 
         // Refresh Token Expiry Time
         public DateTime? RefreshTokenExpiryTime { get; set; }
+
+        [NotMapped]
+        public IFormFile? Image { get; set; }
     }
 }

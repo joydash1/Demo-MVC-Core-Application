@@ -4,15 +4,15 @@
     ViewData["Title"] = "Registration";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<form method="post" asp-action="UserRegistration" asp-controller="Authentication">
+<form method="post" asp-action="UserRegistration" asp-controller="Authentication" enctype="multipart/form-data">
     <div class="auth-main">
         <div class="auth-wrapper v3">
             <div class="auth-form">
-                <div class="card my-5">
+                <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-end mb-4">
                             <h3 class="mb-0"><b>Sign up</b></h3>
-                            <a href="#" class="link-primary">Already have an account?</a>
+                            <a asp-action="Login" asp-controller="Authentication" class="link-primary">Already have an account?</a>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -79,7 +79,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">Profile Picture</label>
-                            <input type="file" asp-for="ProfilePicture" id="profilePictureInput" class="form-control" accept="image/*">
+                            <input type="file" asp-for="Image" id="profilePictureInput" class="form-control" accept="image/*">
                         </div>
                         <div class="d-grid mt-3">
                             <button type="submit" class="btn btn-primary">Create Account</button>
@@ -117,7 +117,6 @@
     </div>
 </form>
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script type="text/javascript">
         $(document).ready(function () {
             $("#profilePictureInput").on("change", function (event) {

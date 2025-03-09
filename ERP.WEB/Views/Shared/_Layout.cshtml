@@ -17,6 +17,12 @@
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="~/assets/css/style.css" id="main-style-link">
     <link rel="stylesheet" href="~/assets/css/style-preset.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
+    <style type="text/css">
+        .pc-footer {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.8), 0 -6px 12px 0 rgba(0, 0, 0, 0.02);
+        }
+    </style>
 </head>
 @{
     string controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
@@ -309,6 +315,10 @@
             </div>
             <!-- [ breadcrumb ] end -->
             <!-- [ Main Content ] start -->
+            <!-- [ Partial View ] start -->
+            <partial name="_SweetAlertPartial"></partial>
+            <partial name="_ValidationScriptsPartial"></partial>
+            <!-- [ Partial View ] End -->
             @RenderBody()
         </div>
     </div>
@@ -334,6 +344,7 @@
     <!-- [Page Specific JS] end -->
     <!-- Required Js -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
     <script src="~/assets/js/plugins/popper.min.js"></script>
     <script src="~/assets/js/plugins/simplebar.min.js"></script>
     <script src="~/assets/js/plugins/bootstrap.min.js"></script>

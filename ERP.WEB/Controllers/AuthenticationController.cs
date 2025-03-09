@@ -18,17 +18,42 @@ namespace ERP.WEB.Controllers
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
         }
-
+        #region Registration
         public ActionResult Registration()
         {
             return View();
         }
-        public async Task<IActionResult> UserRegistration(ApplicationUser model, IFormFile? file)
+        public async Task<IActionResult> UserRegistration([FromForm] ApplicationUser model)
         {
 
             try
             {
-                if (file != null)
+                if (string.IsNullOrWhiteSpace(model.FirstName))
+                {
+                    TempData["AlertMessage"] = "First Name is required.";
+                    TempData["AlertType"] = "error";
+                }
+                if (string.IsNullOrWhiteSpace(model.LastName))
+                {
+                    TempData["AlertMessage"] = "Last Name is required.";
+                    TempData["AlertType"] = "error";
+                }
+                if (string.IsNullOrWhiteSpace(model.EmployeeCode))
+                {
+                    TempData["AlertMessage"] = "EmployeeCode is required.";
+                    TempData["AlertType"] = "error";
+                }
+                if (string.IsNullOrWhiteSpace(model.MobileNo))
+                {
+                    TempData["AlertMessage"] = "Mobile No is required.";
+                    TempData["AlertType"] = "error";
+                }
+                if (string.IsNullOrWhiteSpace(model.Password))
+                {
+                    TempData["AlertMessage"] = "Password  is required.";
+                    TempData["AlertType"] = "error";
+                }
+                if (model.Image != null)
                 {
                     var fileDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", "ProfilePictures");
 
@@ -36,29 +61,38 @@ namespace ERP.WEB.Controllers
                     {
                         Directory.CreateDirectory(fileDirectory);
                     }
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
                     string filePath = Path.Combine(fileDirectory, uniqueFileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        await file.CopyToAsync(stream);
+                        await model.Image.CopyToAsync(stream);
                     }
 
                     model.ProfilePicture = uniqueFileName;
                     model.ProfilePicturePath = Path.Combine("Uploads", "ProfilePictures", uniqueFileName);
                 }
-
                 var passwordHash = PasswordHashHelpers.HashPasswordWithSalt(model.Password);
                 model.Password = passwordHash;
                 await _unitOfWork.ApplicationUser.AddAsync(model);
                 await _unitOfWork.CommitAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["AlertMessage"] = "User Registration successfully";
+                TempData["AlertType"] = "success";
+                return RedirectToAction("Index","Home");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                TempData["AlertMessage"] = $"{ ex.Message}";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Registration", "Authentication");
             }
         }
+        #endregion
 
+        #region Login
+        public ActionResult Login()
+        {
+            return View();
+        }
+        #endregion
     }
 }
