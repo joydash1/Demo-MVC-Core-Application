@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ERP.WEB.Controllers
 {
@@ -12,17 +13,22 @@ namespace ERP.WEB.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
+        private readonly ISpService _spService;
 
-        public AuthenticationController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public AuthenticationController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, ISpService spService)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
+            _spService = spService;
         }
         #region Registration
         public ActionResult Registration()
         {
             return View();
         }
+        [HttpPost]
         public async Task<IActionResult> UserRegistration([FromForm] ApplicationUser model)
         {
 
@@ -89,10 +95,68 @@ namespace ERP.WEB.Controllers
         #endregion
 
         #region Login
-        public ActionResult Login()
+        public async Task<ActionResult> Login()
         {
+            var data = await _spService.GetDataWithoutParameterAsync<ApplicationUser>("GET_APPLICATION_USER");
+            var data1 = _unitOfWork.ApplicationUser.GetAll();
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> UserLogin([FromForm] ApplicationUser model)
+        {
+            try
+            {
+                var user = await _unitOfWork.ApplicationUser.GetAsync(u => u.Email.Trim() == model.Email.Trim());
+
+                if (user == null || !PasswordHashHelpers.VerifyPasswordWithSalt(model.Password, user.Password))
+                {
+                    TempData["AlertMessage"] = "Invalid email or password.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("Login", "Authentication");
+                }
+
+                var jwtHelper = new JwtTokenHelper(_configuration);
+                user.JwtToken = jwtHelper.GenerateJwtToken(user);
+                user.RefreshToken = jwtHelper.GenerateRefreshToken();
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+                await _unitOfWork.CommitAsync();
+                TempData["AlertMessage"] = "Login successful.";
+                TempData["AlertType"] = "success";
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+
+                return RedirectToAction("Login", "Authentication");
+            }
+        }
+        #endregion
+
+        #region Refresh Token
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(string refreshToken)
+        {
+            var user = await _unitOfWork.ApplicationUser.GetAsync(u => u.RefreshToken == refreshToken);
+
+            if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+            {
+                return Unauthorized(new { message = "Invalid or expired refresh token." });
+            }
+
+            var jwtHelper = new JwtTokenHelper(_configuration);
+
+            user.JwtToken = jwtHelper.GenerateJwtToken(user);
+            user.RefreshToken = jwtHelper.GenerateRefreshToken();
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await _unitOfWork.CommitAsync();
+
+            return Ok(new { token = user.JwtToken, refreshToken = user.RefreshToken });
+        }
+
         #endregion
     }
 }
