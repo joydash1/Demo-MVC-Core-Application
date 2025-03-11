@@ -18,15 +18,13 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label class="form-label">First Name*</label>
-                                    <input type="text" asp-for="FirstName" class="form-control" placeholder="First Name">
-                                    <span asp-validation-for="FirstName" style="color:red;display:block; text-align:right;"></span>
+                                    <input type="text" id="fname" asp-for="FirstName" class="form-control" placeholder="First Name">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label class="form-label">Last Name</label>
-                                    <input type="text" asp-for="LastName" class="form-control" placeholder="Last Name">
-                                    <span asp-validation-for="LastName" style="color:red;display:block; text-align:right;"></span>
+                                    <input type="text" id="lname" asp-for="LastName" class="form-control" placeholder="Last Name">
                                 </div>
                             </div>
                         </div>
@@ -34,22 +32,19 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label class="form-label">Employee Code*</label>
-                                    <input type="text" asp-for="EmployeeCode" class="form-control" placeholder="Employee Code">
-                                    <span asp-validation-for="EmployeeCode" style="color:red;display:block; text-align:right;"></span>
+                                    <input type="text" id="code" asp-for="EmployeeCode" class="form-control" placeholder="Employee Code">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label class="form-label">Mobile No</label>
-                                    <input type="text" asp-for="MobileNo" class="form-control" placeholder="Mobile No">
-                                    <span asp-validation-for="MobileNo" style="color:red;display:block; text-align:right;"></span>
+                                    <input type="text" id="mobile" asp-for="MobileNo" class="form-control" placeholder="Mobile No">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label">Email Address*</label>
-                            <input type="email" asp-for="Email" class="form-control" placeholder="Email Address">
-                            <span asp-validation-for="Email" style="color:red;display:block; text-align:right;"></span>
+                            <input type="email" id="email" asp-for="Email" class="form-control" placeholder="Email Address">
                         </div>
                         <div class="form-group mb-3 position-relative">
                             <label class="form-label">Password*</label>
@@ -82,7 +77,7 @@
                             <input type="file" asp-for="Image" id="profilePictureInput" class="form-control" accept="image/*">
                         </div>
                         <div class="d-grid mt-3">
-                            <button type="submit" class="btn btn-primary">Create Account</button>
+                            <button type="submit" class="btn btn-primary" id="btnRegistration">Create Account</button>
                         </div>
                         <div class="saprator mt-3">
                             <span>Sign up with</span>
@@ -133,6 +128,7 @@
                     reader.readAsDataURL(file);
                 }
             });
+            
             $("#confirmPassword").on("keyup", function () {
                 var password = $("#password").val();
                 var confirmPassword = $(this).val();
@@ -143,12 +139,94 @@
                     $("#passwordError").hide();
                 }
             });
+            
             $(".toggle-password").click(function () {
                 var target = $($(this).attr("data-target"));
                 var type = target.attr("type") === "password" ? "text" : "password";
                 target.attr("type", type);
                 $(this).toggleClass("fa-eye fa-eye-slash");
             });
+
+            $(document).on("click","#btnRegistration", function (e) {
+                var firstName = $("#fname").val().trim();
+                var lastName = $("#lname").val().trim();
+                var employeeCode = $("#code").val().trim();
+                var mobileNo = $("#mobile").val().trim();
+                var email = $("#email").val().trim();
+                var password = $("#password").val().trim();
+                var confirmPassword = $("#confirmPassword").val().trim();
+                if (firstName == "") {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please enter your First Name"
+                    });
+                    return false;
+                }
+                if (lastName == "") {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please enter your Last Name"
+                    });
+                    return false;
+                }
+                if (employeeCode == "") {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please enter your Employee Code"
+                    });
+                    return false;
+                }
+                if (mobileNo == "") {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please enter your Mobile No"
+                    });
+                    return false;
+                }
+                if (email == "") {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please enter your Email"
+                    });
+                    return false;
+                }
+                if (password == "") {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please enter your Password"
+                    });
+                    return false;
+                }
+                if (confirmPassword == "") {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please enter your Confirm Password"
+                    });
+                    return false;
+                }
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    $("#passwordError").show();
+                    return false;
+                } else {
+                    $("#passwordError").hide();
+                }
+            });
+
         });
     </script>
 }

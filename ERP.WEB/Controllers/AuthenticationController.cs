@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace ERP.WEB.Controllers
@@ -35,31 +36,21 @@ namespace ERP.WEB.Controllers
 
             try
             {
-                if (string.IsNullOrWhiteSpace(model.FirstName))
+                var existingEmployee = await _unitOfWork.ApplicationUser.GetAllAsync();
+                
+                if (existingEmployee.Any(e => e.EmployeeCode == model.EmployeeCode))
                 {
-                    TempData["AlertMessage"] = "First Name is required.";
+                    TempData["AlertMessage"] = "Employee Code already Exist.";
                     TempData["AlertType"] = "error";
+                    return RedirectToAction("Registration", "Authentication");
                 }
-                if (string.IsNullOrWhiteSpace(model.LastName))
+                if (existingEmployee.Any(e => e.Email == model.Email))
                 {
-                    TempData["AlertMessage"] = "Last Name is required.";
+                    TempData["AlertMessage"] = "Email already Exist.";
                     TempData["AlertType"] = "error";
+                    return RedirectToAction("Registration", "Authentication");
                 }
-                if (string.IsNullOrWhiteSpace(model.EmployeeCode))
-                {
-                    TempData["AlertMessage"] = "EmployeeCode is required.";
-                    TempData["AlertType"] = "error";
-                }
-                if (string.IsNullOrWhiteSpace(model.MobileNo))
-                {
-                    TempData["AlertMessage"] = "Mobile No is required.";
-                    TempData["AlertType"] = "error";
-                }
-                if (string.IsNullOrWhiteSpace(model.Password))
-                {
-                    TempData["AlertMessage"] = "Password  is required.";
-                    TempData["AlertType"] = "error";
-                }
+
                 if (model.Image != null)
                 {
                     var fileDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", "ProfilePictures");
@@ -121,15 +112,15 @@ namespace ERP.WEB.Controllers
                 user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
                 await _unitOfWork.CommitAsync();
-               
+
                 Response.Cookies.Append("jwtToken", user.JwtToken, new CookieOptions
                 {
-                    HttpOnly = true,
+                    HttpOnly = false,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
-                    Expires = DateTime.UtcNow.AddMinutes(30)
+                    Expires = DateTime.UtcNow.AddMinutes(60),
+                    Path = "/"
                 });
-
                 TempData["AlertMessage"] = "Login successful.";
                 TempData["AlertType"] = "success";
                 return RedirectToAction("Index", "Home");
@@ -142,6 +133,45 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Login", "Authentication");
             }
         }
+        [HttpGet]
+        public IActionResult GetJwtToken()
+        {
+            var jwtToken = Request.Cookies["jwtToken"];
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                return Json(new { token = "" });
+            }
+            return Json(new { token = jwtToken });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetLoggedInUserByToken(string token)
+        {
+            try
+            {
+                var jwtHelper = new JwtTokenHelper(_configuration);
+
+                var userId = jwtHelper.DecodeJwtToken(token);
+
+                if (userId == 0)
+                {
+                    return Json(new { success = false, message = "Invalid token." });
+                }
+                var user = await _unitOfWork.ApplicationUser.GetAsync(u =>u.ID == userId);
+
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "User not found." });
+                }
+
+                return Json(new { success = true, user = user });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
         #endregion
 
         #region Refresh Token
