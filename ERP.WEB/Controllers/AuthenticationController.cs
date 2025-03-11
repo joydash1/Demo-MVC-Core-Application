@@ -1,6 +1,7 @@
 ﻿using ERP.DataAccess.Domains;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -97,8 +98,6 @@ namespace ERP.WEB.Controllers
         #region Login
         public async Task<ActionResult> Login()
         {
-            var data = await _spService.GetDataWithoutParameterAsync<ApplicationUser>("GET_APPLICATION_USER");
-            var data1 = _unitOfWork.ApplicationUser.GetAll();
             return View();
         }
         [HttpPost]
@@ -116,11 +115,21 @@ namespace ERP.WEB.Controllers
                 }
 
                 var jwtHelper = new JwtTokenHelper(_configuration);
+                user.IsLoggedIn = true;
                 user.JwtToken = jwtHelper.GenerateJwtToken(user);
                 user.RefreshToken = jwtHelper.GenerateRefreshToken();
                 user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
                 await _unitOfWork.CommitAsync();
+               
+                Response.Cookies.Append("jwtToken", user.JwtToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddMinutes(30)
+                });
+
                 TempData["AlertMessage"] = "Login successful.";
                 TempData["AlertType"] = "success";
                 return RedirectToAction("Index", "Home");
@@ -136,7 +145,6 @@ namespace ERP.WEB.Controllers
         #endregion
 
         #region Refresh Token
-        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken(string refreshToken)
         {
             var user = await _unitOfWork.ApplicationUser.GetAsync(u => u.RefreshToken == refreshToken);

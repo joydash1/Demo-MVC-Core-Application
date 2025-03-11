@@ -1,4 +1,4 @@
-using ERP.DataAccess.DBContext;
+﻿using ERP.DataAccess.DBContext;
 using ERP.Infrastructure.Interfaces;
 using ERP.Repositories.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,7 +14,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBcontext")));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ISpService, SpService>();
-// Read JWT settings from appsettings.json
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
 
@@ -32,7 +31,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
     });
-builder.Services.AddAuthorization();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

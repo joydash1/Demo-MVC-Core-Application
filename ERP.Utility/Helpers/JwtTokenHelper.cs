@@ -32,6 +32,9 @@ namespace ERP.Utility.Helpers
                 Subject = new ClaimsIdentity(new[]
                 {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.LastName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.MobileNo),
+                new Claim(JwtRegisteredClaimNames.Sub, user.EmployeeCode),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.ID.ToString())
             }),
