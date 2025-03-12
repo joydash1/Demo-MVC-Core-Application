@@ -226,5 +226,12 @@ namespace ERP.WEB.Controllers
         }
 
         #endregion
+
+        public async IActionResult GetEmployeeData()
+        {
+            var user = await _unitOfWork.ApplicationUser.GetAllAsync();
+            var pdfBytes = ReportHelpers.GeneratePdfReport();
+            return File(pdfBytes, "application/pdf", "Report.pdf");
+        }
     }
 }
