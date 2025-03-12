@@ -76,7 +76,7 @@ namespace ERP.WEB.Controllers
                 await _unitOfWork.CommitAsync();
                 TempData["AlertMessage"] = "User Registration successfully";
                 TempData["AlertType"] = "success";
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Login", "Authentication");
             }
             catch (Exception ex)
             {
@@ -227,11 +227,11 @@ namespace ERP.WEB.Controllers
 
         #endregion
 
-        public async IActionResult GetEmployeeData()
+        public async Task<IActionResult> GetProductData()
         {
             var user = await _unitOfWork.ApplicationUser.GetAllAsync();
-            var pdfBytes = ReportHelpers.GeneratePdfReport();
-            return File(pdfBytes, "application/pdf", "Report.pdf");
+            var pdfBytes = ReportHelpers.GeneratePdfReport(user);
+            return File(pdfBytes, "application/pdf", "ProductReport.pdf");
         }
     }
 }

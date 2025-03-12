@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using QuestPDF.Fluent;
@@ -23,7 +24,7 @@ namespace ERP.Utility.Helpers
                 return DateTime.Now;
             }
         }
-        public static byte[] GeneratePdfReport()
+        public static byte[] GeneratePdfReport<T>(IEnumerable<T> data)
         {
             var document = Document.Create(container =>
             {
@@ -35,35 +36,47 @@ namespace ERP.Utility.Helpers
                     page.DefaultTextStyle(x => x.FontSize(12));
 
                     page.Header()
-                        .Text("Report Header")
+                        .Text("Dynamic Report")
                         .SemiBold().FontSize(24).AlignCenter();
 
                     page.Content()
                         .PaddingVertical(1, Unit.Centimetre)
                         .Column(column =>
                         {
-                            column.Item().Text("Dynamic Table:");
+                            column.Item().Text("Data Table:");
 
+                            // Create a table
                             column.Item().Table(table =>
                             {
+                                // Get property names for headers
+                                var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                                // Define table columns dynamically
                                 table.ColumnsDefinition(columns =>
                                 {
-                                    columns.RelativeColumn();
-                                    columns.RelativeColumn();
-                                    columns.RelativeColumn();
+                                    foreach (var _ in properties)
+                                    {
+                                        columns.RelativeColumn();
+                                    }
                                 });
 
+                                // Add table headers
                                 table.Header(header =>
                                 {
-                                    header.Cell().Text("Column 1");
-                                    header.Cell().Text("Column 2");
-                                    header.Cell().Text("Column 3");
+                                    foreach (var property in properties)
+                                    {
+                                        header.Cell().Text(property.Name).SemiBold();
+                                    }
                                 });
-                                for (int i = 1; i <= 10; i++)
+
+                                // Add rows dynamically
+                                foreach (var item in data)
                                 {
-                                    table.Cell().Text($"Row {i}, Col 1");
-                                    table.Cell().Text($"Row {i}, Col 2");
-                                    table.Cell().Text($"Row {i}, Col 3");
+                                    foreach (var property in properties)
+                                    {
+                                        var value = property.GetValue(item)?.ToString() ?? string.Empty;
+                                        table.Cell().Text(value);
+                                    }
                                 }
                             });
                         });
