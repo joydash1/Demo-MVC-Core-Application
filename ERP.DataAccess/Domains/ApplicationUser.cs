@@ -14,11 +14,11 @@ namespace ERP.DataAccess.Domains
         [Key]
         public int ID { get; set; }
 
-        [Required(ErrorMessage = "First name is required.")]
-        public required string FirstName { get; set; }
+        [Required(ErrorMessage = "Employee name is required.")]
+        public required string FullName { get; set; }
 
-        [Required(ErrorMessage = "Last name is required.")]
-        public required string LastName { get; set; }
+        [Required(ErrorMessage = "Job Title is required.")]
+        public required string JobTitle { get; set; }
 
         [Required(ErrorMessage = "Employee code is required.")]
         public required string EmployeeCode { get; set; }

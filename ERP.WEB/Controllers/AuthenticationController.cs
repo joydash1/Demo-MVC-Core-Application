@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace ERP.WEB.Controllers
@@ -172,6 +173,35 @@ namespace ERP.WEB.Controllers
             }
         }
 
+        #endregion
+
+        #region LogOut
+        [HttpPost]
+        public async Task<JsonResult> Logout(int id)
+        {
+            try
+            {
+                var logInUser = await _unitOfWork.ApplicationUser.GetAsync(u => u.ID == id);
+                
+                if (logInUser == null)
+                {
+                    return Json(new { Status = false, message = "User Not Found." });
+                }
+
+                logInUser.IsLoggedIn = false;
+                logInUser.JwtToken = "";
+                logInUser.RefreshToken = "";
+                logInUser.RefreshTokenExpiryTime = null;
+
+                await _unitOfWork.CommitAsync();
+
+                return Json(new { Status = true, message = "You have been logged out successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = false, message = $"{ex.Message}" });
+            }
+        }
         #endregion
 
         #region Refresh Token

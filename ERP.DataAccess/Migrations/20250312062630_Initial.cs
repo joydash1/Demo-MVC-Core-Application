@@ -17,18 +17,18 @@ namespace ERP.DataAccess.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmployeeCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MobileNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfilePicturePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsLoggedIn = table.Column<bool>(type: "bit", nullable: false),
+                    IsLoggedIn = table.Column<bool>(type: "bit", nullable: true),
                     JwtToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

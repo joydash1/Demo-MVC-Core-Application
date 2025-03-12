@@ -38,18 +38,18 @@ namespace ERP.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsLoggedIn")
+                    b.Property<bool?>("IsLoggedIn")
                         .HasColumnType("bit");
 
-                    b.Property<string>("JwtToken")
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
+                    b.Property<string>("JwtToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MobileNo")
@@ -69,7 +69,7 @@ namespace ERP.DataAccess.Migrations
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ID");

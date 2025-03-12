@@ -17,14 +17,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label class="form-label">First Name*</label>
-                                    <input type="text" id="fname" asp-for="FirstName" class="form-control" placeholder="First Name">
+                                    <label class="form-label">Employee Name*</label>
+                                    <input type="text" id="name" asp-for="FullName" class="form-control" placeholder="Employee Name">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" id="lname" asp-for="LastName" class="form-control" placeholder="Last Name">
+                                    <label class="form-label">Job Title*</label>
+                                    <input type="text" id="title" asp-for="JobTitle" class="form-control" placeholder="Job Title">
                                 </div>
                             </div>
                         </div>
@@ -148,8 +148,8 @@
             });
 
             $(document).on("click","#btnRegistration", function (e) {
-                var firstName = $("#fname").val().trim();
-                var lastName = $("#lname").val().trim();
+                var firstName = $("#name").val().trim();
+                var title = $("#title").val().trim();
                 var employeeCode = $("#code").val().trim();
                 var mobileNo = $("#mobile").val().trim();
                 var email = $("#email").val().trim();
@@ -160,16 +160,16 @@
                     Swal.fire({
                         icon: "error",
                         title: "Oops...",
-                        text: "Please enter your First Name"
+                        text: "Please enter your Name"
                     });
                     return false;
                 }
-                if (lastName == "") {
+                if (title == "") {
                     e.preventDefault();
                     Swal.fire({
                         icon: "error",
                         title: "Oops...",
-                        text: "Please enter your Last Name"
+                        text: "Please enter your job title"
                     });
                     return false;
                 }

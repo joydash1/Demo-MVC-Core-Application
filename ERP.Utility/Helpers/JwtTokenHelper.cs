@@ -32,8 +32,9 @@ namespace ERP.Utility.Helpers
                 Subject = new ClaimsIdentity(new[]
                 {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                
-                new Claim("last_name", user.LastName),   
+
+                new Claim("employee_id", user.ID.ToString()),
+                new Claim("job_title", user.JobTitle),   
                 new Claim("mobile_no", user.MobileNo),
                 new Claim("employee_code", user.EmployeeCode),
 
@@ -79,7 +80,7 @@ namespace ERP.Utility.Helpers
             {
                 var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
                 //var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var userIdClaim = principal.FindFirst("nameid")?.Value;
+                var userIdClaim = principal.FindFirst("employee_id")?.Value;
 
                 return userIdClaim != null ? int.Parse(userIdClaim) : 0;
             }

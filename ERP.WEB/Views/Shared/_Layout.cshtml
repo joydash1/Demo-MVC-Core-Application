@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject IConfiguration configuration
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -27,6 +28,7 @@
 @{
     string controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
     string actionName = ViewContext.RouteData.Values["action"]?.ToString();
+    string appUrl = configuration["ApplicationURL:AppURL"];
 }
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
 
@@ -198,92 +200,20 @@
                            aria-haspopup="false"
                            data-bs-auto-close="outside"
                            aria-expanded="false">
-                            <img src="~/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
-                            <span>Stebin Ben</span>
+                            <img src="" alt="user-image" class="user-avtar profilePicture">
+                            <span class="userName"></span>
                         </a>
                         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header">
                                 <div class="d-flex mb-1">
                                     <div class="flex-shrink-0">
-                                        <img src="~/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
+                                        <img src="" alt="user-image" class="user-avtar wid-35 profilePicture">
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-1">Stebin Ben</h6>
-                                        <span>UI/UX Designer</span>
+                                        <h6 class="mb-1 userName"></h6>
+                                        <span id="jobTitle"></span>
                                     </div>
-                                    <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
-                                </div>
-                            </div>
-                            <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active"
-                                            id="drp-t1"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#drp-tab-1"
-                                            type="button"
-                                            role="tab"
-                                            aria-controls="drp-tab-1"
-                                            aria-selected="true">
-                                        <i class="ti ti-user"></i> Profile
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link"
-                                            id="drp-t2"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#drp-tab-2"
-                                            type="button"
-                                            role="tab"
-                                            aria-controls="drp-tab-2"
-                                            aria-selected="false">
-                                        <i class="ti ti-settings"></i> Setting
-                                    </button>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="mysrpTabContent">
-                                <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1" tabindex="0">
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-edit-circle"></i>
-                                        <span>Edit Profile</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-user"></i>
-                                        <span>View Profile</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-clipboard-list"></i>
-                                        <span>Social Profile</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-wallet"></i>
-                                        <span>Billing</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-power"></i>
-                                        <span>Logout</span>
-                                    </a>
-                                </div>
-                                <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-help"></i>
-                                        <span>Support</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-user"></i>
-                                        <span>Account Settings</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-lock"></i>
-                                        <span>Privacy Center</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-messages"></i>
-                                        <span>Feedback</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
-                                        <i class="ti ti-list"></i>
-                                        <span>History</span>
-                                    </a>
+                                    <a href="#!" id="btnLogOut" data-id="" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -349,6 +279,7 @@
     <script src="~/assets/js/pcoded.js"></script>
     <script src="~/assets/js/plugins/feather.min.js"></script>
     <script type="text/javascript">
+        var url = '@Html.Raw(appUrl)';
         $(document).ready(function () {
             // Function to get the JWT token from cookies
             function getJwtToken() {
@@ -356,26 +287,34 @@
                 if (cookie) {
                     return cookie.split('=')[1];
                 } else {
-                    return null;
+                    return ;
                 }
             }
             function getLoggedInUser() {
                 var token = getJwtToken();
                     if (!token) {
                         console.error('JWT Token not found in cookies.');
+                        window.location.href = '/Authentication/Login';
                         return;
                     }
                 $.ajax({
                     url: '/Authentication/GetJwtToken',
                     type: 'GET',
                     success: function (response) {
-                        console.log('JWT Token:', response.token);
+                        //console.log('JWT Token:', response.token);
                         $.ajax({
                             url: '/Authentication/GetLoggedInUserByToken',
                             type: 'GET',
                             data: { token: response.token },
                             success: function (userResponse) {
-                                console.log('Logged in user:', userResponse);
+                                $(".userName").html(userResponse.user.fullName);
+                                $("#jobTitle").html(userResponse.user.jobTitle);
+                                $("#btnLogOut").attr("data-id",userResponse.user.id);
+                                if (userResponse.user.profilePicturePath) {
+                                    $(".profilePicture").attr("src", url + userResponse.user.profilePicturePath);
+                                } else {
+                                    $(".profilePicture").attr("src", url + "/assets/images/user/avatar-2.jpg");
+                                }
                             },
                             error: function (error) {
                                 console.error('Error retrieving user:', error);
@@ -387,7 +326,47 @@
                     }
                 });
             }
-          // Call the function to get the logged-in user
+            $(document).on('click',"#btnLogOut",function(){
+                var id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("id",id);
+                $.ajax({
+                    url: '@Url.Action("Logout", "Authentication")',
+                    type: 'POST',
+                    data : formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response);
+                        if (response.status == true) {
+                            Swal.fire({
+                                title: "Logged Out!",
+                                text: response.message,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = "/Authentication/Login";
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Logout Failed!",
+                                text: response.message,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            title: "Logout Failed!",
+                            text: "Something went wrong. Please try again.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                });
+            });
           getLoggedInUser();
         });
     </script>
