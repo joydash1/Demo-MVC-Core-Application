@@ -230,8 +230,8 @@ namespace ERP.WEB.Controllers
         public async Task<IActionResult> GetProductData()
         {
             var user = await _unitOfWork.ApplicationUser.GetAllAsync();
-            var pdfBytes = ReportHelpers.GeneratePdfReport(user);
-            return File(pdfBytes, "application/pdf", "ProductReport.pdf");
+            var pdfBytes = ReportHelpers.GeneratePdfReport(user,"Application User",false);
+            return File(pdfBytes,"application/pdf", "ProductReport.pdf");
         }
     }
 }
