@@ -53,17 +53,7 @@
                             <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
                             <span class="pc-mtext">Dashboard</span>
                         </a>
-                    </li>
-
-                    <li class="pc-item pc-caption">
-                        <label>Menu</label>
-                        <i class="ti ti-dashboard"></i>
-                    </li>
-                    <li class="pc-item">
-                        <a href="../elements/bc_typography.html" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-typography"></i></span>
-                            <span class="pc-mtext">Typography</span>
-                        </a>
+                        <hr />
                     </li>
                     <li class="pc-item pc-caption">
                         <label>Authenticatios</label>
@@ -294,7 +284,7 @@
                 var token = getJwtToken();
                     if (!token) {
                         console.error('JWT Token not found in cookies.');
-                        window.location.href = '/Authentication/Login';
+                        //window.location.href = '/Authentication/Login';
                         return;
                     }
                 $.ajax({

@@ -38,6 +38,7 @@ namespace ERP.DataAccess.Domains
         public required string Password { get; set; }
         public string? ProfilePicture { get; set; }
         public string? ProfilePicturePath { get; set; }
+        public int? RoleID { get; set; }
         public  bool? IsLoggedIn { get; set; }
 
         // JWT Token field
