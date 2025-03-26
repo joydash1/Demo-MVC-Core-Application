@@ -9,5 +9,12 @@ namespace ERP.WEB.Controllers
         {
             return View();
         }
+
+        #region Organization
+        public IActionResult Organization()
+        {
+            return View();
+        }
+        #endregion
     }
 }

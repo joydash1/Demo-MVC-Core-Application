@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="~/assets/css/style.css" id="main-style-link">
     <link rel="stylesheet" href="~/assets/css/style-preset.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style type="text/css">
         .pc-footer {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.8), 0 -6px 12px 0 rgba(0, 0, 0, 0.02);
@@ -54,6 +55,16 @@
                             <span class="pc-mtext">Dashboard</span>
                         </a>
                         <hr />
+                    </li>
+                    <li class="pc-item pc-caption">
+                        <label>Basic Setup</label>
+                        <i class="ti ti-news"></i>
+                    </li>
+                    <li class="pc-item">
+                        <a asp-action="Organization" asp-controller="Home" class="pc-link">
+                            <span class="pc-micon"><i class="fa-solid fa-building"></i></span>
+                            <span class="pc-mtext">Organization</span>
+                        </a>
                     </li>
                     <li class="pc-item pc-caption">
                         <label>Authenticatios</label>
@@ -225,7 +236,7 @@
                                 <h5 class="m-b-10">Dashboard</h5>
                             </div> *@
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item">Dashboard</li>
+                                <li class="breadcrumb-item">Firoz Enterprise</li>
                                 <li class="breadcrumb-item"><a href="">@controllerName</a></li>
                                 <li class="breadcrumb-item" aria-current="page">@actionName</li>
                             </ul>
