@@ -13,11 +13,13 @@ namespace ERP.Repositories.Services
     {
         private readonly ApplicationDbContext _dbContext;
         public IApplicationUserRepository ApplicationUser { get; private set; }
+        public IOrganizationRepository OrganizationRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
             ApplicationUser = new ApplicationUserRepository(_dbContext);
+            OrganizationRepository = new OrganizationRepository(_dbContext);
         }
         public async Task CommitAsync()
        => await _dbContext.SaveChangesAsync();

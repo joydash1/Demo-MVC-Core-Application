@@ -9,6 +9,7 @@ namespace ERP.Infrastructure.Interfaces
     public interface IUnitOfWork
     {
         IApplicationUserRepository ApplicationUser { get; }
+        IOrganizationRepository OrganizationRepository { get;}
         Task CommitAsync();
         Task RollbackAsync();
     }
