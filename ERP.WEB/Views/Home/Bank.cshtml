@@ -1,0 +1,156 @@
+﻿@using ERP.DataAccess.Domains
+@using ERP.Utility.ViewModels
+@model BankViewModel
+@{
+    ViewData["Title"] = "Bank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .row {
+        margin-top: 10px !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Bank</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-controller="Home" asp-action="SaveBank">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-floating mb-0">
+                                <input type="text" class="form-control" asp-for="Bank.BankName" id="txtBankName" placeholder="Bank Name">
+                                <label for="txtBankName">Bank Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" id="btnSubmit" class="btn btn-light-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Bank List</h5>
+                <small></small>
+            </div>
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+                    <table id="autofill" class="table table-striped table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Bank Name</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.BankList.Any())
+                            {
+                                @foreach (var bnk in Model.BankList)
+                                {
+                                    <tr>
+                                        <td class="text-center">@bnk.BankName</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@bnk.ID"><i class="ti ti-archive"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2" class="text-center">No records found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnSubmit").on("click", function (e) {
+                e.preventDefault();
+
+                var isValid = true;
+
+                function validateField(selector, message) {
+                    var inputField = $(selector);
+                    var value = inputField.val().trim();
+
+                    if (value === "") {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
+                    } else {
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+
+                validateField("#txtBankName", "Please enter bank name");
+
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please fill in all required fields."
+                    });
+                } else {
+                    $("form").submit();
+                }
+            });
+
+            $("input").on("input", function () {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+            });
+
+            $(document).on('click', ".delete-btn", function () {
+                var Id = $(this).attr("data-id");
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to delete this bank? This action cannot be undone.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Home/DeleteBankById?id=" + Id,
+                            type: "GET",
+                            success: function (response) {
+                                if (response && response.status === true) {
+                                    Swal.fire("Deleted!", response.message, "success").then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire("Error!", "Failed to delete the organization.", "error");
+                                }
+                            },
+                            error: function () {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                            }
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+}

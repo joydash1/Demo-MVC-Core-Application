@@ -14,12 +14,18 @@ namespace ERP.Repositories.Services
         private readonly ApplicationDbContext _dbContext;
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public IOrganizationRepository OrganizationRepository { get; private set; }
+        public IBankRepository BankRepository { get; private set; }
+        public IBankBranchRepository BankBranchRepository { get; private set; }
+        public IOrganizationBankAccountRepository OrganizationBankAccountRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
             ApplicationUser = new ApplicationUserRepository(_dbContext);
             OrganizationRepository = new OrganizationRepository(_dbContext);
+            BankRepository = new BankRepository(_dbContext);
+            BankBranchRepository = new BankBranchRepository(_dbContext);
+            OrganizationBankAccountRepository = new OrganizationBankAccountRepository(_dbContext);
         }
         public async Task CommitAsync()
        => await _dbContext.SaveChangesAsync();

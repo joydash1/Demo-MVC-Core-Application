@@ -15,6 +15,11 @@
     <link rel="stylesheet" href="~/assets/fonts/fontawesome.css">
     <!-- [Material Icons] https://fonts.google.com/icons -->
     <link rel="stylesheet" href="~/assets/fonts/material.css">
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/css/plugins/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/select.bootstrap5.min.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/autoFill.bootstrap5.min.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/keyTable.bootstrap5.min.css">
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="~/assets/css/style.css" id="main-style-link">
     <link rel="stylesheet" href="~/assets/css/style-preset.css">
@@ -62,8 +67,14 @@
                     </li>
                     <li class="pc-item">
                         <a asp-action="Organization" asp-controller="Home" class="pc-link">
-                            <span class="pc-micon"><i class="fa-solid fa-building"></i></span>
+                            <span class="pc-micon"><i class="ti ti-building-community"></i></span>
                             <span class="pc-mtext">Organization</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
+                        <a asp-action="Bank" asp-controller="Home" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-building-bank"></i></span>
+                            <span class="pc-mtext">Bank</span>
                         </a>
                     </li>
                     <li class="pc-item pc-caption">
@@ -279,6 +290,14 @@
     <script src="~/assets/js/fonts/custom-font.js"></script>
     <script src="~/assets/js/pcoded.js"></script>
     <script src="~/assets/js/plugins/feather.min.js"></script>
+    <!-- datatable Js -->
+    <script src="~/assets/js/plugins/jquery.dataTables.min.js"></script>
+    <script src="~/assets/js/plugins/dataTables.bootstrap5.min.js"></script>
+    <script src="~/assets/js/plugins/dataTables.autoFill.min.js"></script>
+    <script src="~/assets/js/plugins/autoFill.bootstrap5.min.js"></script>
+    <script src="~/assets/js/plugins/dataTables.keyTable.min.js"></script>
+    <script src="~/assets/js/plugins/keyTable.bootstrap5.min.js"></script>
+    <script src="~/assets/js/plugins/dataTables.select.min.js"></script>
     <script type="text/javascript">
         var url = '@Html.Raw(appUrl)';
         $(document).ready(function () {
@@ -295,7 +314,7 @@
                 var token = getJwtToken();
                     if (!token) {
                         console.error('JWT Token not found in cookies.');
-                        //window.location.href = '/Authentication/Login';
+                        window.location.href = '/Authentication/Login';
                         return;
                     }
                 $.ajax({
@@ -369,6 +388,46 @@
                 });
             });
           getLoggedInUser();
+        });
+           // [ Autofill ]
+        $('#autofill').DataTable({
+          autoFill: true
+        });
+        // [ KeyTable Integration ]
+        $('#key-integration').DataTable({
+          keys: true,
+          autoFill: true
+        });
+        // [ Column Selector ]
+        $('#confirm-table').DataTable({
+          autoFill: {
+            alwaysAsk: true
+          }
+        });
+
+        // [ scroll fill ]
+        var safill = $('#scroll-fill').dataTable({
+          scrollY: 400,
+          scrollCollapse: true,
+          paging: false,
+          autoFill: true
+        });
+        $('#colum-select').DataTable({
+          columnDefs: [
+            {
+              orderable: false,
+              className: 'select-checkbox',
+              targets: 0
+            }
+          ],
+          select: {
+            style: 'os',
+            selector: 'td:first-child'
+          },
+          order: [[1, 'asc']],
+          autoFill: {
+            columns: ':not(:first-child)'
+          }
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)

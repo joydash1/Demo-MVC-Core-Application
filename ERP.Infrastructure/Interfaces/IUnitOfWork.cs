@@ -10,6 +10,9 @@ namespace ERP.Infrastructure.Interfaces
     {
         IApplicationUserRepository ApplicationUser { get; }
         IOrganizationRepository OrganizationRepository { get;}
+        IBankRepository BankRepository { get;}
+        IBankBranchRepository BankBranchRepository { get;}
+        IOrganizationBankAccountRepository OrganizationBankAccountRepository { get;}
         Task CommitAsync();
         Task RollbackAsync();
     }

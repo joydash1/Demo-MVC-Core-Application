@@ -16,5 +16,8 @@ namespace ERP.DataAccess.DBContext
         }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<Organization> Organization { get; set; }
+        public DbSet<OrganizationBankAccount> OrganizationBankAccount { get; set; }
+        public DbSet<Bank> Bank { get; set; }
+        public DbSet<BankBranch> BankBranche { get; set; }
     }
 }

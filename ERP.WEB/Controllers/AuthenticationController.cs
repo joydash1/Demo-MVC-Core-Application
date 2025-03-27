@@ -114,6 +114,9 @@ namespace ERP.WEB.Controllers
 
                 await _unitOfWork.CommitAsync();
 
+                // Store user ID in session
+                SessionHelper.SetLoggedInUserId(HttpContext, user.ID);
+
                 Response.Cookies.Append("jwtToken", user.JwtToken, new CookieOptions
                 {
                     HttpOnly = false,
@@ -193,6 +196,9 @@ namespace ERP.WEB.Controllers
                 logInUser.RefreshToken = "";
                 logInUser.RefreshTokenExpiryTime = null;
 
+                SessionHelper.ClearSession(HttpContext);
+
+
                 await _unitOfWork.CommitAsync();
 
                 return Json(new { Status = true, message = "You have been logged out successfully." });
@@ -226,12 +232,5 @@ namespace ERP.WEB.Controllers
         }
 
         #endregion
-
-        public async Task<IActionResult> GetProductData()
-        {
-            var user = await _unitOfWork.ApplicationUser.GetAllAsync();
-            var pdfBytes = ReportHelpers.GeneratePdfReport(user,"Application User",false);
-            return File(pdfBytes,"application/pdf", "ProductReport.pdf");
-        }
     }
 }
