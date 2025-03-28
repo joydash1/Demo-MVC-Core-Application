@@ -19,9 +19,9 @@ namespace ERP.Repositories.Services
         }
 
         public void Update(BankBranch bankBranch)
-        => _dbContext.BankBranche.Update(bankBranch);
+        => _dbContext.BankBranch.Update(bankBranch);
 
         public void UpdateRange(IEnumerable<BankBranch> bankBranches)
-        => _dbContext.BankBranche.UpdateRange(bankBranches);
+        => _dbContext.BankBranch.UpdateRange(bankBranches);
     }
 }

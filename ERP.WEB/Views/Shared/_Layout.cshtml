@@ -77,6 +77,12 @@
                             <span class="pc-mtext">Bank</span>
                         </a>
                     </li>
+                    <li class="pc-item">
+                        <a asp-action="Branch" asp-controller="Home" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-building-bank"></i></span>
+                            <span class="pc-mtext">Bank Branch</span>
+                        </a>
+                    </li>
                     <li class="pc-item pc-caption">
                         <label>Authenticatios</label>
                         <i class="ti ti-news"></i>
@@ -269,7 +275,7 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
-                    <p class="m-0">Copyright ©Joy - @DateTime.UtcNow</p>
+                    <p class="m-0">Copyright ©Joy - @DateTime.Now</p>
                 </div>
                 @* <div class="col-auto my-1">
                     <ul class="list-inline footer-link mb-0">
@@ -389,7 +395,7 @@
             });
           getLoggedInUser();
         });
-           // [ Autofill ]
+            // [ Autofill ]
         $('#autofill').DataTable({
           autoFill: true
         });

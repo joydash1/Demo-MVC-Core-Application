@@ -50,7 +50,7 @@ namespace ERP.WEB.Controllers
                     TempData["AlertType"] = "error";
                     return RedirectToAction("Organization", "Home");
                 }
-                organization.EntryDate = DateTime.UtcNow;
+                organization.EntryDate = DateTime.Now;
                 organization.EntryUserId = SessionHelper.GetLoggedInUserId(HttpContext) ?? 0;
                 organization.IsActive = true;
                 await _unitOfWork.OrganizationRepository.AddAsync(organization);
@@ -120,7 +120,7 @@ namespace ERP.WEB.Controllers
                     TempData["AlertType"] = "error";
                     return RedirectToAction("Bank", "Home");
                 }
-                bank.EntryDate = DateTime.UtcNow;
+                bank.EntryDate = DateTime.Now;
                 bank.EntryUserId = SessionHelper.GetLoggedInUserId(HttpContext) ?? 0;
                 bank.IsActive = true;
                 await _unitOfWork.BankRepository.AddAsync(bank);
@@ -167,6 +167,92 @@ namespace ERP.WEB.Controllers
             }
         }
         #endregion
+
+        #region Branch
+        public async Task<IActionResult> Branch()
+        {
+            ViewBag.BankList = await _unitOfWork.BankRepository.GetAllAsync(x => x.IsActive == true);
+            ViewBag.BankBranchList = await _spService.GetDataWithoutParameterAsync<BankNBranchDto>("USP_GET_BANK_BRANCH_LIST").ToListAsync();
+         
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveBranch([FromForm] BankBranch branch)
+        {
+            try
+            {
+
+                if (branch == null)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("Branch", "Home");
+                }
+                branch.EntryDate = DateTime.Now;
+                branch.EntryUserId = SessionHelper.GetLoggedInUserId(HttpContext) ?? 0;
+                branch.IsActive = true;
+                await _unitOfWork.BankBranchRepository.AddAsync(branch);
+                await _unitOfWork.CommitAsync();
+                TempData["AlertMessage"] = "Save successful.";
+                TempData["AlertType"] = "success";
+                return RedirectToAction("Branch", "Home");
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Branch", "Home");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeleteBranchById(DeleteBranchDto delete)
+        {
+            try
+            {
+
+                if (delete.Id == 0)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("Branch", "Home");
+                }
+                var data = await _spService.GetDataWithParameterAsync<DeleteBankDto>(new
+                {
+                    ID = delete.Id,
+                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                }, "USP_DELETE_BANK_BRANCH_BY_ID");
+                return Json(new
+                {
+                    Status = true,
+                    Message = "Branch Delete Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Branch", "Home");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetBankBranchList()
+        {
+            try
+            {
+                var data = await _spService.GetDataWithoutParameterAsync<BankNBranchDto>("USP_GET_BANK_BRANCH_LIST").ToListAsync();
+                return Json(new
+                {
+                    Status = true,
+                    DataList = data
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Branch", "Home");
+            }
+        }
+        #endregion
     }
 }
-//USP_DELETE_BANK_BY_ID

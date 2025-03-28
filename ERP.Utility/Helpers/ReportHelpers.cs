@@ -19,6 +19,10 @@ namespace ERP.Utility.Helpers
                 return DateTime.Now;
             }
         }
-        
+        public static async Task<List<T>> ToListAsync<T>(this Task<IEnumerable<T>> sourceTask)
+        {
+            var result = await sourceTask;
+            return result.ToList();
+        }
     }
 }
