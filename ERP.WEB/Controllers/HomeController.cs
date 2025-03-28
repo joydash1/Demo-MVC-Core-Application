@@ -254,5 +254,74 @@ namespace ERP.WEB.Controllers
             }
         }
         #endregion
+
+        #region Organization Account
+        public async Task<IActionResult> OrganizationBankBranch()
+        {
+            ViewBag.OrganizationList = await _unitOfWork.OrganizationRepository.GetAllAsync(x => x.IsActive == true);
+            ViewBag.BankList = await _unitOfWork.BankRepository.GetAllAsync(x => x.IsActive == true);
+            ViewBag.BranchList =await _unitOfWork.BankBranchRepository.GetAllAsync(x => x.IsActive == true);
+            ViewBag.OrganizationBankAccountList = await _spService.GetDataWithoutParameterAsync<OrganizationAccountListDto>("USP_GET_ORGANIZATION_BANK_ACCOUNT_LIST").ToListAsync();
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveOrganizationBankBranch([FromForm] OrganizationBankAccount account)
+        {
+            try
+            {
+
+                if (account == null)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("OrganizationBankBranch", "Home");
+                }
+                account.EntryDate = DateTime.Now;
+                account.EntryUserId = SessionHelper.GetLoggedInUserId(HttpContext) ?? 0;
+                account.IsActive = true;
+                await _unitOfWork.OrganizationBankAccountRepository.AddAsync(account);
+                await _unitOfWork.CommitAsync();
+                TempData["AlertMessage"] = "Save successful.";
+                TempData["AlertType"] = "success";
+                return RedirectToAction("OrganizationBankBranch", "Home");
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("OrganizationBankBranch", "Home");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeleteOrganizationBankBranchById(DeleteOrganizationAccountDto delete)
+        {
+            try
+            {
+
+                if (delete.Id == 0)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("OrganizationBankBranch", "Home");
+                }
+                var data = await _spService.GetDataWithParameterAsync<DeleteOrganizationAccountDto>(new
+                {
+                    ID = delete.Id,
+                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                }, "USP_DELETE_ORGANIZATION_BANK_ACCOUNT_BY_ID");
+                return Json(new
+                {
+                    Status = true,
+                    Message = "Organization Bank Accounts Delete Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("OrganizationBankBranch", "Home");
+            }
+        }
+        #endregion
     }
 }
