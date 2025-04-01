@@ -55,11 +55,11 @@
                         <div class="col-md-6">
                             <div class="form-floating mb-0">
                                 <select class="form-select" asp-for="BranchId" id="cmbBranch">
-                                    <option value="0">select Branch</option>
+                                    @* <option value="0">select Branch</option>
                                     @foreach (var bb in branchList)
                                     {
                                         <option value="@bb.ID">@bb.BranchName</option>
-                                    }
+                                    } *@
                                 </select>
                                 <label for="cmbBranch">Branch Name</label>
                             </div>
@@ -132,6 +132,9 @@
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
+            $(document).on("change","#cmbBank",function(){
+                GetBranchByBank();
+            })
             $("#btnSubmit").on("click", function (e) {
                 e.preventDefault();
 
@@ -203,6 +206,29 @@
                 });
             });
         });
+
+        function GetBranchByBank(){
+            var Id =  $("#cmbBank option:selected").val();
+             $.ajax({
+                    url: "/Home/GetBankBranchByBankId?id=" + Id,
+                    type: "GET",
+                    success: function (response) {
+                        if (response && response.status === true) {
+                           var html = "";
+                           html += '<option value="0">select Branch</option>';
+                           $.each(response.data, function(i,d){
+                               html += '<option value='+d.id+'>'+d.branchName+'</option>';
+                           });
+                           $("#cmbBranch").html(html);
+                        } else {
+                            Swal.fire("Error!", "Failed to load branch.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+        }
     </script>
 }
 

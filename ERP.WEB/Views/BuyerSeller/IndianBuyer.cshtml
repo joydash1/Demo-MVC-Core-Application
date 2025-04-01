@@ -1,0 +1,259 @@
+﻿@using ERP.DataAccess.DTOs.Buyer
+@model IndianBuyerDto
+@{
+    ViewData["Title"] = "Indian Buyer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var buyerList = (List<IndianBuyerDto>)ViewBag.IndianBuyerList;
+}
+
+<style type="text/css">
+    .row {
+        margin-top: 10px !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Indian Buyer</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtBuyerName" placeholder="Buyer Name">
+                            <label for="txtBuyerName">Buyer Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtShopName" placeholder="Shop Name">
+                            <label for="txtShopName">Shop Name</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtAddress" placeholder="Shop Address">
+                            <label for="txtAddress">Shop Address</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtWebsite" placeholder="Shop Webnsite">
+                            <label for="">Shop Website</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtTIN" placeholder="Shop TIN No.">
+                            <label for="txtTIN">TIN No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button type="button" id="btnSubmit" data-id="0" class="btn btn-light-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Indian Buyer List</h5>
+                <small></small>
+            </div>
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+                    <table id="autofill" class="table table-striped table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Buyer Name</th>
+                                <th class="text-center">Shop Name</th>
+                                <th class="text-center">Shop Address</th>
+                                <th class="text-center">Website</th>
+                                <th class="text-center">TIN</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (buyerList.Any())
+                            {
+                                @foreach (var buyer in buyerList)
+                                {
+                                    <tr>
+                                        <td class="text-center">@buyer.BuyerName</td>
+                                        <td class="text-center">@buyer.ShopName</td>
+                                        <td class="text-center">@buyer.Address</td>
+                                        <td class="text-center">@buyer.Website</td>
+                                        <td class="text-center">@buyer.TINNumber</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@buyer.Id"><i class="ti ti-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@buyer.Id"><i class="ti ti-archive"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center">No records found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+            $(document).on("click", "#btnSubmit", function (e) {
+                e.preventDefault();
+
+                var isValid = true;
+
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val().trim();
+
+                    if (value === "") {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
+                    } else {
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+
+                validateField("#txtBuyerName");
+                validateField("#txtShopName");
+                validateField("#txtAddress");
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please fill in all required fields."
+                    });
+                } else {
+                    var Id = $("#btnSubmit").attr("data-id");
+                    var BuyerName = $("#txtBuyerName").val();
+                    var ShopName = $("#txtShopName").val();
+                    var Address = $("#txtAddress").val();
+                    var Website = $("#txtWebsite").val();
+                    var TINNumber = $("#txtTIN").val();
+                    var formData = new FormData();
+                    formData.append("Id", Id);
+                    formData.append("BuyerName", BuyerName);
+                    formData.append("ShopName", ShopName);
+                    formData.append("Address", Address);
+                    formData.append("Website", Website);
+                    formData.append("TINNumber", TINNumber);
+
+                    $.ajax({
+                        url: '@Url.Action("InsertUpdateIndianBuyer", "BuyerSeller")',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Success!", response.message, "success").then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                }
+            });
+
+            $("input").on("input", function () {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+            });
+
+            $(document).on("click", ".delete-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to delete this Indian buyer? This action cannot be undone.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '@Url.Action("DeleteIndianBuyerById", "BuyerSeller")',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                if (response && response.status === true) {
+                                    Swal.fire("Deleted!", response.message, "success").then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire("Error!", "Failed to delete the record.", "error");
+                                }
+                            },
+                            error: function () {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on("click", ".edit-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
+
+                $.ajax({
+                    url: '@Url.Action("GetIndianBuyerById", "BuyerSeller")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                                var d = response.data[0];
+                                $("#btnSubmit").attr("data-id", d.id);
+                                $("#txtBuyerName").val(d.buyerName);
+                                $("#txtShopName").val(d.shopName);
+                                $("#txtAddress").val(d.address);
+                                $("#txtWebsite").val(d.website);
+                                $("#txtTIN").val(d.tINNumber);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch buyer details.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            });
+    });
+    </script>
+}

@@ -216,7 +216,7 @@ namespace ERP.WEB.Controllers
                     TempData["AlertType"] = "error";
                     return RedirectToAction("Branch", "Home");
                 }
-                var data = await _spService.GetDataWithParameterAsync<DeleteBankDto>(new
+                var data = await _spService.GetDataWithParameterAsync<DeleteBranchDto>(new
                 {
                     ID = delete.Id,
                     USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
@@ -313,6 +313,37 @@ namespace ERP.WEB.Controllers
                 {
                     Status = true,
                     Message = "Organization Bank Accounts Delete Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("OrganizationBankBranch", "Home");
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetBankBranchByBankId(DeleteBankDto bank)
+        {
+            try
+            {
+
+                if (bank.Id == 0)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("OrganizationBankBranch", "Home");
+                }
+                var data = await _spService.GetDataWithParameterAsync<BranchByBankDto>(new
+                {
+                    BANK_ID = bank.Id,
+                }, "USP_GET_BRANCH_ROUTING_NO_BY_BANK");
+                return Json(new
+                {
+                    Status = true,
+                    Data = data
                 });
             }
             catch (Exception ex)
