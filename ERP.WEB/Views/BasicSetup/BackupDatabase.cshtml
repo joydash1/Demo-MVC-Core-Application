@@ -1,0 +1,26 @@
+﻿@using ERP.DataAccess.Domains
+@{
+    ViewData["Title"] = "Backup Database";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .row {
+        margin-top: 10px !important;
+    }
+</style>
+<div class="card my-5">
+    <div class="card-body">
+        <div class="mb-4">
+            <h3 class="mb-2"><b>Hi, Backup Your Database.</b></h3>
+        </div>
+        <hr />
+        <form method="post" asp-controller="BasicSetup" asp-action="SaveBackupDatabase">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button type="submit" id="btnSubmit" class="btn btn-light-primary">Database Backup</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

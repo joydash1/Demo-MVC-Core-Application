@@ -158,6 +158,7 @@
                     @* <li class="pc-item pc-caption">
                         <label>Authenticatios</label>
                         <i class="ti ti-news"></i>
+                        ti ti-letter-b
                     </li> *@
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
@@ -170,6 +171,28 @@
                                 <a asp-action="Registration" asp-controller="Authentication" class="pc-link">
                                     <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
                                     <span class="pc-mtext">Registration</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!--Database Backup-->
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Database Backup
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a asp-action="BackupDatabase" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-letter-b"></i></span>
+                                    <span class="pc-mtext">Backup</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="DownloadDatabase" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-download"></i></span>
+                                    <span class="pc-mtext">Download</span>
                                 </a>
                             </li>
                         </ul>

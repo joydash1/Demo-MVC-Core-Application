@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+﻿using ERP.DataAccess.Domains;
+using System.Globalization;
+using System.Drawing.Imaging;
+using System.Drawing.Printing;
 namespace ERP.Utility.Helpers
 {
     public static class ReportHelpers

@@ -1,0 +1,42 @@
+﻿@using ERP.DataAccess.Domains
+@{
+    ViewData["Title"] = "Download Database";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .row {
+        margin-top: 10px !important;
+    }
+</style>
+<div class="card my-5">
+    <div class="card-body">
+        <div class="mb-4">
+            <h3 class="mb-2"><b>Hi, Download Your Database.</b></h3>
+        </div>
+        <hr />
+        @if (ViewBag.BackupFiles != null && ViewBag.BackupFiles.Count > 0)
+        {
+            <form method="post" asp-controller="BasicSetup" asp-action="DownloadBackup">
+                <div class="row">
+                    <div class="col-md-8">
+                        <label for="fileName"><b>Select Backup File:</b></label>
+                        <select name="fileName" id="fileName" class="form-control">
+                            @foreach (var file in ViewBag.BackupFiles)
+                            {
+                                <option value="@file">@file</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4 text-center mt-4">
+                        <button type="submit" id="btnSubmit" class="btn btn-primary">Download Backup</button>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <p class="text-center text-danger">No backup files available.</p>
+        }
+    </div>
+</div>

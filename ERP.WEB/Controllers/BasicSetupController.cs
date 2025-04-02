@@ -16,11 +16,12 @@ namespace ERP.WEB.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISpService _spService;
-
-        public BasicSetupController(IUnitOfWork unitOfWork, ISpService spService)
+        private readonly IDatabaseBackupService _databaseBackupService;
+        public BasicSetupController(IUnitOfWork unitOfWork, ISpService spService, IDatabaseBackupService databaseBackupService)
         {
             _unitOfWork = unitOfWork;
             _spService = spService;
+            _databaseBackupService = databaseBackupService;
         }
 
         #region Organization
@@ -784,6 +785,79 @@ namespace ERP.WEB.Controllers
                 TempData["AlertType"] = "error";
                 return RedirectToAction("Border", "BasicSetup");
             }
+        }
+        #endregion
+
+        #region Database Backup
+        public IActionResult BackupDatabase()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveBackupDatabase()
+        {
+            try
+            {
+                string databaseName = "FirozeDealerHouse";
+                string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+
+                if (!Directory.Exists(backupFolderPath))
+                {
+                    Directory.CreateDirectory(backupFolderPath);
+                }
+
+                string formattedDate = DateTime.Now.ToString("ddMMMMyyyy");
+                string backupFileName = $"{databaseName}{formattedDate}.bak";
+                string backupFilePath = Path.Combine(backupFolderPath,backupFileName);
+
+                bool result = await _databaseBackupService.BackupDatabaseAsync(backupFilePath);
+
+                if (result)
+                {
+                    TempData["AlertMessage"] = "Backup successful!";
+                    TempData["AlertType"] = "success";
+                }
+                else
+                {
+                    TempData["AlertMessage"] = "Backup failed. Please try again.";
+                    TempData["AlertType"] = "error";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+            }
+
+            return RedirectToAction("BackupDatabase");
+        }
+        public IActionResult DownloadDatabase()
+        {
+            string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+
+            if (!Directory.Exists(backupFolderPath))
+            {
+                Directory.CreateDirectory(backupFolderPath);
+            }
+            var backupFiles = Directory.GetFiles(backupFolderPath, "*.bak")
+                                       .Select(Path.GetFileName)
+                                       .ToList();
+
+            ViewBag.BackupFiles = backupFiles;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult DownloadBackup(string fileName)
+        {
+            string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+            string filePath = Path.Combine(backupFolderPath, fileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                return File(fileBytes, "application/octet-stream", fileName);
+            }
+            return NotFound("File not found.");
         }
         #endregion
     }
