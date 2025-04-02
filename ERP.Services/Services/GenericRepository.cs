@@ -52,8 +52,23 @@ namespace ERP.Repositories.Services
             => await _entitiySet.ToListAsync(cancellationToken);
 
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
-            => await _entitiySet.Where(expression).ToListAsync(cancellationToken);
+        //public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
+        //    => await _entitiySet.Where(expression).ToListAsync(cancellationToken);
+
+        public async Task<IEnumerable<T>> GetAllAsync(
+            Expression<Func<T, bool>> expression,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            CancellationToken cancellationToken = default)
+        {
+            IQueryable<T> query = _entitiySet.Where(expression);
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            return await query.ToListAsync(cancellationToken);
+        }
 
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)

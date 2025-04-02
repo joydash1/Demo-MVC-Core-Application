@@ -1,0 +1,209 @@
+﻿@using ERP.DataAccess.DTOs.Basic_Setup
+@using ERP.DataAccess.DTOs.Buyer
+@model CategoryDto
+@{
+    ViewData["Title"] = "Product Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var categoryList = (List<CategoryDto>)ViewBag.ProductCategoryList;
+}
+
+<style type="text/css">
+    .row {
+        margin-top: 10px !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Product Category</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtCategoryName" placeholder="Category Name">
+                            <label for="txtCategoryName">Category Name</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button type="button" id="btnSubmit" data-id="0" class="btn btn-light-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Product Category List</h5>
+                <small></small>
+            </div>
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+                    <table id="autofill" class="table table-striped table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Category Name</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (categoryList.Any())
+                            {
+                                @foreach (var cat in categoryList)
+                                {
+                                    <tr>
+                                        <td class="text-center">@cat.CategoryName</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@cat.Id"><i class="ti ti-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@cat.Id"><i class="ti ti-archive"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2" class="text-center">No records found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+                $(document).on("click", "#btnSubmit", function (e) {
+                    e.preventDefault();
+
+                    var isValid = true;
+
+                    function validateField(selector) {
+                        var inputField = $(selector);
+                        var value = inputField.val().trim();
+
+                        if (value === "") {
+                            inputField.addClass("is-invalid").removeClass("is-valid");
+                            isValid = false;
+                        } else {
+                            inputField.addClass("is-valid").removeClass("is-invalid");
+                        }
+                    }
+
+                    validateField("#txtCategoryName", "Please enter category name");
+
+                    if (!isValid) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Please fill in all required fields."
+                        });
+                    } else {
+                        var Id = $("#btnSubmit").attr("data-id");
+                        var CategoryName = $("#txtCategoryName").val();
+                        var formData = new FormData();
+                        formData.append("Id", Id);
+                        formData.append("CategoryName", CategoryName);
+                        $.ajax({
+                            url: '@Url.Action("InsertUpdateCategory", "BasicSetup")',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                if (response && response.status === true) {
+                                    Swal.fire("Success!", response.message, "success").then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                                }
+                            },
+                            error: function () {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                            }
+                        });
+                    }
+                });
+
+                $("input").on("input", function () {
+                    $(this).removeClass("is-invalid").addClass("is-valid");
+                });
+
+                $(document).on("click", ".delete-btn", function () {
+                    var Id = $(this).attr("data-id");
+                    var formData = new FormData();
+                    formData.append("Id", Id);
+
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "Do you really want to delete this Product Category? This action cannot be undone.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '@Url.Action("DeleteCategoryById", "BasicSetup")',
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (response) {
+                                    if (response && response.status === true) {
+                                        Swal.fire("Deleted!", response.message, "success").then(() => {
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire("Error!", "Failed to delete the record.", "error");
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $(document).on("click", ".edit-btn", function () {
+                    var Id = $(this).attr("data-id");
+                    var formData = new FormData();
+                    formData.append("Id", Id);
+
+                    $.ajax({
+                        url: '@Url.Action("GetCategoryById", "BasicSetup")',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                    var d = response.data[0];
+                                    $("#btnSubmit").attr("data-id", d.id);
+                                    $("#txtCategoryName").val(d.categoryName);
+                            } else {
+                                Swal.fire("Error!", "Failed to fetch category details.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                });
+        });
+    </script>
+}

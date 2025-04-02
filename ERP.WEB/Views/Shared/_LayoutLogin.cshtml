@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ERP.WEB</title>
-    <link rel="icon" href="~/assets/images/favicon.svg" type="image/x-icon"> <!-- [Google Font] Family -->
+@*     <link rel="icon" href="~/assets/images/favicon.svg" type="image/x-icon"> <!-- [Google Font] Family -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
     <!-- [Tabler Icons] https://tablericons.com -->
     <link rel="stylesheet" href="~/assets/fonts/tabler-icons.min.css">
@@ -17,48 +17,75 @@
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="~/assets/css/style.css" id="main-style-link">
     <link rel="stylesheet" href="~/assets/css/style-preset.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet"> *@
+    <link rel="icon" href="~/assets/images/favicon.svg" type="image/x-icon"> <!-- [Google Font] Family -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
+    <!-- [Tabler Icons] https://tablericons.com -->
+    <link rel="stylesheet" href="~/assets/fonts/tabler-icons.min.css">
+    <!-- [Feather Icons] https://feathericons.com -->
+    <link rel="stylesheet" href="~/assets/fonts/feather.css">
+    <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+    <link rel="stylesheet" href="~/assets/fonts/fontawesome.css">
+    <!-- [Material Icons] https://fonts.google.com/icons -->
+    <link rel="stylesheet" href="~/assets/fonts/material.css">
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/css/plugins/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/select.bootstrap5.min.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/autoFill.bootstrap5.min.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/keyTable.bootstrap5.min.css">
+    <!-- [Template CSS Files] -->
+    <link rel="stylesheet" href="~/assets/css/style.css" id="main-style-link">
+    <link rel="stylesheet" href="~/assets/css/style-preset.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- [Datepicker CSS Files] -->
+    <link href="~/assets/css/plugins/datepicker-bs5.min.css" rel="stylesheet" />
     <style type="text/css">
-        .pc-container {
-            position: relative;
-            top: 0px;
-            margin-left: 0px;
-            min-height: calc(100vh);
-        }
-
-        .pc-container .pc-content {
-            padding-left: 0px;
-            padding-right: 0px;
-            padding-top: 0px;
-        }
-
-        .pc-footer {
-            position: relative;
-            z-index: 995;
-            margin-left: 0px;
-            margin-top: 0px;
-            padding: 15px 0;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.8), 0 -6px 12px 0 rgba(0, 0, 0, 0.02);
-        }
+        
     </style>
 </head>
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
-    <div class="pc-container">
+    <div class="loader-bg">
+        <div class="loader-track">
+            <div class="loader-fill"></div>
+        </div>
+    </div>
+
+    <div class="auth-main">
+        <div class="auth-wrapper v3">
+            <div class="auth-form">
+                <div class="auth-header">
+                    <a asp-action="Login" asp-controller="Authentication"><img src="~/assets/images/logo-dark.svg" alt="img"></a>
+                </div>
+                <div class="row my-5">
+                    <div class="col-md-12">
+                        <partial name="_SweetAlertPartial"></partial>
+                        <partial name="_ValidationScriptsPartial"></partial>
+                        @RenderBody()
+                    </div>
+                </div>
+                <div class="auth-footer row">
+                    <div class="col my-1">
+                        <p class="m-0">Dealer House Management System <span style="color:red" class="ti ti-heart"></span> Copyright © by Joy Chandra Das.</p>
+                    </div>
+                    <div class="col-auto my-1">
+                        <ul class="list-inline footer-link mb-0">
+                            <li class="list-inline-item"><a asp-action="Login" asp-controller="Authentication">Login</a></li>
+                            <li class="list-inline-item"><a href="#" target="_blank"></a></li>
+                            <li class="list-inline-item"><a href="#" target="_blank"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   @*  <div class="pc-container">
         <div class="pc-content">
             <partial name="_SweetAlertPartial"></partial>
             <partial name="_ValidationScriptsPartial"></partial>
             @RenderBody()
         </div>
-    </div>
-    <footer class="pc-footer">
-        <div class="footer-wrapper container-fluid">
-            <div class="row">
-                <div class="col-sm my-1">
-                    <p class="m-0">Copyright ©Joy - @DateTime.UtcNow</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    </div> *@
     <!-- [Page Specific JS] end -->
     <!-- Required Js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -67,7 +94,18 @@
     <script src="~/assets/js/plugins/simplebar.min.js"></script>
     <script src="~/assets/js/plugins/bootstrap.min.js"></script>
     <script src="~/assets/js/fonts/custom-font.js"></script>
+    <script src="~/assets/js/pcoded.js"></script>
     <script src="~/assets/js/plugins/feather.min.js"></script>
+    <!-- datatable Js -->
+    <script src="~/assets/js/plugins/jquery.dataTables.min.js"></script>
+    <script src="~/assets/js/plugins/dataTables.bootstrap5.min.js"></script>
+    <script src="~/assets/js/plugins/dataTables.autoFill.min.js"></script>
+    <script src="~/assets/js/plugins/autoFill.bootstrap5.min.js"></script>
+    <script src="~/assets/js/plugins/dataTables.keyTable.min.js"></script>
+    <script src="~/assets/js/plugins/keyTable.bootstrap5.min.js"></script>
+    <script src="~/assets/js/plugins/dataTables.select.min.js"></script>
+    <!-- [Datepicker JS Files] -->
+    <script src="~/assets/js/plugins/datepicker-full.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

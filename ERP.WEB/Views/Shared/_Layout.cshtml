@@ -25,11 +25,8 @@
     <link rel="stylesheet" href="~/assets/css/style-preset.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style type="text/css">
-        .pc-footer {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.8), 0 -6px 12px 0 rgba(0, 0, 0, 0.02);
-        }
-    </style>
+    <!-- [Datepicker CSS Files] -->
+    <link href="~/assets/css/plugins/datepicker-bs5.min.css" rel="stylesheet" />
 </head>
 @{
     string controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
@@ -48,69 +45,134 @@
     <nav class="pc-sidebar">
         <div class="navbar-wrapper">
             <div class="m-header">
-                <a href="~/dashboard/index.html" class="b-brand text-primary">
+                <a asp-action="Index" asp-controller="Home" class="b-brand text-primary">
                     <img src="~/assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
                 </a>
             </div>
             <div class="navbar-content">
                 <ul class="pc-navbar">
                     <li class="pc-item">
-                        <a href="../dashboard/index.html" class="pc-link">
+                        <a asp-action="Index" asp-controller="Home" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
                             <span class="pc-mtext">Dashboard</span>
                         </a>
                         <hr />
                     </li>
-                   <!-- Basic Setup -->
-                    <li class="pc-item pc-caption">
-                        <label>Basic Setup</label>
-                        <i class="ti ti-news"></i>
-                    </li>
-                    <li class="pc-item">
-                        <a asp-action="Organization" asp-controller="Home" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-building-community"></i></span>
-                            <span class="pc-mtext">Organization</span>
+                    <!-- Basic Setup -->
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Basic Setup
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
-                    </li>
-                    <li class="pc-item">
-                        <a asp-action="Bank" asp-controller="Home" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-building-bank"></i></span>
-                            <span class="pc-mtext">Bank</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
-                        <a asp-action="Branch" asp-controller="Home" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-building-bank"></i></span>
-                            <span class="pc-mtext">Bank Branch</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
-                        <a asp-action="OrganizationBankBranch" asp-controller="Home" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-report-money"></i></span>
-                            <span class="pc-mtext">Organization Account</span>
-                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a asp-action="Organization" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-building-community"></i></span>
+                                    <span class="pc-mtext">Organization</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="Bank" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-building-bank"></i></span>
+                                    <span class="pc-mtext">Bank</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="Branch" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-building-bank"></i></span>
+                                    <span class="pc-mtext">Bank Branch</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="OrganizationBankBranch" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-report-money"></i></span>
+                                    <span class="pc-mtext">Organization Account</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="Category" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-align-justified"></i></span>
+                                    <span class="pc-mtext">Product Category</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="Product" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-brand-producthunt"></i></span>
+                                    <span class="pc-mtext">Product</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="Insurance" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-float-left"></i></span>
+                                    <span class="pc-mtext">Insurance</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="Border" asp-controller="BasicSetup" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-flag"></i></span>
+                                    <span class="pc-mtext">Border</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <!--Buyer And Seller -->
-                    <li class="pc-item pc-caption">
-                        <label>Buyer & Seller</label>
-                        <i class="ti ti-users"></i>
-                    </li>
-                    <li class="pc-item">
-                        <a asp-action="IndianBuyer" asp-controller="BuyerSeller" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-user"></i></span>
-                            <span class="pc-mtext">Indian Buyer</span>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Buyer & Seller Setup
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a asp-action="IndianBuyer" asp-controller="BuyerSeller" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-user"></i></span>
+                                    <span class="pc-mtext">Indian Buyer</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="BangladeshiSeller" asp-controller="BuyerSeller" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-user"></i></span>
+                                    <span class="pc-mtext">Bangladeshi Seller</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!--LC Opening -->
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                LC Open
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a asp-action="LCFile" asp-controller="LCFiles" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-file-text"></i></span>
+                                    <span class="pc-mtext">LC File Open</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <!-- Authenticatios -->
-                    <li class="pc-item pc-caption">
+                    @* <li class="pc-item pc-caption">
                         <label>Authenticatios</label>
                         <i class="ti ti-news"></i>
-                    </li>
-                    <li class="pc-item">
-                        <a asp-action="Registration" asp-controller="Authentication" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
-                            <span class="pc-mtext">Registration</span>
+                    </li> *@
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Authenticatios
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a asp-action="Registration" asp-controller="Authentication" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
+                                    <span class="pc-mtext">Registration</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -294,15 +356,15 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
-                    <p class="m-0">Copyright ©Joy - @DateTime.Now</p>
+                    <p class="m-0">Dealer House Management System <span style="color:red" class="ti ti-heart"></span> Copyright © by Joy Chandra Das.</p>
                 </div>
-                @* <div class="col-auto my-1">
+                <div class="col-auto my-1">
                     <ul class="list-inline footer-link mb-0">
-                        <li class="list-inline-item"><a href="#">Home</a></li>
-                        <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-                        <li class="list-inline-item"><a href="#">Contact us</a></li>
+                        <li class="list-inline-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li class="list-inline-item"><a href="#" target="_blank"></a></li>
+                        <li class="list-inline-item"><a href="#" target="_blank"></a></li>
                     </ul>
-                </div> *@
+                </div>
             </div>
         </div>
     </footer>
@@ -323,9 +385,16 @@
     <script src="~/assets/js/plugins/dataTables.keyTable.min.js"></script>
     <script src="~/assets/js/plugins/keyTable.bootstrap5.min.js"></script>
     <script src="~/assets/js/plugins/dataTables.select.min.js"></script>
+    <!-- [Datepicker JS Files] -->
+    <script src="~/assets/js/plugins/datepicker-full.min.js"></script>
     <script type="text/javascript">
         var url = '@Html.Raw(appUrl)';
         $(document).ready(function () {
+              (function () {
+                  const d_week = new Datepicker(document.querySelector('#pc-datepicker-2'), {
+                    buttonClass: 'btn'
+                  });
+              })();
             // Function to get the JWT token from cookies
             function getJwtToken() {
                 const cookie = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));

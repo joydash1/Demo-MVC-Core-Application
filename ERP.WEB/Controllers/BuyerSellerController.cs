@@ -2,6 +2,7 @@
 using ERP.DataAccess.DTOs.BankBranch;
 using ERP.DataAccess.DTOs.Buyer;
 using ERP.DataAccess.DTOs.Organization;
+using ERP.DataAccess.DTOs.Seller;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
 using ERP.Utility.ViewModels;
@@ -131,6 +132,121 @@ namespace ERP.WEB.Controllers
                 TempData["AlertMessage"] = "An error occurred. Please try again.";
                 TempData["AlertType"] = "error";
                 return RedirectToAction("IndianBuyer", "BuyerSeller");
+            }
+        }
+
+        #endregion
+
+        #region Bangladeshi Seller
+        public async Task<IActionResult> BangladeshiSeller()
+        {
+            ViewBag.BangladeshiSellerList = await _spService.GetDataWithParameterAsync<BangladeshiSellerDto>(new { ID = 0 }, "USP_GET_BANGLADESHI_SELLER_LIST").ToListAsync();
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> InsertUpdateBangladeshiSeller(BangladeshiSellerDto seller)
+        {
+            try
+            {
+
+                if (seller == null)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("BangladeshiSeller", "BuyerSeller");
+                }
+                var data = await _spService.GetDataWithParameterAsync<BangladeshiSellerDto>(new
+                {
+                    ID = seller.Id,
+                    SELLER_NAME = seller.SellerName,
+                    SHOP_NAME = seller.ShopName,
+                    SHOP_ADDRESS = seller.Address,
+                    SHOP_WEBSITE = seller.Website,
+                    SHOP_TINNO = seller.TINNumber,
+                    MOBILE_NO = seller.MobileNo,
+                    EMAIL_ADDRESS = seller.EmailAddress,
+                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                }, "USP_INSERT_UPDATE_BANGLADESHI_SELLER");
+                string message = "";
+
+                if (seller.Id > 0)
+                {
+                    message = "Bangladeshi Seller Update Successfully";
+                }
+                else
+                {
+                    message = "Bangladeshi Seller Save Successfully";
+                }
+                return Json(new
+                {
+                    Status = true,
+                    Message = message
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("BangladeshiSeller", "BuyerSeller");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteBangladeshiSellerById(BangladeshiSellerDto delete)
+        {
+            try
+            {
+
+                if (delete.Id == 0)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("BangladeshiSeller", "BuyerSeller");
+                }
+                var data = await _spService.GetDataWithParameterAsync<BangladeshiSellerDto>(new
+                {
+                    ID = delete.Id,
+                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                }, "USP_DELETE_BANGLADESHI_SELLER_BY_ID");
+                return Json(new
+                {
+                    Status = true,
+                    Message = "Bangladeshi Seller Delete Successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("BangladeshiSeller", "BuyerSeller");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetBangladeshiSellerById(BangladeshiSellerDto get)
+        {
+            try
+            {
+
+                if (get.Id == 0)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("BangladeshiSeller", "BuyerSeller");
+                }
+                var data = await _spService.GetDataWithParameterAsync<BangladeshiSellerDto>(new
+                {
+                    ID = get.Id
+                }, "USP_GET_BANGLADESHI_SELLER_LIST");
+                return Json(new
+                {
+                    Status = true,
+                    Data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("BangladeshiSeller", "BuyerSeller");
             }
         }
 

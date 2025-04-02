@@ -1,0 +1,228 @@
+﻿@using ERP.DataAccess.DTOs.Basic_Setup
+@using ERP.DataAccess.DTOs.Buyer
+@model ProductDto
+@{
+    ViewData["Title"] = "Product Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var productList = (List<ProductDto>)ViewBag.ProductList;
+    var categoryList = (List<CategoryDto>)ViewBag.ProductCategoryList;
+}
+
+<style type="text/css">
+    .row {
+        margin-top: 10px !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Product Category</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <select class="form-select" id="cmbCategory">
+                                <option value="0">Select Category</option>
+                                @foreach (var c in categoryList)
+                                {
+                                    <option value="@c.Id">@c.CategoryName</option>
+                                }
+                            </select>
+                            <label for="cmbCategory">Category Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtProductName" placeholder="Product Name">
+                            <label for="txtProductName">Product Name</label>
+                        </div>
+                    </div> 
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button type="button" id="btnSubmit" data-id="0" class="btn btn-light-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Product List</h5>
+                <small></small>
+            </div>
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+                    <table id="autofill" class="table table-striped table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Category Name</th>
+                                <th class="text-center">Product Name</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (productList.Any())
+                            {
+                                @foreach (var pro in productList)
+                                {
+                                    <tr>
+                                        <td class="text-center">@pro.CategoryName</td>
+                                        <td class="text-center">@pro.ProductName</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@pro.Id"><i class="ti ti-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@pro.Id"><i class="ti ti-archive"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">No records found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+                $(document).on("click", "#btnSubmit", function (e) {
+                    e.preventDefault();
+
+                    var isValid = true;
+
+                    function validateField(selector) {
+                        var inputField = $(selector);
+                        var value = inputField.val()?.trim() || "";
+                        var isDropdown = inputField.is("select");
+
+                        if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                            inputField.addClass("is-invalid").removeClass("is-valid");
+                            isValid = false;
+                        } else {
+                            inputField.addClass("is-valid").removeClass("is-invalid");
+                        }
+                    }
+                    validateField("#cmbCategory", "Please select category");
+                    validateField("#txtProductName", "Please enter product name");
+
+                    if (!isValid) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Please fill in all required fields."
+                        });
+                    } else {
+                        var Id = $("#btnSubmit").attr("data-id");
+                        var CategoryId = $("#cmbCategory option:selected").val();
+                        var ProductName = $("#txtProductName").val().trim();
+                        var formData = new FormData();
+                        formData.append("Id", Id);
+                        formData.append("CategoryId", CategoryId);
+                        formData.append("ProductName", ProductName);
+                        $.ajax({
+                            url: '@Url.Action("InsertUpdateProduct", "BasicSetup")',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                if (response && response.status === true) {
+                                    Swal.fire("Success!", response.message, "success").then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                                }
+                            },
+                            error: function () {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                            }
+                        });
+                    }
+                });
+
+                $("input").on("input", function () {
+                    $(this).removeClass("is-invalid").addClass("is-valid");
+                });
+
+                $(document).on("click", ".delete-btn", function () {
+                    var Id = $(this).attr("data-id");
+                    var formData = new FormData();
+                    formData.append("Id", Id);
+
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "Do you really want to delete this Product? This action cannot be undone.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '@Url.Action("DeleteProductById", "BasicSetup")',
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (response) {
+                                    if (response && response.status === true) {
+                                        Swal.fire("Deleted!", response.message, "success").then(() => {
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire("Error!", "Failed to delete the record.", "error");
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $(document).on("click", ".edit-btn", function () {
+                    var Id = $(this).attr("data-id");
+                    var formData = new FormData();
+                    formData.append("Id", Id);
+
+                    $.ajax({
+                        url: '@Url.Action("GetProductById", "BasicSetup")',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                    var d = response.data[0];
+                                    $("#btnSubmit").attr("data-id", d.id);
+                                    $("#cmbCategory").val(d.categoryId);
+                                    $("#txtProductName").val(d.productName);
+                            } else {
+                                Swal.fire("Error!", "Failed to fetch product details.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                });
+        });
+    </script>
+}

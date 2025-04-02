@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace ERP.DataAccess.DTOs.BankBranch
 {
-    public record OrganizationAccountListDto(int Id,string OrganizatioName, string BankName, string BranchName, string BankAccountNo);
+    public record OrganizationAccountNoDto(int Id, int BankId, int BranchId, string BankAccountNo, string BranchName);
 }

@@ -1,9 +1,9 @@
-﻿@using ERP.DataAccess.DTOs.Buyer
-@model IndianBuyerDto
+﻿@using ERP.DataAccess.DTOs.Basic_Setup
+@model BorderDto
 @{
-    ViewData["Title"] = "Indian Buyer";
+    ViewData["Title"] = "Border";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var buyerList = (List<IndianBuyerDto>)ViewBag.IndianBuyerList;
+    var borderList = (List<BorderDto>)ViewBag.BorderList;
 }
 
 <style type="text/css">
@@ -16,42 +16,14 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5>Indian Buyer</h5>
+                <h5>Border</h5>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtBuyerName" placeholder="Buyer Name">
-                            <label for="txtBuyerName">Buyer Name</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtShopName" placeholder="Shop Name">
-                            <label for="txtShopName">Shop Name</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtAddress" placeholder="Shop Address">
-                            <label for="txtAddress">Shop Address</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtWebsite" placeholder="Shop Webnsite">
-                            <label for="">Shop Website</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtTIN" placeholder="Shop TIN No.">
-                            <label for="txtTIN">TIN No</label>
+                            <input type="text" class="form-control" id="txtBorderName" placeholder="Border Name">
+                            <label for="txtBorderName">Border Name</label>
                         </div>
                     </div>
                 </div>
@@ -68,36 +40,27 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h5>Indian Buyer List</h5>
-                <small></small>
+                <h5>Border List</h5>
             </div>
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
                     <table id="autofill" class="table table-striped table-bordered nowrap">
                         <thead>
                             <tr>
-                                <th class="text-center">Buyer Name</th>
-                                <th class="text-center">Shop Name</th>
-                                <th class="text-center">Shop Address</th>
-                                <th class="text-center">Website</th>
-                                <th class="text-center">TIN</th>
+                                <th class="text-center">Border Name</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (buyerList.Any())
+                            @if (borderList.Any())
                             {
-                                @foreach (var buyer in buyerList)
+                                @foreach (var border in borderList)
                                 {
                                     <tr>
-                                        <td class="text-center">@buyer.BuyerName</td>
-                                        <td class="text-center">@buyer.ShopName</td>
-                                        <td class="text-center">@buyer.Address</td>
-                                        <td class="text-center">@buyer.Website</td>
-                                        <td class="text-center">@buyer.TINNumber</td>
+                                        <td class="text-center">@border.BorderName</td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@buyer.Id"><i class="ti ti-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@buyer.Id"><i class="ti ti-archive"></i></button>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@border.Id"><i class="ti ti-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@border.Id"><i class="ti ti-archive"></i></button>
                                         </td>
                                     </tr>
                                 }
@@ -105,7 +68,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="6" class="text-center">No records found.</td>
+                                    <td colspan="2" class="text-center">No records found.</td>
                                 </tr>
                             }
                         </tbody>
@@ -115,9 +78,10 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script type="text/javascript">
-    $(document).ready(function () {
+        $(document).ready(function () {
             $(document).on("click", "#btnSubmit", function (e) {
                 e.preventDefault();
 
@@ -135,9 +99,7 @@
                     }
                 }
 
-                validateField("#txtBuyerName", "Please enter buyer name");
-                validateField("#txtShopName", "Please enter shop name");
-                validateField("#txtAddress", "Please enter shop address");
+                validateField("#txtBorderName", "Please enter border name");
 
                 if (!isValid) {
                     Swal.fire({
@@ -147,21 +109,12 @@
                     });
                 } else {
                     var Id = $("#btnSubmit").attr("data-id");
-                    var BuyerName = $("#txtBuyerName").val();
-                    var ShopName = $("#txtShopName").val();
-                    var Address = $("#txtAddress").val();
-                    var Website = $("#txtWebsite").val();
-                    var TINNumber = $("#txtTIN").val();
+                    var BorderName = $("#txtBorderName").val();
                     var formData = new FormData();
                     formData.append("Id", Id);
-                    formData.append("BuyerName", BuyerName);
-                    formData.append("ShopName", ShopName);
-                    formData.append("Address", Address);
-                    formData.append("Website", Website);
-                    formData.append("TINNumber", TINNumber);
-
+                    formData.append("BorderName", BorderName);
                     $.ajax({
-                        url: '@Url.Action("InsertUpdateIndianBuyer", "BuyerSeller")',
+                        url: '@Url.Action("InsertUpdateBorder", "BasicSetup")',
                         type: 'POST',
                         data: formData,
                         processData: false,
@@ -193,7 +146,7 @@
 
                 Swal.fire({
                     title: "Are you sure?",
-                    text: "Do you really want to delete this Indian buyer? This action cannot be undone.",
+                    text: "Do you really want to delete this border? This action cannot be undone.",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#d33",
@@ -203,7 +156,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '@Url.Action("DeleteIndianBuyerById", "BuyerSeller")',
+                            url: '@Url.Action("DeleteBorderById", "BasicSetup")',
                             type: 'POST',
                             data: formData,
                             processData: false,
@@ -231,22 +184,18 @@
                 formData.append("Id", Id);
 
                 $.ajax({
-                    url: '@Url.Action("GetIndianBuyerById", "BuyerSeller")',
+                    url: '@Url.Action("GetBorderById", "BasicSetup")',
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function (response) {
                         if (response && response.status === true) {
-                                var d = response.data[0];
-                                $("#btnSubmit").attr("data-id", d.id);
-                                $("#txtBuyerName").val(d.buyerName);
-                                $("#txtShopName").val(d.shopName);
-                                $("#txtAddress").val(d.address);
-                                $("#txtWebsite").val(d.website);
-                                $("#txtTIN").val(d.tINNumber);
+                            var d = response.data[0];
+                            $("#btnSubmit").attr("data-id", d.id);
+                            $("#txtBorderName").val(d.borderName);
                         } else {
-                            Swal.fire("Error!", "Failed to fetch buyer details.", "error");
+                            Swal.fire("Error!", "Failed to fetch border details.", "error");
                         }
                     },
                     error: function () {
@@ -254,6 +203,7 @@
                     }
                 });
             });
-    });
+        });
     </script>
 }
+

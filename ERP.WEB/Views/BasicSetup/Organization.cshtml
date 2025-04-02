@@ -19,7 +19,7 @@
                 <h5>Organization</h5>
             </div>
             <div class="card-body">
-                <form method="post" asp-controller="Home" asp-action="SaveOrganization">
+                <form method="post" asp-controller="BasicSetup" asp-action="SaveOrganization">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-0">
@@ -181,7 +181,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: "/Home/DeleteOrganizationById?id=" + Id,
+                            url: "/BasicSetup/DeleteOrganizationById?id=" + Id,
                             type: "GET",
                             success: function (response) {
                                 if (response && response.status === true) {

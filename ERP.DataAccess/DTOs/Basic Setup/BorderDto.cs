@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERP.DataAccess.DTOs.BankBranch
+namespace ERP.DataAccess.DTOs.Basic_Setup
 {
-    public record BranchByBankDto(int BranchId, string BranchName, int RoutingNo);
+    public record BorderDto(int Id, string BorderName);
 }

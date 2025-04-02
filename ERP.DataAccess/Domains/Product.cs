@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace ERP.DataAccess.Domains
 {
-    public class OrganizationBankAccount
+    public class Product
     {
         [Key]
         public int ID { get; set; }
-        public required int OrganizationID { get; set; }
-        public required int BankId { get; set; }
-        public required int BranchId { get; set; }
-        public required string BankAccountNo { get; set; }
+        public required int CategoryId { get; set; }
+        public required string ProductName { get; set; }
         public required int EntryUserId { get; set; }
         public required DateTime EntryDate { get; set; }
         public int? UpdateUserId { get; set; }
