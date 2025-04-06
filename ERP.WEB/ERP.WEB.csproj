@@ -8,13 +8,9 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\lib\**" />
-    <Compile Remove="wwwroot\Reports\**" />
     <Content Remove="wwwroot\lib\**" />
-    <Content Remove="wwwroot\Reports\**" />
     <EmbeddedResource Remove="wwwroot\lib\**" />
-    <EmbeddedResource Remove="wwwroot\Reports\**" />
     <None Remove="wwwroot\lib\**" />
-    <None Remove="wwwroot\Reports\**" />
   </ItemGroup>
 
   <ItemGroup>

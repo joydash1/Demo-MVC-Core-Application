@@ -1,7 +1,8 @@
-﻿using ERP.DataAccess.Domains;
-using System.Globalization;
-using System.Drawing.Imaging;
-using System.Drawing.Printing;
+﻿using System.Globalization;
+using Microsoft.Reporting.NETCore;
+using System.Data;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 namespace ERP.Utility.Helpers
 {
     public static class ReportHelpers
@@ -28,5 +29,47 @@ namespace ERP.Utility.Helpers
             var result = await sourceTask;
             return result.ToList();
         }
+
+        public static FileResult GenerateReport<T>(string reportFileName, string outputFileName, IEnumerable<T> data, string reportType = "pdf")
+        {
+            // Convert IEnumerable<T> to DataTable
+            DataTable dataTable = new DataTable(typeof(T).Name);
+            PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (PropertyInfo prop in Props)
+            {
+                dataTable.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+            }
+
+            foreach (T item in data)
+            {
+                var values = new object[Props.Length];
+                for (int i = 0; i < Props.Length; i++)
+                    values[i] = Props[i].GetValue(item, null);
+                dataTable.Rows.Add(values);
+            }
+
+            // Load RDLC
+            string reportPath = Path.Combine(Directory.GetCurrentDirectory(), "Reports", reportFileName);
+            if (!File.Exists(reportPath))
+            {
+                throw new FileNotFoundException($"Report file '{reportFileName}' not found at path '{reportPath}'");
+            }
+
+            LocalReport report = new LocalReport();
+            report.LoadReportDefinition(System.IO.File.OpenRead(reportPath));
+            report.DataSources.Add(new ReportDataSource("DataSet1", dataTable)); // Ensure "DataSet1" matches your RDLC dataset name
+
+            // Render
+            string mimeType = reportType.ToUpper() == "EXCEL" ? "application/vnd.ms-excel" : "application/pdf";
+            string extension = reportType.ToUpper() == "EXCEL" ? "xlsx" : "pdf";
+            byte[] bytes = report.Render(reportType.ToUpper());  // Ensure correct report type
+
+            return new FileContentResult(bytes, mimeType)
+            {
+                FileDownloadName = $"{outputFileName}.{extension}"
+            };
+        }
+
     }
 }

@@ -27,5 +27,11 @@ namespace ERP.WEB.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public async Task<ActionResult> ShowReport()
+        {
+            var data = await _spService.GetDataWithoutParameterAsync<BankNBranchDto>("USP_GET_BANK_BRANCH_LIST").ToListAsync();
+            return ReportHelpers.GenerateReport("SampleReport.rdlc","Sample Report", data, "PDF");
+        }
     }
 }

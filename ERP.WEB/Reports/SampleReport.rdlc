@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition"
+        xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSources>
+    <DataSource Name="DummyDataSource">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+      <rd:DataSourceID>c5f8b2ae-7c5e-411d-8fcd-c78b6c6b4e10</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <Body>
+    <ReportItems>
+      <Textbox Name="TitleTextbox">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Parameters!Title.Value</Value>
+                <Style>
+                  <FontSize>14pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>TitleTextbox</rd:DefaultName>
+        <Top>0.25in</Top>
+        <Left>0.25in</Left>
+        <Height>0.3in</Height>
+        <Width>6in</Width>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Textbox>
+    </ReportItems>
+    <Height>2in</Height>
+  </Body>
+  <Width>6.5in</Width>
+  <Page>
+    <PageHeight>11in</PageHeight>
+    <PageWidth>8.5in</PageWidth>
+    <LeftMargin>1in</LeftMargin>
+    <RightMargin>1in</RightMargin>
+    <TopMargin>1in</TopMargin>
+    <BottomMargin>1in</BottomMargin>
+  </Page>
+  <ReportParameters>
+    <ReportParameter Name="Title">
+      <DataType>String</DataType>
+      <Prompt>Title</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>e0f5c3e1-7af4-4e25-bfb4-8e617e6e9f1d</rd:ReportID>
+</Report>
