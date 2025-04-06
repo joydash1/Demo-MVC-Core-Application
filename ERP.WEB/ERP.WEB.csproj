@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\**" />
+    <Compile Remove="wwwroot\Reports\**" />
+    <Content Remove="wwwroot\lib\**" />
+    <Content Remove="wwwroot\Reports\**" />
+    <EmbeddedResource Remove="wwwroot\lib\**" />
+    <EmbeddedResource Remove="wwwroot\Reports\**" />
+    <None Remove="wwwroot\lib\**" />
+    <None Remove="wwwroot\Reports\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.3" />
@@ -28,11 +39,6 @@
     <ProjectReference Include="..\ERP.Infrastructure\ERP.Infrastructure.csproj" />
     <ProjectReference Include="..\ERP.Services\ERP.Repositories.csproj" />
     <ProjectReference Include="..\ERP.Utility\ERP.Utility.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\lib\" />
-    <Folder Include="wwwroot\Reports\" />
   </ItemGroup>
 
 </Project>

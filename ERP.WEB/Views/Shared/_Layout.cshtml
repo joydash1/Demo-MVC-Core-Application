@@ -87,12 +87,12 @@
                             <li class="pc-item">
                                 <a asp-action="OrganizationBankBranch" asp-controller="BasicSetup" class="pc-link">
                                     <span class="pc-micon"><i class="ti ti-report-money"></i></span>
-                                    <span class="pc-mtext">Organization Account</span>
+                                    <span class="pc-mtext">Account Setup</span>
                                 </a>
                             </li>
                             <li class="pc-item">
                                 <a asp-action="Category" asp-controller="BasicSetup" class="pc-link">
-                                    <span class="pc-micon"><i class="ti ti-align-justified"></i></span>
+                                    <span class="pc-micon"><i class="ti ti-apps"></i></span>
                                     <span class="pc-mtext">Product Category</span>
                                 </a>
                             </li>
@@ -418,6 +418,13 @@
                     buttonClass: 'btn'
                   });
               })();
+            // var loggedInUserId = SessionHelper.getLoggedInUser(HttpContext);
+
+            // if(!loggedInUserId){
+            //     console.error('JWT Token not found in cookies.');
+            //     window.location.href = '/Authentication/Login';
+            //     return;
+            // }
             // Function to get the JWT token from cookies
             function getJwtToken() {
                 const cookie = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));
@@ -438,7 +445,7 @@
                     url: '/Authentication/GetJwtToken',
                     type: 'GET',
                     success: function (response) {
-                        //console.log('JWT Token:', response.token);
+                        console.log('JWT Token:', response.token);
                         $.ajax({
                             url: '/Authentication/GetLoggedInUserByToken',
                             type: 'GET',
