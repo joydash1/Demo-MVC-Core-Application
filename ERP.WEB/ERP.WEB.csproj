@@ -38,4 +38,19 @@
     <ProjectReference Include="..\ERP.Utility\ERP.Utility.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="FirozeDealerHouseDataSet.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FirozeDealerHouseDataSet.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="FirozeDealerHouseDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>FirozeDealerHouseDataSet.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
 </Project>

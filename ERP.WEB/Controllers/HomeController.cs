@@ -1,5 +1,6 @@
 ﻿using ERP.DataAccess.Domains;
 using ERP.DataAccess.DTOs.BankBranch;
+using ERP.DataAccess.DTOs.Basic_Setup;
 using ERP.DataAccess.DTOs.Organization;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
@@ -32,16 +33,15 @@ namespace ERP.WEB.Controllers
         [HttpPost]
         public async Task<ActionResult> ShowReport()
         {
-            var bankbranch = await _spService.GetDataWithoutParameterAsync<dynamic>("USP_GET_APP_USER").ToListAsync();
-            var data = _reportService.ConvertToDataTable(bankbranch);
-            
+            var productlist = await _spService.GetDataWithParameterAsync<ProductDto>(new {ID = 0 },"USP_GET_PRODUCT_LIST").ToListAsync();
+            var data = _reportService.ConvertToDataTable(productlist);
             var reportTitle = new Dictionary<string, string>
             {
-                { "Title", "My First Report" },
+                { "Title", "Product List" },
                 { "Date", DateTime.Now.ToString("dd/MM/yyyy") }
-                //{ "EndDate", "2024-12-31" },
+                //{ "Duration", $"{fromDate} To {toDate}" },
             };
-            return _reportService.ShowReport(data, "PDF","SampleReport.rdlc", "Sample Report", reportTitle);
+            return _reportService.ShowReport(data, "PDF", "rptProduct.rdlc", "Sample Report", reportTitle);
         }
     }
 }
