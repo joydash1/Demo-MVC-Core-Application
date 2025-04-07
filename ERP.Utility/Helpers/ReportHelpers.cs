@@ -3,6 +3,7 @@ using Microsoft.Reporting.NETCore;
 using System.Data;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 namespace ERP.Utility.Helpers
 {
     public static class ReportHelpers
@@ -10,7 +11,8 @@ namespace ERP.Utility.Helpers
         static string CompanyName = "United Corporate Advisory Service Ltd.";
         static string CompanyAddress = "Bijoy Nagar, Kakrail, Dhaka";
         static string MobileNo = "+88015364578, +8801345759842";
-        static string CompanyLogo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/images/user/avatar1.jpg");
+        static string Website = "www.ucasbd.com";
+        static string Email = "info.ucasbd@gmail.com";
         public static DateTime FormatDateToString(string date)
         {
             try
@@ -24,52 +26,28 @@ namespace ERP.Utility.Helpers
                 return DateTime.Now;
             }
         }
-        public static async Task<List<T>> ToListAsync<T>(this Task<IEnumerable<T>> sourceTask)
+        public static  async Task<List<T>> ToListAsync<T>(this Task<IEnumerable<T>> sourceTask)
         {
             var result = await sourceTask;
             return result.ToList();
         }
 
-        public static FileResult GenerateReport<T>(string reportFileName, string outputFileName, IEnumerable<T> data, string reportType = "pdf")
+        public static Dictionary<string, string> GetCompanyHeader()
         {
-            // Convert IEnumerable<T> to DataTable
-            DataTable dataTable = new DataTable(typeof(T).Name);
-            PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "user", "avatar1.jpg");
+            var logoBase64 = File.Exists(logoPath) ?
+                Convert.ToBase64String(File.ReadAllBytes(logoPath)) :
+                string.Empty;
 
-            foreach (PropertyInfo prop in Props)
+            return new Dictionary<string, string>
             {
-                dataTable.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
-            }
-
-            foreach (T item in data)
-            {
-                var values = new object[Props.Length];
-                for (int i = 0; i < Props.Length; i++)
-                    values[i] = Props[i].GetValue(item, null);
-                dataTable.Rows.Add(values);
-            }
-
-            // Load RDLC
-            string reportPath = Path.Combine(Directory.GetCurrentDirectory(), "Reports", reportFileName);
-            if (!File.Exists(reportPath))
-            {
-                throw new FileNotFoundException($"Report file '{reportFileName}' not found at path '{reportPath}'");
-            }
-
-            LocalReport report = new LocalReport();
-            report.LoadReportDefinition(System.IO.File.OpenRead(reportPath));
-            report.DataSources.Add(new ReportDataSource("DataSet1", dataTable)); // Ensure "DataSet1" matches your RDLC dataset name
-
-            // Render
-            string mimeType = reportType.ToUpper() == "EXCEL" ? "application/vnd.ms-excel" : "application/pdf";
-            string extension = reportType.ToUpper() == "EXCEL" ? "xlsx" : "pdf";
-            byte[] bytes = report.Render(reportType.ToUpper());  // Ensure correct report type
-
-            return new FileContentResult(bytes, mimeType)
-            {
-                FileDownloadName = $"{outputFileName}.{extension}"
+                { "CompanyLogo", logoBase64 },
+                { "CompanyName", CompanyName },
+                { "CompanyAddress", CompanyAddress },
+                { "Mobile", MobileNo },
+                { "Website", Website },
+                { "Email", Email }
             };
         }
-
     }
 }

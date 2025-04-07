@@ -1,6 +1,7 @@
 ﻿using ERP.DataAccess.DBContext;
 using ERP.Infrastructure.Interfaces;
 using ERP.Repositories.Services;
+using ERP.Utility.Helpers;
 using ERP.WEB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ISpService, SpService>();
 builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
+builder.Services.AddScoped<ReportService>();
 // Add memory cache (needed for session)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();

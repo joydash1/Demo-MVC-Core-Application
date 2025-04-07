@@ -16,11 +16,13 @@ namespace ERP.WEB.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISpService _spService;
+        private readonly ReportService _reportService;
 
-        public HomeController(IUnitOfWork unitOfWork, ISpService spService)
+        public HomeController(IUnitOfWork unitOfWork, ISpService spService, ReportService reportService)
         {
             _unitOfWork = unitOfWork;
             _spService = spService;
+            _reportService = reportService;
         }
 
         public IActionResult Index()
@@ -30,8 +32,16 @@ namespace ERP.WEB.Controllers
         [HttpPost]
         public async Task<ActionResult> ShowReport()
         {
-            var data = await _spService.GetDataWithoutParameterAsync<BankNBranchDto>("USP_GET_BANK_BRANCH_LIST").ToListAsync();
-            return ReportHelpers.GenerateReport("SampleReport.rdlc","Sample Report", data, "PDF");
+            var bankbranch = await _spService.GetDataWithoutParameterAsync<dynamic>("USP_GET_APP_USER").ToListAsync();
+            var data = _reportService.ConvertToDataTable(bankbranch);
+            
+            var reportTitle = new Dictionary<string, string>
+            {
+                { "Title", "My First Report" },
+                { "Date", DateTime.Now.ToString("dd/MM/yyyy") }
+                //{ "EndDate", "2024-12-31" },
+            };
+            return _reportService.ShowReport(data, "PDF","SampleReport.rdlc", "Sample Report", reportTitle);
         }
     }
 }
