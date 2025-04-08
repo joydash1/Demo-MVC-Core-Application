@@ -154,6 +154,22 @@
                             </li>
                         </ul>
                     </li>
+                    <!--LC Opening -->
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Product Stock
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a asp-action="Stock" asp-controller="ProductStock" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-building-warehouse"></i></span>
+                                    <span class="pc-mtext">Warehouse</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <!-- Authenticatios -->
                     @* <li class="pc-item pc-caption">
                         <label>Authenticatios</label>
@@ -431,16 +447,9 @@
     <script src="~/assets/js/plugins/dataTables.keyTable.min.js"></script>
     <script src="~/assets/js/plugins/keyTable.bootstrap5.min.js"></script>
     <script src="~/assets/js/plugins/dataTables.select.min.js"></script>
-    <!-- [Datepicker JS Files] -->
-    <script src="~/assets/js/plugins/datepicker-full.min.js"></script>
     <script type="text/javascript">
         var url = '@Html.Raw(appUrl)';
         $(document).ready(function () {
-              (function () {
-                  const d_week = new Datepicker(document.querySelector('#pc-datepicker-2'), {
-                    buttonClass: 'btn'
-                  });
-              })();
             // var loggedInUserId = SessionHelper.getLoggedInUser(HttpContext);
 
             // if(!loggedInUserId){
@@ -459,11 +468,11 @@
             }
             function getLoggedInUser() {
                 var token = getJwtToken();
-                    if (!token) {
-                        console.error('JWT Token not found in cookies.');
-                        window.location.href = '/Authentication/Login';
-                        return;
-                    }
+                if (!token) {
+                    console.error('JWT Token not found in cookies.');
+                    window.location.href = '/Authentication/Login';
+                    return;
+                }
                 $.ajax({
                     url: '/Authentication/GetJwtToken',
                     type: 'GET',

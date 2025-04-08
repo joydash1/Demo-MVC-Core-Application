@@ -1,5 +1,4 @@
-﻿@*
-@using ERP.DataAccess.DTOs.BankBranch
+﻿@using ERP.DataAccess.DTOs.BankBranch
 @using ERP.DataAccess.DTOs.Basic_Setup
 @using ERP.DataAccess.DTOs.Buyer
 @using ERP.DataAccess.DTOs.LC_Open
@@ -14,7 +13,7 @@
     // var borderList = (List<BorderDto>)ViewBag.BorderList;
     // var indianBuyerList = (List<IndianBuyerDto>)ViewBag.IndianBuyerList;
 
-    // var lcFileList = (List<LCTransactionListDto>)ViewBag.LCFileList;
+    var lcFileList = (List<LCTransactionListDto>)ViewBag.LCFileList;
 }
 
 <style type="text/css">
@@ -31,105 +30,71 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="input-group date">
+                        <div class="form-floating mb-0">
                             <select class="form-select" id="cmbLCNumber">
-                                <option value="0">select LC Number</option>
+                                <option value="0">Select LC Number</option>
+                                @foreach (var lc in lcFileList)
+                                {
+                                    <option value="@lc.Id">@lc.LCNumber</option>
+                                }
                             </select>
                             <label for="cmbLCNumber">LC Number</label>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-floating mb-0">
                             <span type="text" class="form-control" id="spnProductName"></span>
                             <label for="spnProductName">Product Name</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <div class="form-floating mb-0">
                             <span type="text" class="form-control" id="spnExporterName"></span>
                             <label for="spnExporterName">Exporter Name</label>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
+                        <div class="form-floating mb-0">
+                            <span class="form-control" id="spnTotalLCWeight"></span>
+                            <label for="spnTotalLCWeight">Total LC Weight(Ton)</label>
+                        </div>
+                    </div> 
+                    <div class="col-md-3">
                         <div class="form-floating mb-0">
                             <span class="form-control" id="spnTotalLCAmount"></span>
                             <label for="spnTotalLCAmount">Total LC Amount ($)</label>
                         </div>
                     </div>
                 </div>
+                <hr />
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtTotalBags" placeholder="Total Bags">
+                            <input class="form-control" id="txtTruckNo" placeholder="">
+                            <label for="txtTruckNo">Truck No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input class="form-control" id="txtTotalBags" placeholder="">
                             <label for="txtTotalBags">Total Bags</label>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtTotalBags" placeholder="Total Bags">
-                            <label for="txtTotalBags">Total Weight</label>
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-0">
-                            <select class="form-select" id="cmbProduct">
-                                <option value="0">select Product</option>
-                                @foreach (var p in productList)
-                                {
-                                    <option value="@p.Id">@p.ProductName</option>
-                                }
-                            </select>
-                            <label for="cmbProduct">Product Name</label>
+                            <input class="form-control" id="txtUsdRate" placeholder="">
+                            <label for="txtUsdRate">USD Rate (Tk)</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtProductWeight" placeholder="Product Weight (Ton)">
-                            <label for="txtProductWeight">Weight (Ton)</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtPrice" placeholder="Price Per/(Ton)">
-                            <label for="txtPrice">Price Per/(Ton)</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <span type="text" class="form-control" id="txtTotalPrice" placeholder="Total Price"></span>
-                            <label for="txtTotalPrice">Total Price</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <select class="form-select" id="cmbInsurance">
-                                <option value="0">select Insurance</option>
-                                @foreach (var i in insuranceList)
-                                {
-                                    <option value="@i.Id">@i.InsuranceName</option>
-                                }
-                            </select>
-                            <label for="cmbInsurance">Insurance Name</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <select class="form-select" id="cmbBorder">
-                                <option value="0">select Border</option>
-                                @foreach (var b in borderList)
-                                {
-                                    <option value="@b.Id">@b.BorderName</option>
-                                }
-                            </select>
-                            <label for="cmbBorder">Border Name</label>
+                            <input class="form-control" id="txtTotalBags" placeholder="">
+                            <label for="txtTotalBags">Total Price (Tk)</label>
                         </div>
                     </div>
                 </div>
@@ -142,7 +107,7 @@
         </div>
     </div>
 </div>
-<div class="row">
+@* <div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
@@ -196,174 +161,34 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@
 @section Scripts {
-   <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
-            $(document).on("change","#cmbBank",function(){
-                GetOrgAccByBank();
-            });
-             $(document).on("click", "#btnSubmit", function (e) {
-                e.preventDefault();
-
-                var isValid = true;
-
-                function validateField(selector) {
-                    var inputField = $(selector);
-                    var value = inputField.val()?.trim() || "";
-                    var isDropdown = inputField.is("select");
-
-                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
-
-
-                validateField(".txtOpeningDate", "Please enter Opening date");
-                validateField("#txtLCNumber", "Please enter LC Number");
-                validateField("#cmbBank", "Please select bank");
-                validateField("#cmbExporter", "Please select exporter");
-                validateField("#cmbImporter", "Please select importer");
-                validateField("#cmbProduct", "Please select product");
-                validateField("#txtProductWeight", "Please enter weight");
-                validateField("#txtPrice", "Please enter price");
-                validateField("#cmbInsurance", "Please select insurance");
-                validateField("#cmbBorder", "Please select border");
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
-                } else {
-                    //txtOpeningDate txtLCNumber cmbBank spnBranch data-branchId  spnAccountNo cmbExporter
-                    //cmbImporter cmbProduct txtProductWeight txtPrice txtTotalPrice cmbInsurance cmbBorder
-                    var Id = $("#btnSubmit").attr("data-id");
-                    var OpeningDate = $(".txtOpeningDate").val();
-                    var LCNumber = $("#txtLCNumber").val();
-                    var OrganizationBankId = $("#cmbBank option:selected").val();
-                    var OrganizationBranchId = $("#spnBranch").attr("data-branchId");
-                    var OrganizationAccountNo = $("#spnAccountNo").html();
-                    var InsuranceId = $("#cmbInsurance option:selected").val();
-                    var ProductWeightTon = $("#txtProductWeight").val();
-                    var AmountPerTon = $("#txtPrice").val();
-                    var TotalLCAmount = $("#txtTotalPrice").html();
-                    var ProductId = $("#cmbProduct option:selected").val();
-                    var BorderId = $("#cmbBorder option:selected").val();
-                    var ImporterId = $("#cmbImporter option:selected").val();
-                    var ExporterId = $("#cmbExporter option:selected").val();
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-                    formData.append("OpeningDate", OpeningDate);
-                    formData.append("LCNumber", LCNumber);
-                    formData.append("OrganizationBankId", OrganizationBankId);
-                    formData.append("OrganizationBranchId", OrganizationBranchId);
-                    formData.append("OrganizationAccountNo", OrganizationAccountNo);
-                    formData.append("InsuranceId", InsuranceId);
-                    formData.append("ProductWeightTon", ProductWeightTon);
-                    formData.append("AmountPerTon", AmountPerTon);
-                    formData.append("TotalLCAmount", TotalLCAmount);
-                    formData.append("ProductId", ProductId);
-                    formData.append("BorderId", BorderId);
-                    formData.append("ImporterId", ImporterId);
-                    formData.append("ExporterId", ExporterId);
-                    $.ajax({
-                        url: '@Url.Action("InsertUpdateLCTransaction", "LCFiles")',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            if (response && response.status === true) {
-                                Swal.fire("Success!", response.message, "success").then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire("Error!", "There is something wrong. Please try again.", "error");
-                            }
-                        },
-                        error: function () {
-                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                        }
-                    });
-                }
-            });
-
             $("input").on("input", function () {
                 $(this).removeClass("is-invalid").addClass("is-valid");
             });
 
-            $(document).on("click", ".delete-btn", function () {
-                var Id = $(this).attr("data-id");
+            $(document).on("change","#cmbLCNumber",function(){
+                var id = $(this).val();
                 var formData = new FormData();
-                formData.append("Id", Id);
-
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this LC? This action cannot be undone.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '@Url.Action("DeleteLCTransactionById", "LCFiles")',
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function (response) {
-                                if (response && response.status === true) {
-                                    Swal.fire("Deleted!", response.message, "success").then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("Error!", "Failed to delete the record.", "error");
-                                }
-                            },
-                            error: function () {
-                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                            }
-                        });
-                    }
-                });
-            });
-
-            $(document).on("click", ".edit-btn", function () {
-                var Id = $(this).attr("data-id");
-                var formData = new FormData();
-                formData.append("Id", Id);
+                formData.append("Id", id);
                 $.ajax({
-                    url: '@Url.Action("GetLCTransactionById", "LCFiles")',
+                    url: '@Url.Action("GetLCTransactionInfoById", "ProductStock")',
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                    console.log("Full Response: ", response);
-                        if (response && response.status === true && Array.isArray(response.data) && response.data.length > 0) {
+                        if (response.status === true && response.data.length > 0) {
                             var d = response.data[0];
-                            $("#btnSubmit").attr("data-id", d.Id);
-                            $(".txtOpeningDate").val(d.OpeningDate);
-                            $("#txtLCNumber").val(d.LCNumber);
-                            $("#cmbBank").val(d.OrganizationBankId).change();
-                            $("#cmbInsurance").val(d.InsuranceId);
-                            $("#txtProductWeight").val(d.ProductWeightTon);
-                            $("#txtPrice").val(d.AmountPerTon);
-                            $("#txtTotalPrice").html(d.TotalLCAmount);
-                            $("#cmbProduct").val(d.ProductId);
-                            $("#cmbBorder").val(d.BorderId);
-                            $("#cmbImporter").val(d.ImporterId);
-                            $("#cmbExporter").val(d.ExporterId);
+                            console.log(d);
+                            $("#spnProductName").html(d.productName);
+                            $("#spnExporterName").html(d.shopName);
+                            $("#spnTotalLCWeight").html(d.productWeightTon);
+                            $("#spnTotalLCAmount").html(d.totalLCAmount);
                         } else {
-                            Swal.fire("Error!", "Failed to fetch LC details.", "error");
+                            Swal.fire("Error!", "Failed to fetch LC data.", "error");
                         }
                     },
                     error: function () {
@@ -371,47 +196,6 @@
                     }
                 });
             });
-
-            $(document).on("change", "#txtProductWeight, #txtPrice", function () {
-                var weight = parseFloat($("#txtProductWeight").val());
-                var price = parseFloat($("#txtPrice").val());
-
-                weight = isNaN(weight) ? 0 : weight;
-                price = isNaN(price) ? 0 : price;
-
-                var total = weight * price;
-
-                $("#txtTotalPrice").html(total.toFixed(2));
-            });
-
         });
-
-        function GetOrgAccByBank(){
-            var Id =  $("#cmbBank option:selected").val();
-            var formData = new FormData();
-            formData.append("Id", Id);
-            $.ajax({
-                url: '@Url.Action("GetOrganizationBankAccByBankId", "LCFiles")',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response && response.status === true) {
-                       var d = response.data[0];
-                       //spnBranch data-branchId spnAccountNo
-                       $("#spnBranch").html(d.branchName);
-                       $("#spnBranch").attr("data-branchId",d.branchId);
-                       $("#spnAccountNo").html(d.bankAccountNo);
-                    } else {
-                        Swal.fire("Error!", "There is something wrong. Please try again.", "error");
-                    }
-                },
-                error: function () {
-                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                }
-            });
-        }
-    </script> 
+    </script>
 }
-*@
