@@ -17,11 +17,15 @@ namespace ERP.WEB.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISpService _spService;
         private readonly IDatabaseBackupService _databaseBackupService;
-        public BasicSetupController(IUnitOfWork unitOfWork, ISpService spService, IDatabaseBackupService databaseBackupService)
+        private readonly IConfiguration _configuration;
+        private readonly IExcelBulkInsertService _bulkInsertService;
+        public BasicSetupController(IUnitOfWork unitOfWork, ISpService spService, IDatabaseBackupService databaseBackupService, IConfiguration configuration, IExcelBulkInsertService bulkInsertService)
         {
             _unitOfWork = unitOfWork;
             _spService = spService;
             _databaseBackupService = databaseBackupService;
+            _configuration = configuration;
+            _bulkInsertService = bulkInsertService;
         }
 
         #region Organization
@@ -259,7 +263,7 @@ namespace ERP.WEB.Controllers
         #region Organization Account
         public async Task<IActionResult> OrganizationBankBranch()
         {
-            ViewBag.OrganizationList = await _unitOfWork.OrganizationRepository.GetAllAsync( x => x.IsActive == true);
+            ViewBag.OrganizationList = await _unitOfWork.OrganizationRepository.GetAllAsync(x => x.IsActive == true);
             ViewBag.BankList = await _unitOfWork.BankRepository.GetAllAsync(x => x.IsActive == true);
             ViewBag.BranchList = await _unitOfWork.BankBranchRepository.GetAllAsync(x => x.IsActive == true);
             ViewBag.OrganizationBankAccountList = await _spService.GetDataWithoutParameterAsync<OrganizationAccountListDto>("USP_GET_ORGANIZATION_BANK_ACCOUNT_LIST").ToListAsync();
@@ -799,33 +803,20 @@ namespace ERP.WEB.Controllers
             try
             {
                 string databaseName = "FirozeDealerHouse";
-                string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+                string backupFolderPath = _configuration["DatabaseBackupPath"];
 
-                if (!Directory.Exists(backupFolderPath))
+                var data = await _spService.GetDataWithParameterAsync<dynamic>(new
                 {
-                    Directory.CreateDirectory(backupFolderPath);
-                }
+                    DATABASE_NAME = databaseName,
+                    BACKUP_PATH = backupFolderPath
+                }, "USP_DATABASE_BACKUP");
 
-                string formattedDate = DateTime.Now.ToString("ddMMMMyyyy");
-                string backupFileName = $"{databaseName}{formattedDate}.bak";
-                string backupFilePath = Path.Combine(backupFolderPath,backupFileName);
-
-                bool result = await _databaseBackupService.BackupDatabaseAsync(backupFilePath);
-
-                if (result)
-                {
-                    TempData["AlertMessage"] = "Backup successful!";
-                    TempData["AlertType"] = "success";
-                }
-                else
-                {
-                    TempData["AlertMessage"] = "Backup failed. Please try again.";
-                    TempData["AlertType"] = "error";
-                }
+                TempData["AlertMessage"] = "Backup successful!";
+                TempData["AlertType"] = "success";
             }
             catch (Exception ex)
             {
-                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertMessage"] = "Backup failed. Please try again.";
                 TempData["AlertType"] = "error";
             }
 
@@ -833,12 +824,7 @@ namespace ERP.WEB.Controllers
         }
         public IActionResult DownloadDatabase()
         {
-            string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
-
-            if (!Directory.Exists(backupFolderPath))
-            {
-                Directory.CreateDirectory(backupFolderPath);
-            }
+            string backupFolderPath = _configuration["DatabaseBackupPath"];
             var backupFiles = Directory.GetFiles(backupFolderPath, "*.bak")
                                        .Select(Path.GetFileName)
                                        .ToList();
@@ -849,7 +835,7 @@ namespace ERP.WEB.Controllers
         [HttpPost]
         public IActionResult DownloadBackup(string fileName)
         {
-            string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+            string backupFolderPath = _configuration["DatabaseBackupPath"];
             string filePath = Path.Combine(backupFolderPath, fileName);
 
             if (System.IO.File.Exists(filePath))
@@ -858,6 +844,53 @@ namespace ERP.WEB.Controllers
                 return File(fileBytes, "application/octet-stream", fileName);
             }
             return NotFound("File not found.");
+        }
+        #endregion
+
+        #region Bulk Insert
+        public ActionResult DemoBulkInsert()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Import(IFormFile File) // Match the name from form input
+        {
+            try
+            {
+                if (File == null || File.Length == 0)
+                {
+                    TempData["Error"] = "Please select an Excel file to upload.";
+                    return RedirectToAction("DemoBulkInsert");
+                }
+
+                // Create import DTO
+                var importDto = new ExcelImportDto<EmployeeBulkDto>
+                {
+                    File = File,
+                    TableName = "EmployeeBulk"
+                };
+
+                var result = await _bulkInsertService.BulkInsertFromExcelAsync(importDto);
+
+                if (result.Success)
+                {
+                    TempData["AlertMessage"] = $"Successfully imported {result.RecordsProcessed} employees.";
+                    TempData["AlertType"] = "success";
+                }
+                else
+                {
+                    TempData["AlertMessage"] = $"Import completed with {result.Errors.Count} errors.";
+                    TempData["AlertType"] = "error";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = $"Import failed: {ex.Message}";
+                TempData["AlertType"] = "error";
+            }
+
+            return RedirectToAction("DemoBulkInsert");
         }
         #endregion
     }

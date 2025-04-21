@@ -49,3 +49,45 @@ namespace ERP.Repositories.Services
         }
     }
 }
+
+//string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+//if (!Directory.Exists(backupFolderPath))
+//{
+//    Directory.CreateDirectory(backupFolderPath);
+//}
+
+//string formattedDate = DateTime.Now.ToString("ddMMMMyyyy");
+//string backupFileName = $"{databaseName}{formattedDate}.bak";
+//string backupFilePath = Path.Combine(backupFolderPath,backupFileName);
+
+//bool result = await _databaseBackupService.BackupDatabaseAsync(backupFilePath);
+
+
+//public IActionResult DownloadDatabase()
+//{
+//    string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+
+//    if (!Directory.Exists(backupFolderPath))
+//    {
+//        Directory.CreateDirectory(backupFolderPath);
+//    }
+//    var backupFiles = Directory.GetFiles(backupFolderPath, "*.bak")
+//                               .Select(Path.GetFileName)
+//                               .ToList();
+
+//    ViewBag.BackupFiles = backupFiles;
+//    return View();
+//}
+//[HttpPost]
+//public IActionResult DownloadBackup(string fileName)
+//{
+//    string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+//    string filePath = Path.Combine(backupFolderPath, fileName);
+
+//    if (System.IO.File.Exists(filePath))
+//    {
+//        byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+//        return File(fileBytes, "application/octet-stream", fileName);
+//    }
+//    return NotFound("File not found.");
+//}
