@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ERP.DataAccess.Domains
 {
-    internal class LCTransaction
+    public class LCTransaction
     {
         [Key]
         public int ID { get; set; }
