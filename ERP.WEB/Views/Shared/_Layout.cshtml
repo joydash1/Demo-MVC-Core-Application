@@ -25,8 +25,8 @@
     <link rel="stylesheet" href="~/assets/css/style-preset.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- [Datepicker CSS Files] -->
-    <link href="~/assets/css/plugins/datepicker-bs5.min.css" rel="stylesheet" />
+    <!-- [Page specific CSS] start -->
+    <link rel="stylesheet" href="~/assets/css/plugins/datepicker-bs5.min.css">
 </head>
 @{
     string controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
@@ -447,9 +447,18 @@
     <script src="~/assets/js/plugins/dataTables.keyTable.min.js"></script>
     <script src="~/assets/js/plugins/keyTable.bootstrap5.min.js"></script>
     <script src="~/assets/js/plugins/dataTables.select.min.js"></script>
+    <!-- datepicker Js -->
+    <script src="~/assets/js/plugins/datepicker-full.min.js"></script>
     <script type="text/javascript">
         var url = '@Html.Raw(appUrl)';
         $(document).ready(function () {
+        // input group layout
+            (function () {
+              const d_week = new Datepicker(document.querySelector('#pc-datepicker-2'), {
+                buttonClass: 'btn',
+                orientation: 'top right'
+              });
+            })();
             // var loggedInUserId = SessionHelper.getLoggedInUser(HttpContext);
 
             // if(!loggedInUserId){
@@ -458,6 +467,7 @@
             //     return;
             // }
             // Function to get the JWT token from cookies
+            
             function getJwtToken() {
                 const cookie = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));
                 if (cookie) {
@@ -477,7 +487,7 @@
                     url: '/Authentication/GetJwtToken',
                     type: 'GET',
                     success: function (response) {
-                        console.log('JWT Token:', response.token);
+                        //console.log('JWT Token:', response.token);
                         $.ajax({
                             url: '/Authentication/GetLoggedInUserByToken',
                             type: 'GET',
