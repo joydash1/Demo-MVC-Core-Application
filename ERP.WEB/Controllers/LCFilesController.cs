@@ -44,7 +44,7 @@ namespace ERP.WEB.Controllers
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
                     TempData["AlertType"] = "error";
-                    return RedirectToAction("LCTransactionList");
+                    return RedirectToAction("LCFile");
                 }
 
                 var data = await _spService.GetDataWithParameterAsync<LCTransactionDto>(new

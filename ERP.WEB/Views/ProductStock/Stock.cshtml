@@ -227,6 +227,7 @@
                     $("#spnPricePerKg").text(pricePerKg.toFixed(2));
                 }
             });
+
             $(document).on("click", "#btnSubmit", function (e) {
                 e.preventDefault();
 
@@ -254,8 +255,8 @@
                         icon: "error",
                         title: "Oops...",
                         text: "Please fill in all required fields."
-                    });
-                    return;
+                });
+                   return;
                 }
 
                 var Id = $("#btnSubmit").attr("data-id");
@@ -276,12 +277,8 @@
                 formData.append("PricePerkg", PricePerkg);
                 formData.append("TruckNo", TruckNo);
                 formData.append("TotalBags", TotalBags);
-                formData.append("EntryDate", new Date().toISOString());
-                formData.append("EntryUserId", 1); // Replace with actual user ID
-                formData.append("IsActive", true);
-
                 $.ajax({
-                    url: '@Url.Action("InsertUpdateProductStock", "LCFiles")',
+                    url: '@Url.Action("InsertUpdateProductStock", "ProductStock")',
                     type: 'POST',
                     data: formData,
                     processData: false,
@@ -299,6 +296,7 @@
                         Swal.fire("Error!", "Something went wrong. Please try again.", "error");
                     }
                 });
+            });
         });
     </script>
 }

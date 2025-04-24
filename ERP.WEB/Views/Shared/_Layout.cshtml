@@ -27,6 +27,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- [Page specific CSS] start -->
     <link rel="stylesheet" href="~/assets/css/plugins/datepicker-bs5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .flatpickr-calendar {
+            background: #f9f3ff;
+            border: 1px solid #d5aaff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(140, 0, 255, 0.2);
+        }
+
+        /* Highlight current day */
+        .flatpickr-day.today {
+            background: #e0b3ff;
+            color: #fff;
+            border-radius: 50%;
+        }
+
+        /* Selected day */
+        .flatpickr-day.selected {
+            background: #9b5de5;
+            color: white;
+            border-radius: 50%;
+        }
+
+        /* Hover effect */
+        .flatpickr-day:hover {
+            background: #cdb4db;
+            color: white;
+        }
+    </style>
 </head>
 @{
     string controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
@@ -448,17 +477,16 @@
     <script src="~/assets/js/plugins/keyTable.bootstrap5.min.js"></script>
     <script src="~/assets/js/plugins/dataTables.select.min.js"></script>
     <!-- datepicker Js -->
-    <script src="~/assets/js/plugins/datepicker-full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script type="text/javascript">
         var url = '@Html.Raw(appUrl)';
         $(document).ready(function () {
-        // input group layout
-            (function () {
-              const d_week = new Datepicker(document.querySelector('#pc-datepicker-2'), {
-                buttonClass: 'btn',
-                orientation: 'top right'
-              });
-            })();
+          flatpickr("#pc-datepicker-2", {
+              dateFormat: "d-m-Y",
+              position: "below", // similar to orientation
+          });
+
             // var loggedInUserId = SessionHelper.getLoggedInUser(HttpContext);
 
             // if(!loggedInUserId){
