@@ -61,11 +61,41 @@
                             <span class="form-control" id="spnTotalLCWeight"></span>
                             <label for="spnTotalLCWeight">Total LC Weight(Ton)</label>
                         </div>
-                    </div> 
+                    </div>
                     <div class="col-md-3">
                         <div class="form-floating mb-0">
                             <span class="form-control" id="spnTotalLCAmount"></span>
                             <label for="spnTotalLCAmount">Total LC Amount ($)</label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <span type="text" class="form-control" id="spnProductWeightKg"></span>
+                            <label for="spnProductWeightKg">Product Weight (Kg)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input class="form-control" id="txtUsdRate" placeholder="">
+                            <label for="txtUsdRate">Today's USD Rate in (Tk)</label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <span type="text" class="form-control" id="spnTotalProductPriceTk"></span>
+                            <label for="spnTotalProductPriceTk">Total Price (Tk)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <span type="text" class="form-control" id="spnPricePerKg"></span>
+                            <label for="spnPricePerKg">Price Per (Kg)</label>
                         </div>
                     </div>
                 </div>
@@ -81,20 +111,6 @@
                         <div class="form-floating mb-0">
                             <input class="form-control" id="txtTotalBags" placeholder="">
                             <label for="txtTotalBags">Total Bags</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input class="form-control" id="txtUsdRate" placeholder="">
-                            <label for="txtUsdRate">USD Rate (Tk)</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input class="form-control" id="txtTotalBags" placeholder="">
-                            <label for="txtTotalBags">Total Price (Tk)</label>
                         </div>
                     </div>
                 </div>
@@ -187,6 +203,7 @@
                             $("#spnExporterName").html(d.shopName);
                             $("#spnTotalLCWeight").html(d.productWeightTon);
                             $("#spnTotalLCAmount").html(d.totalLCAmount);
+                            $("#spnProductWeightKg").html(d.productWeightKg);
                         } else {
                             Swal.fire("Error!", "Failed to fetch LC data.", "error");
                         }
@@ -196,6 +213,92 @@
                     }
                 });
             });
+
+            $(document).on("change","#txtUsdRate",function(){
+                var weightText = $("#spnProductWeightKg").text().trim();
+                var usdRate = parseFloat($("#txtUsdRate").val());
+
+                if (!isNaN(weightText) && !isNaN(usdRate)) {
+                    var weightKg = parseFloat(weightText);
+                    var totalPrice = weightKg * usdRate;
+                    var pricePerKg = usdRate;
+
+                    $("#spnTotalProductPriceTk").text(totalPrice.toFixed(2));
+                    $("#spnPricePerKg").text(pricePerKg.toFixed(2));
+                }
+            });
+            $(document).on("click", "#btnSubmit", function (e) {
+                e.preventDefault();
+
+                var isValid = true;
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val()?.trim() || "";
+                    var isDropdown = inputField.is("select");
+
+                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
+                    } else {
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+
+                validateField("#cmbLCNumber");
+                validateField("#txtUsdRate");
+                validateField("#txtTruckNo");
+                validateField("#txtTotalBags");
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please fill in all required fields."
+                    });
+                    return;
+                }
+
+                var Id = $("#btnSubmit").attr("data-id");
+                var LCId = $("#cmbLCNumber").val();
+                var ProductWeightKg = $("#spnProductWeightKg").text().trim();
+                var USDRate = $("#txtUsdRate").val().trim();
+                var TotalProductPrice = $("#spnTotalProductPriceTk").text().trim();
+                var PricePerkg = $("#spnPricePerKg").text().trim();
+                var TruckNo = $("#txtTruckNo").val().trim();
+                var TotalBags = $("#txtTotalBags").val().trim();
+
+                var formData = new FormData();
+                formData.append("ID", Id);
+                formData.append("LCId", LCId);
+                formData.append("ProductWeightKg", ProductWeightKg);
+                formData.append("USDRate", USDRate);
+                formData.append("TotalProductPrice", TotalProductPrice);
+                formData.append("PricePerkg", PricePerkg);
+                formData.append("TruckNo", TruckNo);
+                formData.append("TotalBags", TotalBags);
+                formData.append("EntryDate", new Date().toISOString());
+                formData.append("EntryUserId", 1); // Replace with actual user ID
+                formData.append("IsActive", true);
+
+                $.ajax({
+                    url: '@Url.Action("InsertUpdateProductStock", "LCFiles")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                            Swal.fire("Success!", response.message, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
         });
     </script>
 }
