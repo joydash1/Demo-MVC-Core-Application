@@ -35,6 +35,20 @@ var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
 
 
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = true,
+//            ValidateAudience = true,
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = true,
+//            ValidIssuer = jwtSettings["Issuer"],
+//            ValidAudience = jwtSettings["Audience"],
+//            IssuerSigningKey = new SymmetricSecurityKey(key)
+//        };
+//    });
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -48,6 +62,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = jwtSettings["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
+
+        // ✔️ Allow reading token from cookie
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                // Read the token from the cookie if not in Authorization header
+                var token = context.HttpContext.Request.Cookies["jwtToken"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    context.Token = token;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 var app = builder.Build();
 
@@ -59,30 +88,32 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 app.UseAuthorization();
 app.UseAuthentication();
-app.UseSession();
+
 app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Authentication}/{action=Login}/{id?}")
     .WithStaticAssets();
-app.MapGet("/backup-database", async (IDatabaseBackupService backupService) =>
-{
-    string backupFileName = $"Backup_{DateTime.Now:yyyyMMdd_HHmmss}.bak";
-    string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
+#region DB BackUp
+//app.MapGet("/backup-database", async (IDatabaseBackupService backupService) =>
+//{
+//    string backupFileName = $"Backup_{DateTime.Now:yyyyMMdd_HHmmss}.bak";
+//    string backupFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "DatabaseBackups");
 
-    if (!Directory.Exists(backupFolderPath))
-    {
-        Directory.CreateDirectory(backupFolderPath);
-    }
-    string backupFilePath = Path.Combine(backupFolderPath, backupFileName);
+//    if (!Directory.Exists(backupFolderPath))
+//    {
+//        Directory.CreateDirectory(backupFolderPath);
+//    }
+//    string backupFilePath = Path.Combine(backupFolderPath, backupFileName);
 
-    bool result = await backupService.BackupDatabaseAsync(backupFilePath);
+//    bool result = await backupService.BackupDatabaseAsync(backupFilePath);
 
-    return result ? Results.Ok($"Backup successful! File: {backupFilePath}") : Results.BadRequest("Backup failed.");
-});
+//    return result ? Results.Ok($"Backup successful! File: {backupFilePath}") : Results.BadRequest("Backup failed.");
+//});
+#endregion
 app.Run();

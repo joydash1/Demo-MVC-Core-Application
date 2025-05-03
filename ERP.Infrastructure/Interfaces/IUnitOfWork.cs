@@ -13,6 +13,7 @@ namespace ERP.Infrastructure.Interfaces
         IBankRepository BankRepository { get;}
         IBankBranchRepository BankBranchRepository { get;}
         IOrganizationBankAccountRepository OrganizationBankAccountRepository { get;}
+        ILCFileRepository LCFileRepository { get;}
         Task CommitAsync();
         Task RollbackAsync();
     }

@@ -13,7 +13,7 @@
     // var borderList = (List<BorderDto>)ViewBag.BorderList;
     // var indianBuyerList = (List<IndianBuyerDto>)ViewBag.IndianBuyerList;
 
-    var lcFileList = (List<LCTransactionListDto>)ViewBag.LCFileList;
+    var lcFileList = (List<LCTransaction>)ViewBag.LCFileList;
 }
 
 <style type="text/css">
@@ -35,7 +35,7 @@
                                 <option value="0">Select LC Number</option>
                                 @foreach (var lc in lcFileList)
                                 {
-                                    <option value="@lc.Id">@lc.LCNumber</option>
+                                    <option value="@lc.ID">@lc.LCNumber</option>
                                 }
                             </select>
                             <label for="cmbLCNumber">LC Number</label>
@@ -190,7 +190,7 @@
                 var formData = new FormData();
                 formData.append("Id", id);
                 $.ajax({
-                    url: '@Url.Action("GetLCTransactionInfoById", "ProductStock")',
+                    url: '@Url.Action("GetLCTransactionInfoById", "CMFFiles")',
                     type: 'POST',
                     data: formData,
                     processData: false,

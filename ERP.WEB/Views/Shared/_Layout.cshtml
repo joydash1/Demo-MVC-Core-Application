@@ -183,7 +183,23 @@
                             </li> 
                         </ul>
                     </li>
-                    <!--LC Opening -->
+                    <!--CMF File Opening -->
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Custom Data Record
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a asp-action="CMFFile" asp-controller="CMFFiles" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-apps"></i></span>
+                                    <span class="pc-mtext">CMF</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
@@ -484,62 +500,136 @@
         $(document).ready(function () {
           flatpickr("#pc-datepicker-2", {
               dateFormat: "d-m-Y",
-              position: "below", // similar to orientation
+              position: "below",
           });
-
-            // var loggedInUserId = SessionHelper.getLoggedInUser(HttpContext);
-
-            // if(!loggedInUserId){
-            //     console.error('JWT Token not found in cookies.');
-            //     window.location.href = '/Authentication/Login';
-            //     return;
-            // }
             // Function to get the JWT token from cookies
-            
             function getJwtToken() {
                 const cookie = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));
-                if (cookie) {
-                    return cookie.split('=')[1];
-                } else {
-                    return ;
-                }
+                return cookie ? cookie.split('=')[1] : null;
             }
-            function getLoggedInUser() {
-                var token = getJwtToken();
-                if (!token) {
-                    console.error('JWT Token not found in cookies.');
-                    window.location.href = '/Authentication/Login';
-                    return;
-                }
-                $.ajax({
-                    url: '/Authentication/GetJwtToken',
-                    type: 'GET',
-                    success: function (response) {
-                        //console.log('JWT Token:', response.token);
-                        $.ajax({
-                            url: '/Authentication/GetLoggedInUserByToken',
-                            type: 'GET',
-                            data: { token: response.token },
-                            success: function (userResponse) {
-                                $(".userName").html(userResponse.user.fullName);
-                                $("#jobTitle").html(userResponse.user.jobTitle);
-                                $("#btnLogOut").attr("data-id",userResponse.user.id);
-                                if (userResponse.user.profilePicturePath) {
-                                    $(".profilePicture").attr("src", url + userResponse.user.profilePicturePath);
-                                } else {
-                                    $(".profilePicture").attr("src", url + "/assets/images/user/avatar-2.jpg");
-                                }
-                            },
-                            error: function (error) {
-                                console.error('Error retrieving user:', error);
-                            }
-                        });
-                    },
-                    error: function (error) {
-                        console.error('Error fetching JWT Token:', error);
+            // function getJwtToken() {
+            //     const cookie = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));
+            //     if (cookie) {
+            //         return cookie.split('=')[1];
+            //     } else {
+            //         return ;
+            //     }
+            // }
+            // function getLoggedInUser() {
+            //     var token = getJwtToken();
+            //     if (!token) {
+            //         console.error('JWT Token not found in cookies.');
+            //         window.location.href = '/Authentication/Login';
+            //         return;
+            //     }
+            //     $.ajax({
+            //         url: '/Authentication/GetJwtToken',
+            //         type: 'GET',
+            //         success: function (response) {
+            //             //console.log('JWT Token:', response.token);
+            //             $.ajax({
+            //                 url: '/Authentication/GetLoggedInUserByToken',
+            //                 type: 'GET',
+            //                 data: { token: response.token },
+            //                 success: function (userResponse) {
+            //                     $(".userName").html(userResponse.user.fullName);
+            //                     $("#jobTitle").html(userResponse.user.jobTitle);
+            //                     $("#btnLogOut").attr("data-id",userResponse.user.id);
+            //                     if (userResponse.user.profilePicturePath) {
+            //                         $(".profilePicture").attr("src", url + userResponse.user.profilePicturePath);
+            //                     } else {
+            //                         $(".profilePicture").attr("src", url + "/assets/images/user/avatar-2.jpg");
+            //                     }
+            //                 },
+            //                 error: function (error) {
+            //                     console.error('Error retrieving user:', error);
+            //                 }
+            //             });
+            //         },
+            //         error: function (error) {
+            //             console.error('Error fetching JWT Token:', error);
+            //         }
+            //     });
+            // }
+                 // Verify session on server and token in cookie
+        function verifySessionAndToken() {
+            const token = getJwtToken();
+            if (!token) {
+                console.error('JWT Token not found in cookies.');
+                window.location.href = '/Authentication/Login';
+                return;
+            }
+
+            $.ajax({
+                url: '/Authentication/CheckSession', // You'll create this controller action
+                type: 'GET',
+                success: function (response) {
+                    if (!response.isSessionValid) {
+                        console.warn('Session expired.');
+                        window.location.href = '/Authentication/Login';
+                        return;
                     }
-                });
-            }
+
+                    getLoggedInUser(token); // Call only if session + token OK
+                },
+                error: function () {
+                    console.error('Error verifying session.');
+                    window.location.href = '/Authentication/Login';
+                }
+            });
+        }
+
+        // Get user details by token
+        function getLoggedInUser(token) {
+            $.ajax({
+                url: '/Authentication/GetLoggedInUserByToken',
+                type: 'GET',
+                data: { token: token },
+                success: function (userResponse) {
+                    const user = userResponse.user;
+                    $(".userName").html(user.fullName);
+                    $("#jobTitle").html(user.jobTitle);
+                    $("#btnLogOut").attr("data-id", user.id);
+
+                    if (user.profilePicturePath) {
+                        $(".profilePicture").attr("src", url + user.profilePicturePath);
+                    } else {
+                        $(".profilePicture").attr("src", url + "/assets/images/user/avatar-2.jpg");
+                    }
+                },
+                error: function (error) {
+                    console.error('Error retrieving user:', error);
+                    window.location.href = '/Authentication/Login';
+                }
+            });
+        }
+
+        // Refresh JWT token every 25 mins
+        function refreshJwtTokenPeriodically() {
+            setInterval(() => {
+                const token = getJwtToken();
+                if (token) {
+                    $.ajax({
+                        url: '/Authentication/RefreshToken',
+                        type: 'POST',
+                        data: { token: token },
+                        success: function (res) {
+                            if (res.success && res.newToken) {
+                                document.cookie = `jwtToken=${res.newToken}; path=/; secure; samesite=strict`;
+                                console.log('JWT token refreshed.');
+                            } else {
+                                window.location.href = '/Authentication/Login';
+                            }
+                        },
+                        error: function () {
+                            console.error('Token refresh failed.');
+                            window.location.href = '/Authentication/Login';
+                        }
+                    });
+                }
+            }, 25 * 60 * 1000); 
+        }
+
             $(document).on('click',"#btnLogOut",function(){
                 var id = $(this).attr("data-id");
                 var formData = new FormData();
@@ -581,7 +671,8 @@
                     }
                 });
             });
-          getLoggedInUser();
+              verifySessionAndToken();
+        refreshJwtTokenPeriodically();
         });
             // [ Autofill ]
         $('#autofill').DataTable({

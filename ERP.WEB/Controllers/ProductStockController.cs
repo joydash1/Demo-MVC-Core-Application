@@ -18,79 +18,52 @@ namespace ERP.WEB.Controllers
             _spService = spService;
         }
 
-        #region Product Stock
+        #region Product Stock & CNF File Opening
         public async Task<IActionResult> Stock()
         {
-            ViewBag.LCFileList = await _spService.GetDataWithoutParameterAsync<LCTransactionListDto>("USP_GET_LC_OPENING_TRANSACTION_LIST").ToListAsync();
-
+            ViewBag.LCFileList = await _unitOfWork.LCFileRepository.GetAllAsync();
             return View();
         }
-        [HttpPost]
-        public async Task<IActionResult> GetLCTransactionInfoById(int Id)
-        {
-            try
-            {
-                var data = await _spService.GetDataWithParameterAsync<LCTransactionListDto>(new
-                {
-                    ID = Id
-                }, "USP_GET_LC_OPENING_TRANSACTION_LIST");
+        //[HttpPost]
+        //public async Task<IActionResult> InsertUpdateProductStock(ProductStockDto productStockDto)
+        //{
+        //    try
+        //    {
+        //        if (productStockDto == null)
+        //        {
+        //            TempData["AlertMessage"] = "Invalid Data.";
+        //            TempData["AlertType"] = "error";
+        //            return RedirectToAction("LCTransactionList");
+        //        }
 
-                return Json(new
-                {
-                    Status = true,
-                    Data = data
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
-                    Status = false,
-                    Message = ex.GetBaseException()
-                });
-            }
-        }
+        //        var data = await _spService.GetDataWithParameterAsync<ProductStockDto>(new
+        //        {
+        //            ID = productStockDto.Id,
+        //            LCId = productStockDto.lcId,
+        //            ProductWeightKg = productStockDto.productWeightKg,
+        //            USDRate = productStockDto.uSDRate,
+        //            TotalProductPrice = productStockDto.totalProductPrice,
+        //            PricePerkg = productStockDto.pricePerkg,
+        //            TruckNo = productStockDto.truckNo,
+        //            TotalBags = productStockDto.totalBags,
+        //            UserId = SessionHelper.GetLoggedInUserId(HttpContext)
+        //        }, "USP_INSERT_UPDATE_PRODUCT_STOCK");
 
-        [HttpPost]
-        public async Task<IActionResult> InsertUpdateProductStock(ProductStockDto productStockDto)
-        {
-            try
-            {
-                if (productStockDto == null)
-                {
-                    TempData["AlertMessage"] = "Invalid Data.";
-                    TempData["AlertType"] = "error";
-                    return RedirectToAction("LCTransactionList");
-                }
+        //        string message = productStockDto.Id > 0 ? "Product Stock Updated Successfully" : "Product Stock Save Successfully";
 
-                var data = await _spService.GetDataWithParameterAsync<ProductStockDto>(new
-                {
-                    ID = productStockDto.Id,
-                    LCId = productStockDto.lcId,
-                    ProductWeightKg = productStockDto.productWeightKg,
-                    USDRate = productStockDto.uSDRate,
-                    TotalProductPrice = productStockDto.totalProductPrice,
-                    PricePerkg = productStockDto.pricePerkg,
-                    TruckNo = productStockDto.truckNo,
-                    TotalBags = productStockDto.totalBags,
-                    UserId = SessionHelper.GetLoggedInUserId(HttpContext)
-                }, "USP_INSERT_UPDATE_PRODUCT_STOCK");
-
-                string message = productStockDto.Id > 0 ? "Product Stock Updated Successfully" : "Product Stock Save Successfully";
-
-                return Json(new
-                {
-                    Status = true,
-                    Message = message
-                });
-            }
-            catch (Exception ex)
-            {
-                TempData["AlertMessage"] = "An error occurred. Please try again.";
-                TempData["AlertType"] = "error";
-                return RedirectToAction("Stock");
-            }
-        }
+        //        return Json(new
+        //        {
+        //            Status = true,
+        //            Message = message
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["AlertMessage"] = "An error occurred. Please try again.";
+        //        TempData["AlertType"] = "error";
+        //        return RedirectToAction("Stock");
+        //    }
+        //}
 
         [HttpPost]
         public async Task<IActionResult> GetLCTransactionById(LCTransactionDto get)

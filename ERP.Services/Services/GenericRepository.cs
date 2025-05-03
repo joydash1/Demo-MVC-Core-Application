@@ -70,6 +70,10 @@ namespace ERP.Repositories.Services
             return await query.ToListAsync(cancellationToken);
         }
 
+        public Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
             => await _entitiySet.FirstOrDefaultAsync(expression, cancellationToken);

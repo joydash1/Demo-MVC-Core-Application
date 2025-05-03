@@ -211,7 +211,27 @@ namespace ERP.WEB.Controllers
         #endregion
 
         #region Refresh Token
-        public async Task<IActionResult> RefreshToken(string refreshToken)
+        //public async Task<IActionResult> RefreshToken(string refreshToken)
+        //{
+        //    var user = await _unitOfWork.ApplicationUser.GetAsync(u => u.RefreshToken == refreshToken);
+
+        //    if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+        //    {
+        //        return Unauthorized(new { message = "Invalid or expired refresh token." });
+        //    }
+
+        //    var jwtHelper = new JwtTokenHelper(_configuration);
+
+        //    user.JwtToken = jwtHelper.GenerateJwtToken(user);
+        //    user.RefreshToken = jwtHelper.GenerateRefreshToken();
+        //    user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+        //    await _unitOfWork.CommitAsync();
+
+        //    return Ok(new { token = user.JwtToken, refreshToken = user.RefreshToken });
+        //}
+        [HttpPost]
+        public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
         {
             var user = await _unitOfWork.ApplicationUser.GetAsync(u => u.RefreshToken == refreshToken);
 
@@ -222,13 +242,35 @@ namespace ERP.WEB.Controllers
 
             var jwtHelper = new JwtTokenHelper(_configuration);
 
+            // Generate new tokens
             user.JwtToken = jwtHelper.GenerateJwtToken(user);
             user.RefreshToken = jwtHelper.GenerateRefreshToken();
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
             await _unitOfWork.CommitAsync();
 
-            return Ok(new { token = user.JwtToken, refreshToken = user.RefreshToken });
+            // Update cookie
+            Response.Cookies.Append("jwtToken", user.JwtToken, new CookieOptions
+            {
+                HttpOnly = false,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                Path = "/"
+            });
+
+            return Ok(new
+            {
+                success = true,
+                token = user.JwtToken,
+                refreshToken = user.RefreshToken
+            });
+        }
+        [HttpGet]
+        public IActionResult CheckSession()
+        {
+            var userId = SessionHelper.GetLoggedInUserId(HttpContext);
+            return Json(new { isSessionValid = userId != null });
         }
 
         #endregion

@@ -5,7 +5,6 @@ using ERP.DataAccess.DTOs.LC_Open;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Operations;
 
 namespace ERP.WEB.Controllers
 {
@@ -31,7 +30,8 @@ namespace ERP.WEB.Controllers
             ViewBag.BorderList = await _spService.GetDataWithParameterAsync<BorderDto>(new { ID = 0 }, "USP_GET_BORDER_LIST").ToListAsync();
             ViewBag.IndianBuyerList = await _spService.GetDataWithParameterAsync<IndianBuyerDto>(new { ID = 0 }, "USP_GET_INDIAN_BUYER_LIST").ToListAsync();
             //DropDown
-            ViewBag.LCFileList = await _spService.GetDataWithoutParameterAsync<LCTransactionListDto>("USP_GET_LC_OPENING_TRANSACTION_LIST").ToListAsync();
+            ViewBag.LCFileList = await _spService.GetDataWithoutParameterAsync<LCTransactionTableDto>("USP_GET_LC_OPENING_TRANSACTION_LIST").ToListAsync();
+           
             return View();
         }
 

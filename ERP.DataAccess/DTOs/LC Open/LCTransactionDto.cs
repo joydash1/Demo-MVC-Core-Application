@@ -20,8 +20,8 @@ namespace ERP.DataAccess.DTOs.LC_Open
         int ProductId,
         string ProductName,
         string ShopName,
-        int BorderId,
-        int ImporterId,
-        int ExporterId
+        int? BorderId,
+        int? ImporterId,
+        int? ExporterId
     );
 }
