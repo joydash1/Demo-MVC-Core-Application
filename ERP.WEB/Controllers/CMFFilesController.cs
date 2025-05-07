@@ -3,6 +3,7 @@ using ERP.DataAccess.DTOs.BankBranch;
 using ERP.DataAccess.DTOs.Basic_Setup;
 using ERP.DataAccess.DTOs.Buyer;
 using ERP.DataAccess.DTOs.CMF;
+using ERP.DataAccess.DTOs.CMFAndStock;
 using ERP.DataAccess.DTOs.LC_Open;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
@@ -26,6 +27,7 @@ namespace ERP.WEB.Controllers
         public async Task<IActionResult> CMFFile()
         {
             ViewBag.LCFileList = await _unitOfWork.LCFileRepository.GetAllAsync(x => x.IsActive == true);
+            ViewBag.CMFAndStockList = await _spService.GetDataWithoutParameterAsync<CustomDataRecordAndStockListDto>("USP_GET_CUSTOM_DATA_AND_PRODUCT_STOCK_LIST").ToListAsync();
             return View();
         }
         [HttpPost]
