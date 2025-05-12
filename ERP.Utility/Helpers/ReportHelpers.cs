@@ -8,11 +8,11 @@ namespace ERP.Utility.Helpers
 {
     public static class ReportHelpers
     {
-        static string CompanyName = "United Corporate Advisory Service Ltd.";
-        static string CompanyAddress = "Bijoy Nagar, Kakrail, Dhaka";
-        static string MobileNo = "+88015364578, +8801345759842";
-        static string Website = "www.ucasbd.com";
-        static string Email = "info.ucasbd@gmail.com";
+        static string CompanyName = "Firoz Enterprise.";
+        static string CompanyAddress = "Head office : Firoz Plaza, 3rd Floor Bhomra Land port, Bhomra Satkhira-9400";
+        static string MobileNo = "01705230260";
+        static string Website = "www.firozenterprise.com";
+        static string Email = "firozenterprise02gmail.com";
         public static DateTime FormatDateToString(string date)
         {
             try

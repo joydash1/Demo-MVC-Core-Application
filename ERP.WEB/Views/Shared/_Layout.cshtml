@@ -507,51 +507,7 @@
                 const cookie = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));
                 return cookie ? cookie.split('=')[1] : null;
             }
-            // function getJwtToken() {
-            //     const cookie = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));
-            //     if (cookie) {
-            //         return cookie.split('=')[1];
-            //     } else {
-            //         return ;
-            //     }
-            // }
-            // function getLoggedInUser() {
-            //     var token = getJwtToken();
-            //     if (!token) {
-            //         console.error('JWT Token not found in cookies.');
-            //         window.location.href = '/Authentication/Login';
-            //         return;
-            //     }
-            //     $.ajax({
-            //         url: '/Authentication/GetJwtToken',
-            //         type: 'GET',
-            //         success: function (response) {
-            //             //console.log('JWT Token:', response.token);
-            //             $.ajax({
-            //                 url: '/Authentication/GetLoggedInUserByToken',
-            //                 type: 'GET',
-            //                 data: { token: response.token },
-            //                 success: function (userResponse) {
-            //                     $(".userName").html(userResponse.user.fullName);
-            //                     $("#jobTitle").html(userResponse.user.jobTitle);
-            //                     $("#btnLogOut").attr("data-id",userResponse.user.id);
-            //                     if (userResponse.user.profilePicturePath) {
-            //                         $(".profilePicture").attr("src", url + userResponse.user.profilePicturePath);
-            //                     } else {
-            //                         $(".profilePicture").attr("src", url + "/assets/images/user/avatar-2.jpg");
-            //                     }
-            //                 },
-            //                 error: function (error) {
-            //                     console.error('Error retrieving user:', error);
-            //                 }
-            //             });
-            //         },
-            //         error: function (error) {
-            //             console.error('Error fetching JWT Token:', error);
-            //         }
-            //     });
-            // }
-                 // Verify session on server and token in cookie
+        // Verify session on server and token in cookie
         function verifySessionAndToken() {
             const token = getJwtToken();
             if (!token) {

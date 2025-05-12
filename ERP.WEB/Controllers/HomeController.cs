@@ -41,7 +41,7 @@ namespace ERP.WEB.Controllers
                 { "Date", DateTime.Now.ToString("dd/MM/yyyy") }
                 //{ "Duration", $"{fromDate} To {toDate}" },
             };
-            return _reportService.ShowReport(data, "PDF", "rptProduct.rdlc", "Sample Report", reportTitle);
+            return _reportService.ShowReport(data, "PDF", "rptProduct.rdlc", "Product Report", reportTitle);
         }
     }
 }
