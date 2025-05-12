@@ -1,4 +1,5 @@
 ﻿using ERP.DataAccess.Domains;
+using ERP.DataAccess.DTOs.APIResponses;
 using ERP.DataAccess.DTOs.BankBranch;
 using ERP.DataAccess.DTOs.Basic_Setup;
 using ERP.DataAccess.DTOs.Buyer;
@@ -788,6 +789,138 @@ namespace ERP.WEB.Controllers
                 TempData["AlertMessage"] = "An error occurred. Please try again.";
                 TempData["AlertType"] = "error";
                 return RedirectToAction("Border", "BasicSetup");
+            }
+        }
+        #endregion
+
+        #region CNF Company
+        public async Task<IActionResult> CNFCompany()
+        {
+            ViewBag.BorderList = await _unitOfWork.BorderRepository.GetAllAsync(x=> x.IsActive == true);
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InsertUpdateCNFCompany(CNFCompanyDto cnfCompany)
+        {
+            try
+            {
+                if (cnfCompany == null)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("CNFCompany", "BasicSetup");
+                }
+
+                var data = await _spService.GetDataWithParameterAsync<ResponseResult>(new
+                {
+                    ID = cnfCompany.Id,
+                    BORDER_ID = cnfCompany.BorderId,
+                    CNF_COMPANY_NAME = cnfCompany.CNFCompnayName,
+                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                }, "USP_INSERT_UPDATE_CNF_COMPANY");
+
+                string message = cnfCompany.Id > 0 ? "CNF Company Updated Successfully" : "CNF Company Saved Successfully";
+
+                var result = new ResponseResult
+                {
+                    Status = true,
+                    Message = message
+                };
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("CNFCompany", "BasicSetup");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCNFCompanyById(CNFCompanyDto delete)
+        {
+            try
+            {
+                if (delete.Id == 0)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("CNFCompany", "BasicSetup");
+                }
+
+                var data = await _spService.GetDataWithParameterAsync<CNFCompanyDto>(new
+                {
+                    ID = delete.Id,
+                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                }, "USP_DELETE_CNF_COMPANY_BY_ID");
+
+                var result = new ResponseResult
+                {
+                    Status = true,
+                    Message = "CNF Company Deleted Successfully."
+                };
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("CNFCompany", "BasicSetup");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CNFCompanyList(CNFCompanyDto get)
+        {
+            try
+            {
+                var data = await _spService.GetDataWithParameterAsync<CNFCompanyDto>(new
+                {
+                    ID = get.Id
+                }, "USP_GET_CNF_COMPANY_LIST");
+
+                return Json(new ResponseListResult<List<CNFCompanyDto>>
+                {
+                    Status = true,
+                    Data = (List<CNFCompanyDto>) data
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("CNFCompany", "BasicSetup");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetCNFCompanyById(CNFCompanyDto get)
+        {
+            try
+            {
+                if (get.Id == 0)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("CNFCompany", "BasicSetup");
+                }
+
+                var data = await _spService.GetDataWithParameterAsync<CNFCompanyDto>(new
+                {
+                    ID = get.Id
+                }, "USP_GET_CNF_COMPANY_LIST");
+
+                return Json(new ResponseListResult<List<CNFCompanyDto>>
+                {
+                    Status = true,
+                    Data = data.ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("CNFCompany", "BasicSetup");
             }
         }
         #endregion

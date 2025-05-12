@@ -18,6 +18,8 @@ namespace ERP.Repositories.Services
         public IBankBranchRepository BankBranchRepository { get; private set; }
         public IOrganizationBankAccountRepository OrganizationBankAccountRepository { get; private set; }
         public ILCFileRepository LCFileRepository { get; private set; }
+        public IBorderRepository BorderRepository { get; private set; }
+        public ICNFCompanyRepository CNFCompanyRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -28,6 +30,8 @@ namespace ERP.Repositories.Services
             BankBranchRepository = new BankBranchRepository(_dbContext);
             OrganizationBankAccountRepository = new OrganizationBankAccountRepository(_dbContext);
             LCFileRepository = new LCFileRepository(_dbContext);
+            BorderRepository = new BorderRepository(_dbContext);
+            CNFCompanyRepository = new CNFCompanyRepository(_dbContext);
         }
         public async Task CommitAsync()
        => await _dbContext.SaveChangesAsync();

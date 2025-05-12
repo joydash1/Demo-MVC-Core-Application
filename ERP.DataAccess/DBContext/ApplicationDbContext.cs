@@ -18,6 +18,8 @@ namespace ERP.DataAccess.DBContext
         public DbSet<Organization> Organization { get; set; }
         public DbSet<OrganizationBankAccount> OrganizationBankAccount { get; set; }
         public DbSet<Bank> Bank { get; set; }
+        public DbSet<CNFCompnay> CNFCompnay { get; set; }
+        public DbSet<Border> Border { get; set; }
         public DbSet<BankBranch> BankBranch { get; set; }
         public DbSet<LCTransaction> LCTransaction { get; set; }
     }

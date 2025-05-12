@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace ERP.DataAccess.Domains
 {
-    public class CustomDataRecordAndStockBilling
+    public class CNFCompnay
     {
         [Key]
-        public int ID { get; set; }
-        public required string ExpenseDetails { get; set; }
-        public required decimal ExpenseAmount { get; set; }
-        public required int CMFId { get; set; }
+        public int Id { get; set; }
+        public required string CNFCompnayName { get; set; }
+        public required int BorderId { get; set; }
+
         public required int EntryUserId { get; set; }
         public required DateTime EntryDate { get; set; }
         public int? UpdateUserId { get; set; }

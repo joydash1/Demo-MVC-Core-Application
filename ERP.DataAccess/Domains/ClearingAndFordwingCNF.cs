@@ -11,14 +11,9 @@ namespace ERP.DataAccess.Domains
     {
         [Key]
         public int ID { get; set; }
-        public required int LcId { get; set; }
-        public required decimal USDRateToTaka { get; set; }
-        public required string TruckNumber { get; set; }
-        public required decimal TotalProductWeightKg { get; set; }
-        public required decimal ProductPricePerKg { get; set; }
-        public required decimal TotalAmount { get; set; }
-        public  decimal TotalPaidAmount { get; set; }
-        public  decimal TotalDueAmount { get; set; }
+        public required int LCId { get; set; }
+        public required int CNFCompanyId { get; set; }
+        public required decimal CNFWeight { get; set; }
         public required int EntryUserId { get; set; }
         public required DateTime EntryDate { get; set; }
         public int? UpdateUserId { get; set; }

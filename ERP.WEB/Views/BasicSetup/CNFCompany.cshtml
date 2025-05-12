@@ -1,9 +1,9 @@
-﻿@using ERP.DataAccess.DTOs.Buyer
-@model IndianBuyerDto
+﻿@using ERP.DataAccess.DTOs.Basic_Setup
+@using ERP.DataAccess.Domains
 @{
-    ViewData["Title"] = "Indian Buyer";
+    ViewData["Title"] = "CNF Company";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var buyerList = (List<IndianBuyerDto>)ViewBag.IndianBuyerList;
+    var borderList = (List<Border>)ViewBag.BorderList;
 }
 
 <style type="text/css">
@@ -34,42 +34,26 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5>Indian Buyer</h5>
+                <h5>CNF Company</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtBuyerName" placeholder="Buyer Name">
-                            <label for="txtBuyerName">Buyer Name</label>
+                            <select class="form-select" id="cmbBorder">
+                                <option value="0">Select Border Name</option>
+                                @foreach (var b in borderList)
+                                {
+                                    <option value="@b.ID">@b.BorderName</option>
+                                }
+                            </select>
+                            <label for="cmbBorder">Border</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtShopName" placeholder="Shop Name">
-                            <label for="txtShopName">Shop Name</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtAddress" placeholder="Shop Address">
-                            <label for="txtAddress">Shop Address</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtWebsite" placeholder="Shop Webnsite">
-                            <label for="">Shop Website</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input type="text" class="form-control" id="txtTIN" placeholder="Shop TIN No.">
-                            <label for="txtTIN">TIN No</label>
+                            <input type="text" class="form-control" id="txtCNFCompany" placeholder="CNF Company Name">
+                            <label for="txtCNFCompany">CNF Company Name</label>
                         </div>
                     </div>
                 </div>
@@ -86,46 +70,38 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h5>Indian Buyer List</h5>
-                <small></small>
+                <h5>CNF Company List</h5>
             </div>
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
                     <table id="autofill" class="table table-striped table-bordered nowrap">
                         <thead>
                             <tr>
-                                <th class="text-center">Buyer Name</th>
-                                <th class="text-center">Shop Name</th>
-                                <th class="text-center">Shop Address</th>
-                                <th class="text-center">Website</th>
-                                <th class="text-center">TIN</th>
+                                <th class="text-center">Border Name</th>
+                                <th class="text-center">CNF Company Name</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @if (buyerList.Any())
+                        <tbody id="tblCnfCompany">
+                            @*  @if (borderList.Any())
                             {
-                                @foreach (var buyer in buyerList)
+                                @foreach (var border in borderList)
                                 {
                                     <tr>
-                                        <td class="text-center">@buyer.BuyerName</td>
-                                        <td class="text-center">@buyer.ShopName</td>
-                                        <td class="text-center">@buyer.Address</td>
-                                        <td class="text-center">@buyer.Website</td>
-                                        <td class="text-center">@buyer.TINNumber</td>
+                                        <td class="text-center">@border.BorderName</td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@buyer.Id"><i class="ti ti-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@buyer.Id"><i class="ti ti-trash"></i></button>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@border.Id"><i class="ti ti-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@border.Id"><i class="ti ti-trash"></i></button>
                                         </td>
                                     </tr>
-                                }
+
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="6" class="text-center">No records found.</td>
+                                    <td colspan="2" class="text-center">No records found.</td>
                                 </tr>
-                            }
+                            } *@
                         </tbody>
                     </table>
                 </div>
@@ -133,29 +109,29 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script type="text/javascript">
-    $(document).ready(function () {
-            $(document).on("click", "#btnSubmit", function (e) {
-                e.preventDefault();
+        $(document).ready(function () {
+            $(document).on("click", "#btnSubmit", function (e) {-
+                 e.preventDefault();
 
                 var isValid = true;
 
                 function validateField(selector) {
                     var inputField = $(selector);
-                    var value = inputField.val().trim();
+                    var value = inputField.val()?.trim() || "";
+                    var isDropdown = inputField.is("select");
 
-                    if (value === "") {
+                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
                         inputField.addClass("is-invalid").removeClass("is-valid");
                         isValid = false;
                     } else {
                         inputField.addClass("is-valid").removeClass("is-invalid");
                     }
                 }
-
-                validateField("#txtBuyerName", "Please enter buyer name");
-                validateField("#txtShopName", "Please enter shop name");
-                validateField("#txtAddress", "Please enter shop address");
+                validateField("#cmbBorder", "Please select border");
+                validateField("#txtCNFCompany", "Please enter CNF Company Name");
 
                 if (!isValid) {
                     Swal.fire({
@@ -165,21 +141,14 @@
                     });
                 } else {
                     var Id = $("#btnSubmit").attr("data-id");
-                    var BuyerName = $("#txtBuyerName").val();
-                    var ShopName = $("#txtShopName").val();
-                    var Address = $("#txtAddress").val();
-                    var Website = $("#txtWebsite").val();
-                    var TINNumber = $("#txtTIN").val();
+                    var BorderId = $("#cmbBorder").val();
+                    var CNFCompnayName = $("#txtCNFCompany").val();
                     var formData = new FormData();
                     formData.append("Id", Id);
-                    formData.append("BuyerName", BuyerName);
-                    formData.append("ShopName", ShopName);
-                    formData.append("Address", Address);
-                    formData.append("Website", Website);
-                    formData.append("TINNumber", TINNumber);
-
+                    formData.append("BorderId", BorderId);
+                    formData.append("CNFCompnayName", CNFCompnayName);
                     $.ajax({
-                        url: '@Url.Action("InsertUpdateIndianBuyer", "BuyerSeller")',
+                        url: '@Url.Action("InsertUpdateCNFCompany", "BasicSetup")',
                         type: 'POST',
                         data: formData,
                         processData: false,
@@ -200,7 +169,7 @@
                 }
             });
 
-            $("input").on("input", function () {
+             $("input").on("input", function () {
                 $(this).removeClass("is-invalid").addClass("is-valid");
             });
 
@@ -211,7 +180,7 @@
 
                 Swal.fire({
                     title: "Are you sure?",
-                    text: "Do you really want to delete this Indian buyer? This action cannot be undone.",
+                    text: "Do you really want to delete this CNF Company? This action cannot be undone.",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#d33",
@@ -221,7 +190,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '@Url.Action("DeleteIndianBuyerById", "BuyerSeller")',
+                            url: '@Url.Action("DeleteCNFCompanyById", "BasicSetup")',
                             type: 'POST',
                             data: formData,
                             processData: false,
@@ -247,24 +216,21 @@
                 var Id = $(this).attr("data-id");
                 var formData = new FormData();
                 formData.append("Id", Id);
-
+                //cmbBorder txtCNFCompany
                 $.ajax({
-                    url: '@Url.Action("GetIndianBuyerById", "BuyerSeller")',
+                    url: '@Url.Action("GetCNFCompanyById", "BasicSetup")',
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function (response) {
                         if (response && response.status === true) {
-                                var d = response.data[0];
-                                $("#btnSubmit").attr("data-id", d.id);
-                                $("#txtBuyerName").val(d.buyerName);
-                                $("#txtShopName").val(d.shopName);
-                                $("#txtAddress").val(d.address);
-                                $("#txtWebsite").val(d.website);
-                                $("#txtTIN").val(d.tINNumber);
+                            var d = response.data[0];
+                            $("#btnSubmit").attr("data-id", d.id);
+                            $("#cmbBorder").val(d.borderId);
+                            $("#txtCNFCompany").val(d.cnfCompnayName);
                         } else {
-                            Swal.fire("Error!", "Failed to fetch buyer details.", "error");
+                            Swal.fire("Error!", "Failed to fetch border details.", "error");
                         }
                     },
                     error: function () {
@@ -272,6 +238,73 @@
                     }
                 });
             });
-    });
+            cnfTable = $('#autofill').DataTable({
+                destroy: true,
+                responsive: true,
+                createdRow: function (row, data, dataIndex) {
+                   $('td', row).addClass('text-center');
+                }
+            });
+            GetCNFCompanyList();
+        });
+        // function GetCNFCompanyList(){
+        //     $("#tblCnfCompany").html("");
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '@Url.Action("CNFCompanyList", "BasicSetup")',
+        //         data: JSON.stringify({ Id: 0 }),
+        //         contentType: "application/json; charset=utf-8",
+        //         success: function (response) {
+        //             if (response.status && response.data && response.data.length > 0) {
+        //                 console.log(response.data);
+        //                 $.each(response.data, function (i, item) {
+        //                     let row = `
+        //                         <tr>
+        //                             <td class="text-center">${item.borderName}</td>
+        //                             <td class="text-center">${item.cnfCompnayName}</td>
+        //                             <td class="text-center">
+        //                                 <button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
+        //                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>
+        //                             </td>
+        //                         </tr>`;
+        //                     $("#tblCnfCompany").append(row);
+        //                 });
+        //             } else {
+        //                 $("#tblCnfCompany").html(`<tr><td colspan="3" class="text-center text-danger">No data found.</td></tr>`);
+        //             }
+        //         },
+        //         error: function () {
+        //             alert("Failed to load data.");
+        //         }
+        //     });
+        // }
+        function GetCNFCompanyList() {
+            cnfTable.clear().draw();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CNFCompanyList", "BasicSetup")',
+                data: JSON.stringify({ Id: 0 }),
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.status && response.data && response.data.length > 0) {
+                        $.each(response.data, function (i, item) {
+                            cnfTable.row.add([
+                                item.borderName,
+                                item.cnfCompnayName,
+                                `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
+                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
+                            ]).draw(false);
+                        });
+                    }
+                },
+                error: function () {
+                    alert("Failed to load data.");
+                }
+            });
+        }
+
     </script>
 }
+
+
