@@ -5,22 +5,21 @@
         map: "world",
         markersSelectable: true,
         markers: [{
-                coords: [-14.2350, -51.9253]
-            },
-            {
-                coords: [35.8617, 104.1954]
-            },
-            {
-                coords: [61, 105]
-            },
-            {
-                coords: [26.8206, 30.8025]
-            }
+            coords: [-14.2350, -51.9253]
+        },
+        {
+            coords: [35.8617, 104.1954]
+        },
+        {
+            coords: [61, 105]
+        },
+        {
+            coords: [26.8206, 30.8025]
+        }
         ],
         markerStyle: {
             initial: {
                 fill: '#3f4d67',
-
             },
             hover: {
                 fill: '#1890ff',
@@ -85,5 +84,4 @@
         selector: "#us-mill-en",
         map: "us_mill_en",
     });
-
 })();

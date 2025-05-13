@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ERP.DataAccess.Domains
 {
@@ -11,7 +6,8 @@ namespace ERP.DataAccess.Domains
     {
         [Key]
         public int Id { get; set; }
-        public required string CollectionModeName { get; set; }
-        public required int IsActive { get; set; }
+
+        public string CollectionModeName { get; set; }
+        public int IsActive { get; set; }
     }
 }

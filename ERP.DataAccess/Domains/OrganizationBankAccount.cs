@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ERP.DataAccess.Domains
 {
@@ -11,14 +6,15 @@ namespace ERP.DataAccess.Domains
     {
         [Key]
         public int ID { get; set; }
-        public required int OrganizationID { get; set; }
-        public required int BankId { get; set; }
-        public required int BranchId { get; set; }
-        public required string BankAccountNo { get; set; }
-        public required int EntryUserId { get; set; }
-        public required DateTime EntryDate { get; set; }
+
+        public int OrganizationID { get; set; }
+        public int BankId { get; set; }
+        public int BranchId { get; set; }
+        public string BankAccountNo { get; set; }
+        public int EntryUserId { get; set; }
+        public DateTime EntryDate { get; set; }
         public int? UpdateUserId { get; set; }
         public DateTime? UpdateDate { get; set; }
-        public required bool IsActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }

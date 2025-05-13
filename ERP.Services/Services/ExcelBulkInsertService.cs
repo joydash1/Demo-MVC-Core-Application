@@ -4,14 +4,9 @@ using ERP.Infrastructure.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Repositories.Services
 {
@@ -25,6 +20,7 @@ namespace ERP.Repositories.Services
             _connectionString = configuration.GetConnectionString("DBcontext");
             _logger = logger;
         }
+
         public async Task<BulkInsertResultDto> BulkInsertFromExcelAsync<T>(ExcelImportDto<T> importDto) where T : class
         {
             var result = new BulkInsertResultDto();
@@ -146,7 +142,6 @@ namespace ERP.Repositories.Services
 
             return result;
         }
-
 
         private DataTable CreateDataTableForType<T>() where T : class
         {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ERP.DataAccess.DTOs.LC_Open
+﻿namespace ERP.DataAccess.DTOs.LC_Open
 {
     public record LCTransactionTableDto
         (
@@ -17,5 +11,4 @@ namespace ERP.DataAccess.DTOs.LC_Open
             string ProductName,
             string ShopName
        );
-
 }

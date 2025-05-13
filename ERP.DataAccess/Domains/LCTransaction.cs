@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ERP.DataAccess.Domains
 {
@@ -20,8 +15,10 @@ namespace ERP.DataAccess.Domains
 
         [Required]
         public int OrganizationBranchId { get; set; }
+
         [Required]
         public string OrganizationAccountNo { get; set; }
+
         [Required]
         public int InsuranceId { get; set; }
 

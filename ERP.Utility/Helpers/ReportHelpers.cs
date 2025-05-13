@@ -1,18 +1,15 @@
 ﻿using System.Globalization;
-using Microsoft.Reporting.NETCore;
-using System.Data;
-using System.Reflection;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+
 namespace ERP.Utility.Helpers
 {
     public static class ReportHelpers
     {
-        static string CompanyName = "Firoz Enterprise.";
-        static string CompanyAddress = "Head office : Firoz Plaza, 3rd Floor Bhomra Land port, Bhomra Satkhira-9400";
-        static string MobileNo = "01705230260";
-        static string Website = "www.firozenterprise.com";
-        static string Email = "firozenterprise02gmail.com";
+        private static string CompanyName = "Firoz Enterprise.";
+        private static string CompanyAddress = "Head office : Firoz Plaza, 3rd Floor Bhomra Land port, Bhomra Satkhira-9400";
+        private static string MobileNo = "01705230260";
+        private static string Website = "www.firozenterprise.com";
+        private static string Email = "firozenterprise02gmail.com";
+
         public static DateTime FormatDateToString(string date)
         {
             try
@@ -26,7 +23,8 @@ namespace ERP.Utility.Helpers
                 return DateTime.Now;
             }
         }
-        public static  async Task<List<T>> ToListAsync<T>(this Task<IEnumerable<T>> sourceTask)
+
+        public static async Task<List<T>> ToListAsync<T>(this Task<IEnumerable<T>> sourceTask)
         {
             var result = await sourceTask;
             return result.ToList();

@@ -2,12 +2,7 @@
 using ERP.Infrastructure.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Repositories.Services
 {
@@ -21,6 +16,7 @@ namespace ERP.Repositories.Services
             _config = config;
             _connectionString = _config.GetConnectionString("DBcontext");
         }
+
         public async Task<IEnumerable<T>> GetDataWithParameterAsync<T>(object parameters, string storedProcedureName) where T : class
         {
             using (var connection = new SqlConnection(_connectionString))

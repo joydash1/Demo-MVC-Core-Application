@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ERP.DataAccess.DTOs.Organization
+﻿namespace ERP.DataAccess.DTOs.Organization
 {
     public record DeleteorganizationDto(int Id);
 }

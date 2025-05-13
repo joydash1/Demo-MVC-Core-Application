@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Utility.Helpers
 {
     public static class PasswordHashHelpers
     {
         #region SHA256 Algorithm
+
         public static string HashPassword(string password)
         {
             using (SHA256 sha256Hash = SHA256.Create())
@@ -23,14 +20,17 @@ namespace ERP.Utility.Helpers
                 return builder.ToString();
             }
         }
+
         public static bool VerifyPassword(string inputPassword, string storedHash)
         {
             string hashOfInput = HashPassword(inputPassword);
             return hashOfInput.Equals(storedHash, StringComparison.OrdinalIgnoreCase);
         }
-        #endregion
+
+        #endregion SHA256 Algorithm
 
         #region Password Hash With Salt
+
         public static string HashPasswordWithSalt(string password)
         {
             byte[] salt = new byte[16];
@@ -46,6 +46,7 @@ namespace ERP.Utility.Helpers
             Array.Copy(hash, 0, hashBytes, 16, 20);
             return Convert.ToBase64String(hashBytes);
         }
+
         public static bool VerifyPasswordWithSalt(string password, string storedHash)
         {
             try
@@ -70,6 +71,7 @@ namespace ERP.Utility.Helpers
                 return false;
             }
         }
-        #endregion
+
+        #endregion Password Hash With Salt
     }
 }

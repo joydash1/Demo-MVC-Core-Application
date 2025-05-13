@@ -40,6 +40,7 @@
     .table > tfoot {
         border: 1px solid #1890ff !important;
     }
+
     hr {
         border-top: 2px solid #1890ff;
     }
@@ -72,7 +73,7 @@
                     </div>
                 </div>
                 <label style="color:#1890ff; font-weight:800;">LC Information</label>
-                <hr/>
+                <hr />
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
@@ -111,7 +112,7 @@
                             <span class="form-control" id="spnTotalLCAmount"></span>
                             <label for="spnTotalLCAmount">Total LC Amount ($)</label>
                         </div>
-                    </div> 
+                    </div>
                 </div>
                 <label style="color:#1890ff; font-weight:800;">CNF Information</label>
                 <hr />
@@ -143,7 +144,7 @@
                             <small id="weightError" class="text-danger d-none">CNF weight cannot exceed LC weight.</small>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" id="ShowHide">
                         <div class="form-floating mb-3">
                             <span class="form-control" id="spnRemainingLCWeight"></span>
                             <label for="spnRemainingLCWeight">Remaining LC Weight (Ton)</label>
@@ -179,7 +180,6 @@
                             </tr>
                         </thead>
                         <tbody id="tblClearingAndForwarding">
-                           
                         </tbody>
                         <tfoot>
                             <tr>
@@ -256,20 +256,25 @@
                 });
             });
 
-            $(document).on('input keyup', '#txtCNFWeight', function () {
-                let totalLCWeight = parseFloat($('#spnTotalLCWeight').text()) || 0;
-                let cnfWeight = parseFloat($(this).val()) || 0;
+                $(document).on('input keyup', '#txtCNFWeight', function () {
+                    $("#ShowHide").show();
 
-                if (cnfWeight > totalLCWeight) {
-                    $('#weightError').removeClass('d-none').text('CNF weight cannot exceed LC weight.');
-                    $('#spnRemainingLCWeight').text('');
-                } else {
-                    $('#weightError').addClass('d-none').text('');
-                    let remainingWeight = totalLCWeight - cnfWeight;
-                    $('#spnRemainingLCWeight').text(remainingWeight.toFixed(2));
-                }
-            });
-            
+                    let totalLCWeight = parseFloat($('#spnTotalLCWeight').text()) || 0;
+                    let cnfWeight = parseFloat($(this).val()) || 0;
+                    let previousWeight = parseFloat($(this).data("previousWeight")) || 0;
+
+                    let adjustedTotalLCWeight = totalLCWeight + previousWeight;
+
+                    if (cnfWeight > adjustedTotalLCWeight) {
+                        $('#weightError').removeClass('d-none').text('CNF weight cannot exceed available LC weight.');
+                        $('#spnRemainingLCWeight').text('');
+                    } else {
+                        $('#weightError').addClass('d-none').text('');
+                        let remainingWeight = adjustedTotalLCWeight - cnfWeight;
+                        $('#spnRemainingLCWeight').text(remainingWeight.toFixed(2));
+                    }
+                });
+
             $(document).on("click", "#btnSubmit", function (e) {
                 e.preventDefault();
 
@@ -334,6 +339,75 @@
                 });
             });
 
+            $(document).on("click", ".delete-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to delete this CNF? This action cannot be undone.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '@Url.Action("DeleteClearingAndFordwingById", "ClearingAndFordwingCNF")',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                if (response && response.status === true) {
+                                    Swal.fire("Deleted!", response.message, "success").then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire("Error!", "Failed to delete the record.", "error");
+                                }
+                            },
+                            error: function () {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                            }
+                        });
+                    }
+                  });
+                });
+
+            $(document).on("click", ".edit-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
+                $.ajax({
+                    url: '@Url.Action("GetClearingAndFordwingById", "ClearingAndFordwingCNF")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                    console.log("Full Response: ", response);
+                        if (response && response.status === true && Array.isArray(response.data) && response.data.length > 0) {
+                            var d = response.data[0];
+                            console.log(d);
+                            $("#btnSubmit").attr("data-id", d.id);
+                            $("#cmbLCNumber").val(d.lcId);
+                            $("#cmbCNFCompany").val(d.cnfCompanyId).change();
+                            $("#txtCNFWeight").val(d.cnfWeight);
+                            $("#ShowHide").hide();
+                            $("#txtCNFWeight").data("previousWeight", parseFloat(d.cnfWeight) || 0);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch Clearing & Fordwing Information.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            });
             cnfTable = $('#autofill').DataTable({
                 destroy: true,
                 responsive: true,

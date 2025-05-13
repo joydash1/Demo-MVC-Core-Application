@@ -18,6 +18,7 @@ namespace ERP.WEB.Controllers
             _unitOfWork = unitOfWork;
             _spService = spService;
         }
+
         #region LC File Open
 
         public async Task<IActionResult> LCFile()
@@ -31,7 +32,7 @@ namespace ERP.WEB.Controllers
             ViewBag.IndianBuyerList = await _spService.GetDataWithParameterAsync<IndianBuyerDto>(new { ID = 0 }, "USP_GET_INDIAN_BUYER_LIST").ToListAsync();
             //DropDown
             ViewBag.LCFileList = await _spService.GetDataWithoutParameterAsync<LCTransactionTableDto>("USP_GET_LC_OPENING_TRANSACTION_LIST").ToListAsync();
-           
+
             return View();
         }
 
@@ -176,6 +177,6 @@ namespace ERP.WEB.Controllers
             }
         }
 
-        #endregion
+        #endregion LC File Open
     }
 }

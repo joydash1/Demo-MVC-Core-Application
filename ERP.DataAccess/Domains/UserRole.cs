@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ERP.DataAccess.Domains
 {
@@ -11,6 +6,7 @@ namespace ERP.DataAccess.Domains
     {
         [Key]
         public int ID { get; set; }
-        public required string RoleName{ get; set; }
+
+        public string RoleName { get; set; }
     }
 }

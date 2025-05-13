@@ -1,14 +1,10 @@
 ﻿using ERP.DataAccess.Domains;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Utility.Helpers
 {
@@ -34,7 +30,7 @@ namespace ERP.Utility.Helpers
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
 
                 new Claim("employee_id", user.ID.ToString()),
-                new Claim("job_title", user.JobTitle),   
+                new Claim("job_title", user.JobTitle),
                 new Claim("mobile_no", user.MobileNo),
                 new Claim("employee_code", user.EmployeeCode),
 
@@ -60,6 +56,7 @@ namespace ERP.Utility.Helpers
                 return Convert.ToBase64String(randomNumber);
             }
         }
+
         public int DecodeJwtToken(string token)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");

@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Reporting.NETCore;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Utility.Helpers
 {
@@ -19,6 +14,7 @@ namespace ERP.Utility.Helpers
         {
             _httpContextAccessor = httpContextAccessor;
         }
+
         public FileContentResult ShowReport(DataTable data, string exportType,
                         string reportName, string exportFileName,
                         Dictionary<string, string> reportParameterCollection = null)
@@ -59,10 +55,12 @@ namespace ERP.Utility.Helpers
                     mimeType = "application/vnd.ms-excel";
                     extension = "xlsx";
                     break;
+
                 case "WORD":
                     mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
                     extension = "docx";
                     break;
+
                 default: // Default to PDF
                     mimeType = "application/pdf";
                     extension = "pdf";
@@ -84,6 +82,7 @@ namespace ERP.Utility.Helpers
 
             return new FileContentResult(resultBytes, mimeType);
         }
+
         public DataTable ConvertToDataTable<T>(IEnumerable<T> data)
         {
             var table = new DataTable(typeof(T).Name);

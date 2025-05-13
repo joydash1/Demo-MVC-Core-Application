@@ -1,11 +1,5 @@
 ﻿using ERP.DataAccess.DBContext;
-using ERP.DataAccess.Domains;
 using ERP.Infrastructure.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Repositories.Services
 {
@@ -35,6 +29,7 @@ namespace ERP.Repositories.Services
             CNFCompanyRepository = new CNFCompanyRepository(_dbContext);
             CollectionModeRepository = new CollectionModeRepository(_dbContext);
         }
+
         public async Task CommitAsync()
        => await _dbContext.SaveChangesAsync();
 

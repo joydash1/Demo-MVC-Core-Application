@@ -1,9 +1,7 @@
 ﻿using ERP.DataAccess.DTOs.LC_Open;
-using ERP.DataAccess.DTOs.Product_Stock;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ERP.WEB.Controllers
 {
@@ -19,11 +17,13 @@ namespace ERP.WEB.Controllers
         }
 
         #region Product Stock & CNF File Opening
+
         public async Task<IActionResult> Stock()
         {
             ViewBag.LCFileList = await _unitOfWork.LCFileRepository.GetAllAsync();
             return View();
         }
+
         //[HttpPost]
         //public async Task<IActionResult> InsertUpdateProductStock(ProductStockDto productStockDto)
         //{
@@ -127,6 +127,7 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("LCFile");
             }
         }
-        #endregion
+
+        #endregion Product Stock & CNF File Opening
     }
 }

@@ -1,15 +1,8 @@
-﻿using ERP.DataAccess.Domains;
-using ERP.DataAccess.DTOs.BankBranch;
-using ERP.DataAccess.DTOs.Buyer;
-using ERP.DataAccess.DTOs.Organization;
+﻿using ERP.DataAccess.DTOs.Buyer;
 using ERP.DataAccess.DTOs.Seller;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
-using ERP.Utility.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace ERP.WEB.Controllers
@@ -24,18 +17,20 @@ namespace ERP.WEB.Controllers
             _unitOfWork = unitOfWork;
             _spService = spService;
         }
+
         #region Indian Buyer
+
         public async Task<IActionResult> IndianBuyer()
         {
             ViewBag.IndianBuyerList = await _spService.GetDataWithParameterAsync<IndianBuyerDto>(new { ID = 0 }, "USP_GET_INDIAN_BUYER_LIST").ToListAsync();
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> InsertUpdateIndianBuyer(IndianBuyerDto buyer)
         {
             try
             {
-
                 if (buyer == null)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -62,11 +57,11 @@ namespace ERP.WEB.Controllers
                 {
                     message = "Indian Buyer Save Successfully";
                 }
-                    return Json(new
-                    {
-                        Status = true,
-                        Message = message
-                    });
+                return Json(new
+                {
+                    Status = true,
+                    Message = message
+                });
             }
             catch (Exception ex)
             {
@@ -75,12 +70,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("IndianBuyer", "BuyerSeller");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteIndianBuyerById(IndianBuyerDto delete)
         {
             try
             {
-
                 if (delete.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -105,12 +100,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("IndianBuyer", "BuyerSeller");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> GetIndianBuyerById(IndianBuyerDto get)
         {
             try
             {
-
                 if (get.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -135,20 +130,21 @@ namespace ERP.WEB.Controllers
             }
         }
 
-        #endregion
+        #endregion Indian Buyer
 
         #region Bangladeshi Seller
+
         public async Task<IActionResult> BangladeshiSeller()
         {
             ViewBag.BangladeshiSellerList = await _spService.GetDataWithParameterAsync<BangladeshiSellerDto>(new { ID = 0 }, "USP_GET_BANGLADESHI_SELLER_LIST").ToListAsync();
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> InsertUpdateBangladeshiSeller(BangladeshiSellerDto seller)
         {
             try
             {
-
                 if (seller == null)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -190,12 +186,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("BangladeshiSeller", "BuyerSeller");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteBangladeshiSellerById(BangladeshiSellerDto delete)
         {
             try
             {
-
                 if (delete.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -220,12 +216,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("BangladeshiSeller", "BuyerSeller");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> GetBangladeshiSellerById(BangladeshiSellerDto get)
         {
             try
             {
-
                 if (get.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -250,6 +246,6 @@ namespace ERP.WEB.Controllers
             }
         }
 
-        #endregion
+        #endregion Bangladeshi Seller
     }
 }

@@ -26,19 +26,21 @@ namespace ERP.WEB.Controllers
             _configuration = configuration;
             _spService = spService;
         }
+
         #region Registration
+
         public ActionResult Registration()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> UserRegistration([FromForm] ApplicationUser model)
         {
-
             try
             {
                 var existingEmployee = await _unitOfWork.ApplicationUser.GetAllAsync();
-                
+
                 if (existingEmployee.Any(e => e.EmployeeCode == model.EmployeeCode))
                 {
                     TempData["AlertMessage"] = "Employee Code already Exist.";
@@ -80,18 +82,21 @@ namespace ERP.WEB.Controllers
             }
             catch (Exception ex)
             {
-                TempData["AlertMessage"] = $"{ ex.Message}";
+                TempData["AlertMessage"] = $"{ex.Message}";
                 TempData["AlertType"] = "error";
                 return RedirectToAction("Registration", "Authentication");
             }
         }
-        #endregion
+
+        #endregion Registration
 
         #region Login
+
         public async Task<ActionResult> Login()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> UserLogin([FromForm] ApplicationUser model)
         {
@@ -137,6 +142,7 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Login", "Authentication");
             }
         }
+
         [HttpGet]
         public IActionResult GetJwtToken()
         {
@@ -161,7 +167,7 @@ namespace ERP.WEB.Controllers
                 {
                     return Json(new { success = false, message = "Invalid token." });
                 }
-                var user = await _unitOfWork.ApplicationUser.GetAsync(u =>u.ID == userId);
+                var user = await _unitOfWork.ApplicationUser.GetAsync(u => u.ID == userId);
 
                 if (user == null)
                 {
@@ -176,16 +182,17 @@ namespace ERP.WEB.Controllers
             }
         }
 
-        #endregion
+        #endregion Login
 
         #region LogOut
+
         [HttpPost]
         public async Task<JsonResult> Logout(int id)
         {
             try
             {
                 var logInUser = await _unitOfWork.ApplicationUser.GetAsync(u => u.ID == id);
-                
+
                 if (logInUser == null)
                 {
                     return Json(new { Status = false, message = "User Not Found." });
@@ -198,7 +205,6 @@ namespace ERP.WEB.Controllers
 
                 SessionHelper.ClearSession(HttpContext);
 
-
                 await _unitOfWork.CommitAsync();
 
                 return Json(new { Status = true, message = "You have been logged out successfully." });
@@ -208,9 +214,11 @@ namespace ERP.WEB.Controllers
                 return Json(new { Status = false, message = $"{ex.Message}" });
             }
         }
-        #endregion
+
+        #endregion LogOut
 
         #region Refresh Token
+
         //public async Task<IActionResult> RefreshToken(string refreshToken)
         //{
         //    var user = await _unitOfWork.ApplicationUser.GetAsync(u => u.RefreshToken == refreshToken);
@@ -266,6 +274,7 @@ namespace ERP.WEB.Controllers
                 refreshToken = user.RefreshToken
             });
         }
+
         [HttpGet]
         public IActionResult CheckSession()
         {
@@ -273,6 +282,6 @@ namespace ERP.WEB.Controllers
             return Json(new { isSessionValid = userId != null });
         }
 
-        #endregion
+        #endregion Refresh Token
     }
 }

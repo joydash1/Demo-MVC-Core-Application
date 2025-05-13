@@ -1,14 +1,6 @@
-﻿using ERP.DataAccess.Domains;
-using ERP.DataAccess.DTOs.Basic_Setup;
-using ERP.Infrastructure.Interfaces;
+﻿using ERP.Infrastructure.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ERP.Repositories.Services
 {
@@ -22,6 +14,7 @@ namespace ERP.Repositories.Services
             _spService = spService;
             _configuration = configuration;
         }
+
         public async Task<bool> BackupDatabaseAsync(string backupPath)
         {
             string connectionString = _configuration.GetConnectionString("DBcontext");
@@ -61,7 +54,6 @@ namespace ERP.Repositories.Services
 //string backupFilePath = Path.Combine(backupFolderPath,backupFileName);
 
 //bool result = await _databaseBackupService.BackupDatabaseAsync(backupFilePath);
-
 
 //public IActionResult DownloadDatabase()
 //{

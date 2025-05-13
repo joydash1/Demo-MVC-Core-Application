@@ -8,8 +8,6 @@ using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
 using ERP.Utility.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ERP.WEB.Controllers
 {
@@ -20,6 +18,7 @@ namespace ERP.WEB.Controllers
         private readonly IDatabaseBackupService _databaseBackupService;
         private readonly IConfiguration _configuration;
         private readonly IExcelBulkInsertService _bulkInsertService;
+
         public BasicSetupController(IUnitOfWork unitOfWork, ISpService spService, IDatabaseBackupService databaseBackupService, IConfiguration configuration, IExcelBulkInsertService bulkInsertService)
         {
             _unitOfWork = unitOfWork;
@@ -30,6 +29,7 @@ namespace ERP.WEB.Controllers
         }
 
         #region Organization
+
         public async Task<IActionResult> Organization()
         {
             var organizations = await _unitOfWork.OrganizationRepository.GetAllAsync(x => x.IsActive == true);
@@ -44,12 +44,12 @@ namespace ERP.WEB.Controllers
             };
             return View(viewModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveOrganization([FromForm] Organization organization)
         {
             try
             {
-
                 if (organization == null)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -72,12 +72,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Organization", "BasicSetup");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> DeleteOrganizationById(DeleteorganizationDto deleteorganization)
         {
             try
             {
-
                 if (deleteorganization.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -102,9 +102,11 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Organization", "BasicSetup");
             }
         }
-        #endregion
+
+        #endregion Organization
 
         #region Bank
+
         public async Task<IActionResult> Bank()
         {
             var banks = await _unitOfWork.BankRepository.GetAllAsync(x => x.IsActive == true);
@@ -114,12 +116,12 @@ namespace ERP.WEB.Controllers
             };
             return View(viewModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveBank([FromForm] Bank bank)
         {
             try
             {
-
                 if (bank == null)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -142,12 +144,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Bank", "BasicSetup");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> DeleteBankById(DeleteBankDto deleteBankDto)
         {
             try
             {
-
                 if (deleteBankDto.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -172,9 +174,11 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Bank", "BasicSetup");
             }
         }
-        #endregion
+
+        #endregion Bank
 
         #region Branch
+
         public async Task<IActionResult> Branch()
         {
             ViewBag.BankList = await _unitOfWork.BankRepository.GetAllAsync(x => x.IsActive == true);
@@ -182,12 +186,12 @@ namespace ERP.WEB.Controllers
 
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveBranch([FromForm] BankBranch branch)
         {
             try
             {
-
                 if (branch == null)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -210,12 +214,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Branch", "BasicSetup");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> DeleteBranchById(DeleteBranchDto delete)
         {
             try
             {
-
                 if (delete.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -240,6 +244,7 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Branch", "BasicSetup");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> GetBankBranchList()
         {
@@ -259,9 +264,11 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Branch", "BasicSetup");
             }
         }
-        #endregion
+
+        #endregion Branch
 
         #region Organization Account
+
         public async Task<IActionResult> OrganizationBankBranch()
         {
             ViewBag.OrganizationList = await _unitOfWork.OrganizationRepository.GetAllAsync(x => x.IsActive == true);
@@ -270,12 +277,12 @@ namespace ERP.WEB.Controllers
             ViewBag.OrganizationBankAccountList = await _spService.GetDataWithoutParameterAsync<OrganizationAccountListDto>("USP_GET_ORGANIZATION_BANK_ACCOUNT_LIST").ToListAsync();
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveOrganizationBankBranch([FromForm] OrganizationBankAccount account)
         {
             try
             {
-
                 if (account == null)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -298,12 +305,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("OrganizationBankBranch", "BasicSetup");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> DeleteOrganizationBankBranchById(DeleteOrganizationAccountDto delete)
         {
             try
             {
-
                 if (delete.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -329,13 +336,11 @@ namespace ERP.WEB.Controllers
             }
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetBankBranchByBankId(DeleteBankDto bank)
         {
             try
             {
-
                 if (bank.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -359,20 +364,22 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("OrganizationBankBranch", "BasicSetup");
             }
         }
-        #endregion
+
+        #endregion Organization Account
 
         #region Product Category
+
         public async Task<IActionResult> Category()
         {
             ViewBag.ProductCategoryList = await _spService.GetDataWithParameterAsync<CategoryDto>(new { ID = 0 }, "USP_GET_PRODUCT_CATEGORY_LIST").ToListAsync();
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> InsertUpdateCategory(CategoryDto category)
         {
             try
             {
-
                 if (category == null)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -408,12 +415,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Category", "BasicSetup");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteCategoryById(CategoryDto delete)
         {
             try
             {
-
                 if (delete.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -438,12 +445,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Category", "BasicSetup");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> GetCategoryById(CategoryDto get)
         {
             try
             {
-
                 if (get.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -467,21 +474,23 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Category", "BasicSetup");
             }
         }
-        #endregion
+
+        #endregion Product Category
 
         #region Product
+
         public async Task<IActionResult> Product()
         {
             ViewBag.ProductCategoryList = await _spService.GetDataWithParameterAsync<CategoryDto>(new { ID = 0 }, "USP_GET_PRODUCT_CATEGORY_LIST").ToListAsync();
             ViewBag.ProductList = await _spService.GetDataWithParameterAsync<ProductDto>(new { ID = 0 }, "USP_GET_PRODUCT_LIST").ToListAsync();
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> InsertUpdateProduct(ProductDto product)
         {
             try
             {
-
                 if (product == null)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -518,12 +527,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Product", "BasicSetup");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteProductById(ProductDto delete)
         {
             try
             {
-
                 if (delete.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -548,12 +557,12 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Product", "BasicSetup");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> GetProductById(ProductDto get)
         {
             try
             {
-
                 if (get.Id == 0)
                 {
                     TempData["AlertMessage"] = "Invalid Data.";
@@ -577,9 +586,11 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Product", "BasicSetup");
             }
         }
-        #endregion
+
+        #endregion Product
 
         #region Insurance
+
         public async Task<IActionResult> Insurance()
         {
             ViewBag.InsuranceList = await _spService.GetDataWithParameterAsync<InsuranceDto>(
@@ -685,9 +696,10 @@ namespace ERP.WEB.Controllers
             }
         }
 
-        #endregion
+        #endregion Insurance
 
         #region Border
+
         public async Task<IActionResult> Border()
         {
             ViewBag.BorderList = await _spService.GetDataWithParameterAsync<BorderDto>(new { ID = 0 }, "USP_GET_BORDER_LIST").ToListAsync();
@@ -791,12 +803,14 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("Border", "BasicSetup");
             }
         }
-        #endregion
+
+        #endregion Border
 
         #region CNF Company
+
         public async Task<IActionResult> CNFCompany()
         {
-            ViewBag.BorderList = await _unitOfWork.BorderRepository.GetAllAsync(x=> x.IsActive == true);
+            ViewBag.BorderList = await _unitOfWork.BorderRepository.GetAllAsync(x => x.IsActive == true);
             return View();
         }
 
@@ -883,7 +897,7 @@ namespace ERP.WEB.Controllers
                 return Json(new ResponseListResult<List<CNFCompanyDto>>
                 {
                     Status = true,
-                    Data = (List<CNFCompanyDto>) data
+                    Data = (List<CNFCompanyDto>)data
                 });
             }
             catch (Exception ex)
@@ -893,6 +907,7 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("CNFCompany", "BasicSetup");
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> GetCNFCompanyById(CNFCompanyDto get)
         {
@@ -923,13 +938,16 @@ namespace ERP.WEB.Controllers
                 return RedirectToAction("CNFCompany", "BasicSetup");
             }
         }
-        #endregion
+
+        #endregion CNF Company
 
         #region Database Backup
+
         public IActionResult BackupDatabase()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveBackupDatabase()
         {
@@ -955,6 +973,7 @@ namespace ERP.WEB.Controllers
 
             return RedirectToAction("BackupDatabase");
         }
+
         public IActionResult DownloadDatabase()
         {
             string backupFolderPath = _configuration["DatabaseBackupPath"];
@@ -965,6 +984,7 @@ namespace ERP.WEB.Controllers
             ViewBag.BackupFiles = backupFiles;
             return View();
         }
+
         [HttpPost]
         public IActionResult DownloadBackup(string fileName)
         {
@@ -978,9 +998,11 @@ namespace ERP.WEB.Controllers
             }
             return NotFound("File not found.");
         }
-        #endregion
+
+        #endregion Database Backup
 
         #region Bulk Insert
+
         public ActionResult DemoBulkInsert()
         {
             return View();
@@ -1025,6 +1047,7 @@ namespace ERP.WEB.Controllers
 
             return RedirectToAction("DemoBulkInsert");
         }
-        #endregion
+
+        #endregion Bulk Insert
     }
 }
