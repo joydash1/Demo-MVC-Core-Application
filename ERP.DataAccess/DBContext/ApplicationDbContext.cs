@@ -22,5 +22,6 @@ namespace ERP.DataAccess.DBContext
         public DbSet<Border> Border { get; set; }
         public DbSet<BankBranch> BankBranch { get; set; }
         public DbSet<LCTransaction> LCTransaction { get; set; }
+        public DbSet<CollectionMode> CollectionMode { get; set; }
     }
 }

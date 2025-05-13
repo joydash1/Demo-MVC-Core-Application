@@ -193,14 +193,20 @@
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
-                                Custom Data Record
+                                Clearing & Forwarding
                             </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
                         <ul class="pc-submenu">
                             <li class="pc-item">
-                                <a asp-action="CMFFile" asp-controller="CMFFiles" class="pc-link">
+                                <a asp-action="Index" asp-controller="ClearingAndFordwingCNF" class="pc-link">
                                     <span class="pc-micon"><i class="ti ti-apps"></i></span>
-                                    <span class="pc-mtext">CMF</span>
+                                    <span class="pc-mtext">CNF</span>
+                                </a>
+                            </li>
+                            <li class="pc-item">
+                                <a asp-action="CNFPayment" asp-controller="ClearingAndFordwingCNF" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-currency-dollar"></i></span>
+                                    <span class="pc-mtext">CNF Payment</span>
                                 </a>
                             </li>
                         </ul>

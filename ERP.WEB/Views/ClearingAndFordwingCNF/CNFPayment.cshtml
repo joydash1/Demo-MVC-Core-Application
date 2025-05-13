@@ -1,0 +1,546 @@
+﻿@* @using ERP.DataAccess.DTOs.BankBranch
+@using ERP.DataAccess.DTOs.Basic_Setup
+@using ERP.DataAccess.DTOs.Buyer
+@using ERP.DataAccess.DTOs.LC_Open
+@using ERP.DataAccess.Domains
+@{
+    ViewData["Title"] = "Custom Data Record Of LC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var lcFileList = (List<LCTransaction>)ViewBag.LCFileList;
+}
+
+<style type="text/css">
+    .row {
+        margin-top: 10px !important;
+    }
+
+    /*     .card{
+            border: 1px solid #4361ee;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        .card-header{
+            background-color: #4361ee !important;
+        }
+
+        .card-body{
+            background-color: #f8f9fa;
+        } */
+    hr {
+        border-top: 2px solid #4361ee;
+    }
+
+    button {
+        background-color: #4361ee;
+        border-color: #4361ee;
+    }
+
+    .is-invalid {
+        border: 2px solid red !important;
+    }
+
+    .is-valid {
+        border: 2px solid green !important;
+    }
+
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-primary">
+            <div class="card-header bg-primary">
+                <h5 class="text-white">Custom Data Record Of LC</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="cmbLCNumber">
+                                <option value="0">Select LC Number</option>
+                                @foreach (var lc in lcFileList)
+                                {
+                                    <option value="@lc.ID">@("LC No - " + lc.LCNumber)</option>
+                                }
+                            </select>
+                            <label for="cmbLCNumber">LC Number</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnOrganizatioName"></span>
+                            <label for="spnOrganizatioName">Organizatio Name</label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnOpeningDate"></span>
+                            <label for="spnOpeningDate">Opening Date</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnProductName"></span>
+                            <label for="spnProductName">Product Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnExporterName"></span>
+                            <label for="spnExporterName">Exporter Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control" id="spnTotalLCWeight"></span>
+                            <label for="spnTotalLCWeight">Total LC Weight(Ton)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnProductWeightKg"></span>
+                            <label for="spnProductWeightKg">Product Weight (Kg)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control" id="spnTotalLCAmount"></span>
+                            <label for="spnTotalLCAmount">Total LC Amount ($)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="txtUsdRate" placeholder="">
+                            <label for="txtUsdRate">Today's USD Rate in (Tk)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnTotalProductPriceTk"></span>
+                            <label for="spnTotalProductPriceTk">Total Price (Tk)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnPricePerKgTk"></span>
+                            <label for="spnPricePerKgTk">Price/Kg (Tk)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="txtTruckNo" placeholder="Enter Truck No.">
+                            <label for="txtTruckNo">Truck No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Billing Details List : </h5>
+                    </div>
+                </div>
+                <hr />
+                <div class="row" id="BillingTable" style="display:none;">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered nowrap table-info" id="tblBillingTable">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th class="text-center">SL</th>
+                                        <th class="text-center">Expense Details</th>
+                                        <th class="text-center">Expense Amount</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2" class="text-end"><strong>Total Amount:</strong></td>
+                                        <td class="text-center" id="totalAmount">0.00</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control" id="spnTotalPaidAmount" placeholder="">0</span>
+                            <label for="spnTotalPaidAmount">Total Paid Amount</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnTotalDueAmount">0</span>
+                            <label for="spnTotalDueAmount">Total Due Amount</label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <button type="button" id="btnSubmit" data-id="0" class="btn btn-primary px-4 py-2">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>CMF And Stock File List</h5>
+                <small></small>
+            </div>
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+                    <table id="autofill" class="table table-striped table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Exporter Name</th>
+                                <th class="text-center">Product Name</th>
+                                <th class="text-center">Weight/Kg</th>
+                                <th class="text-center">Price/Kg</th>
+                                <th class="text-center">Total Amount</th>
+                                <th class="text-center">Paid Amount</th>
+                                <th class="text-center">Due Amount</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (cmfAndStockList.Any())
+                            {
+                                @foreach (var cmf in cmfAndStockList)
+                                {
+                                    <tr>
+                                        <td class="text-center">@cmf.ShopName</td>
+                                        <td class="text-center">@cmf.ProductName</td>
+                                        <td class="text-center">@cmf.TotalProductWeightKg</td>
+                                        <td class="text-center">@cmf.ProductPricePerKg</td>
+                                        <td class="text-center">@cmf.TotalAmount</td>
+                                        <td class="text-center">@cmf.TotalPaidAmount</td>
+                                        <td class="text-center">@cmf.TotalDueAmount</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@cmf.ID"><i class="ti ti-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@cmf.ID"><i class="ti ti-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center">No records found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+         let billingData = [];
+         var ExpenseDetails = "";
+         var ExpenseAmount = 0;
+
+         $(document).ready(function () {
+             $("input").on("input", function () {
+                 $(this).removeClass("is-invalid").addClass("is-valid");
+             });
+
+             $(document).on("change","#cmbLCNumber",function(){
+                 var id = $(this).val();
+                 var formData = new FormData();
+                 formData.append("Id", id);
+                 $.ajax({
+                     url: '@Url.Action("GetLCTransactionInfoById", "CMFFiles")',
+                     type: 'POST',
+                     data: formData,
+                     processData: false,
+                     contentType: false,
+                     success: function (response) {
+                         if (response.status === true && response.data.length > 0) {
+                             var d = response.data[0];
+                             //console.log(d);
+                             $("#spnOrganizatioName").html(d.organizatioName);
+                             $("#spnOpeningDate").html(d.openingDate);
+                             $("#spnProductName").html(d.productName);
+                             $("#spnExporterName").html(d.shopName);
+                             $("#spnTotalLCWeight").html(d.productWeightTon);
+                             $("#spnTotalLCAmount").html(d.totalLCAmount);
+                             $("#spnProductWeightKg").html(d.productWeightKg);
+                             $("#BillingTable").show();
+                             BillingTable();
+                         } else {
+                             Swal.fire("Error!", "Failed to fetch LC data.", "error");
+                         }
+                     },
+                     error: function () {
+                         Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                     }
+                 });
+             });
+
+             $(document).on("change", "#txtUsdRate", function () {
+                 var lcAmountUsd = parseFloat($("#spnTotalLCAmount").text().trim());
+                 var weightKg = parseFloat($("#spnProductWeightKg").text().trim());
+                 var usdRate = parseFloat($("#txtUsdRate").val());
+
+                 if (!isNaN(lcAmountUsd) && !isNaN(weightKg) && !isNaN(usdRate) && weightKg > 0) {
+                     var totalPrice = lcAmountUsd * usdRate;
+                     $("#spnTotalProductPriceTk").text(totalPrice.toFixed(2));
+                     $(".txtExpenseAmount").val(totalPrice.toFixed(2));
+                 }
+             });
+
+
+             billingData.push({ ExpenseDetails: "", ExpenseAmount: 0 });
+
+             $(document).on('click', '.btnAdd', function () {
+                 billingData[billingData.length - 1].ExpenseDetails = $(this).closest('tr').find('.txtExpenseDetails').val();
+                 billingData[billingData.length - 1].ExpenseAmount = parseFloat($(this).closest('tr').find('.txtExpenseAmount').val()) || 0;
+
+                 billingData.push({ ExpenseDetails: "", ExpenseAmount: 0 });
+                 renderNewTableRow();
+
+                 console.log(billingData);
+             });
+
+             $(document).on('click', '.btnRemove', function () {
+                 let rowIndex = $(this).closest('tr').data('index');
+                 billingData.splice(rowIndex, 1);
+                 renderNewTableRow();
+             });
+
+             $(document).on('input', '.txtExpenseDetails, .txtExpenseAmount', function () {
+                 const row = $(this).closest('tr');
+                 const index = row.data('index');
+
+                 if (!billingData[index]) {
+                     billingData[index] = {
+                         ExpenseDetails: "",
+                         ExpenseAmount: 0
+                     };
+                 }
+
+                 if ($(this).hasClass('txtExpenseDetails')) {
+                     billingData[index].ExpenseDetails = this.value || '';
+                 } else if ($(this).hasClass('txtExpenseAmount')) {
+                     billingData[index].ExpenseAmount = parseFloat(this.value) || 0;
+                 }
+
+                 calculateTotal();
+             });
+
+
+             $(document).on("click", "#btnSubmit", function (e) {
+                 e.preventDefault();
+
+                 var isValid = true;
+                 function validateField(selector) {
+                     var inputField = $(selector);
+                     var value = inputField.val()?.trim() || "";
+                     var isDropdown = inputField.is("select");
+
+                     if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                         inputField.addClass("is-invalid").removeClass("is-valid");
+                         isValid = false;
+                     } else {
+                         inputField.addClass("is-valid").removeClass("is-invalid");
+                     }
+                 }
+
+                 validateField("#cmbLCNumber");
+                 validateField("#txtUsdRate");
+                 validateField("#txtTruckNo");
+
+                 if (!isValid) {
+                     Swal.fire({
+                         icon: "error",
+                         title: "Oops...",
+                         text: "Please fill in all required fields."
+                     });
+                     return;
+                 }
+
+                 if (billingData.length < 1 || billingData.length === 0) {
+                     Swal.fire({
+                         icon: "error",
+                         title: "Oops...",
+                         text: "Please fill at least billing details field."
+                     });
+                     return;
+                 }
+                 var Id = $("#btnSubmit").attr("data-id");
+                 var LCId = $("#cmbLCNumber option:selected").val();
+                 var USDRate = $("#txtUsdRate").val().trim();
+                 var ProductWeightKg = parseFloat($("#spnProductWeightKg").text().trim());
+                 var TotalProductPrice = $("#totalAmount").text().trim();
+                 var PricePerkg = $("#spnPricePerKgTk").text().trim();
+                 var TruckNo = $("#txtTruckNo").val().trim();
+
+
+
+                 var formData = new FormData();
+                 formData.append("ID", Id);
+                 formData.append("LcId", LCId);
+                 formData.append("TotalProductWeightKg", ProductWeightKg);
+                 formData.append("USDRateToTaka", USDRate);
+                 formData.append("TotalProductPrice", TotalProductPrice);
+                 formData.append("ProductPricePerKg", PricePerkg);
+                 formData.append("TruckNumber", TruckNo);
+                 //formData.append("BillingData", billingData);
+                 formData.append("BillingData", JSON.stringify(billingData));
+                 $.ajax({
+                     url: '@Url.Action("SaveCustomDataRecord", "CMFFiles")',
+                     type: 'POST',
+                     data: formData,
+                     processData: false,
+                     contentType: false,
+                     success: function (response) {
+                         console.log(formData);
+                         if (response && response.status === true) {
+                             Swal.fire("Success!", response.message, "success").then(() => {
+                                 location.reload();
+                             });
+                         } else {
+                             Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                         }
+                     },
+                     error: function () {
+                         Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                     }
+                 });
+             });
+         });
+
+         function BillingTable(){
+             var html ="";
+             var i = 0;
+             html += '<tr>';
+             html += '<td class="text-center">'+i + 1+'</td>';
+             html += '<td class="text-center"><input type="text" class="form-control text-center txtExpenseDetails" value="Total Product Price" readonly="readonly"/></td>';
+             html += '<td class="text-center"><input type="text" class="form-control text-center txtExpenseAmount" value="" readonly="readonly"></td>';
+             html += '<td class="text-center"><a class="btn btn-sm btn-success btnAdd" data-id=""><i class="ti ti-plus"></i></a> <a class="btn btn-sm btn-danger btnRemove" data-id=""><i class="ti ti-trash"></i></a></td>';
+             html += '</tr>';
+
+             $("#tblBillingTable tbody").html(html);
+         }
+
+         function calculateTotal() {
+             let total = billingData.reduce((sum, item) => sum + parseFloat(item.ExpenseAmount || 0), 0);
+             $('#totalAmount').text(total.toFixed(2));
+
+             var weightKg = parseFloat($("#spnProductWeightKg").text().trim());
+             var pricePerKg = total / weightKg;
+             $("#spnPricePerKgTk").text(pricePerKg.toFixed(2));
+         }
+
+         // function renderNewTableRow() {
+         //     let html = '';
+         //     billingData.forEach((item, index) => {
+         //         html += `<tr data-index="${index}">
+         //             <td class="text-center">${index + 1}</td>
+         //             <td class="text-center">
+         //                 <input type="text" class="form-control text-center txtExpenseDetails" placeholder="Expense Details" value="${item.ExpenseDetails}" />
+         //             </td>
+         //             <td class="text-center">
+         //                 <input type="number" class="form-control text-center txtExpenseAmount" placeholder="Expense Amount" value="${item.ExpenseAmount}" />
+         //             </td>
+         //             <td class="text-center">`;
+
+         //         if (index === billingData.length - 1) {
+         //             html += `<button class="btn btn-sm btn-success btnAdd"><i class="ti ti-plus"></i></button>`;
+         //         } else {
+         //             html += `<button class="btn btn-sm btn-danger btnRemove"><i class="ti ti-trash"></i></button>`;
+         //         }
+
+         //         html += `</td></tr>`;
+         //     });
+
+         //     $('#tblBillingTable tbody').html(html);
+         //     calculateTotal();
+         // }
+        function renderNewTableRow() {
+             let html = '';
+             billingData.forEach((item, index) => {
+                 const isLastRow = index === billingData.length - 1;
+                 const isDetailInvalid = !item.ExpenseDetails || item.ExpenseDetails.trim() === '';
+                 const isAmountInvalid = item.ExpenseAmount == null || item.ExpenseAmount <= 0;
+                 const isInvalid = isDetailInvalid || isAmountInvalid;
+
+                 html += `<tr data-index="${index}">
+                     <td class="text-center">${index + 1}</td>
+                     <td class="text-center">
+                         <input
+                             type="text"
+                             class="form-control text-center txtExpenseDetails ${isDetailInvalid ? 'is-invalid' : 'is-valid'}"
+                             placeholder="Expense Details"
+                             value="${item.ExpenseDetails || ''}" />
+                     </td>
+                     <td class="text-center">
+                         <input
+                             type="number"
+                             class="form-control text-center txtExpenseAmount ${isAmountInvalid ? 'is-invalid' : 'is-valid'}"
+                             placeholder="Expense Amount"
+                             value="${item.ExpenseAmount || ''}" />
+                     </td>
+                     <td class="text-center">`;
+
+                 if (isLastRow) {
+                     html += `
+                         <button class="btn btn-sm btn-success btnAdd" ${isInvalid ? 'disabled' : ''}>
+                             <i class="ti ti-plus"></i>
+                         </button>
+                         <button class="btn btn-sm btn-danger btnRemove">
+                             <i class="ti ti-trash"></i>
+                         </button>`;
+                 } else {
+                     html += `<button class="btn btn-sm btn-danger btnRemove"><i class="ti ti-trash"></i></button>`;
+                 }
+
+                 html += `</td></tr>`;
+             });
+
+             $('#tblBillingTable tbody').html(html);
+             calculateTotal();
+
+
+             setTimeout(() => {
+                 const lastRow = $('#tblBillingTable tbody tr').last();
+                 const $detail = lastRow.find('.txtExpenseDetails');
+                 const $amount = lastRow.find('.txtExpenseAmount');
+                 const $btnAdd = lastRow.find('.btnAdd');
+
+                 function validate() {
+                     const detailVal = $detail.val().trim();
+                     const amountVal = parseFloat($amount.val());
+
+                     const isDetailValid = detailVal !== '';
+                     const isAmountValid = !isNaN(amountVal) && amountVal > 0;
+
+
+                     $detail.toggleClass('is-invalid', !isDetailValid).toggleClass('is-valid', isDetailValid);
+                     $amount.toggleClass('is-invalid', !isAmountValid).toggleClass('is-valid', isAmountValid);
+
+
+                     $btnAdd.prop('disabled', !(isDetailValid && isAmountValid));
+                 }
+
+                 $detail.on('input', validate);
+                 $amount.on('input', validate);
+             }, 0);
+        }
+
+    </script>
+} *@

@@ -20,6 +20,7 @@ namespace ERP.Repositories.Services
         public ILCFileRepository LCFileRepository { get; private set; }
         public IBorderRepository BorderRepository { get; private set; }
         public ICNFCompanyRepository CNFCompanyRepository { get; private set; }
+        public ICollectionModeRepository CollectionModeRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -32,6 +33,7 @@ namespace ERP.Repositories.Services
             LCFileRepository = new LCFileRepository(_dbContext);
             BorderRepository = new BorderRepository(_dbContext);
             CNFCompanyRepository = new CNFCompanyRepository(_dbContext);
+            CollectionModeRepository = new CollectionModeRepository(_dbContext);
         }
         public async Task CommitAsync()
        => await _dbContext.SaveChangesAsync();

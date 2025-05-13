@@ -16,6 +16,7 @@ namespace ERP.Infrastructure.Interfaces
         ILCFileRepository LCFileRepository { get;}
         IBorderRepository BorderRepository { get;}
         ICNFCompanyRepository CNFCompanyRepository { get;}
+        ICollectionModeRepository CollectionModeRepository { get;}
         Task CommitAsync();
         Task RollbackAsync();
     }

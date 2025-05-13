@@ -1,7 +1,10 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
+using ERP.DataAccess.Domains;
+using ERP.DataAccess.DTOs.APIResponses;
 using ERP.DataAccess.DTOs.BankBranch;
 using ERP.DataAccess.DTOs.Basic_Setup;
 using ERP.DataAccess.DTOs.Buyer;
+using ERP.DataAccess.DTOs.ClearingAndFordwingCNF;
 using ERP.DataAccess.DTOs.LC_Open;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
@@ -20,12 +23,13 @@ namespace ERP.WEB.Controllers
             _unitOfWork = unitOfWork;
             _spService = spService;
         }
+        
         #region Clearing & Fordwing CNF
 
         public async Task<IActionResult> Index()
         {
             ViewBag.LCFileList = await _unitOfWork.LCFileRepository.GetAllAsync(x => x.IsActive == true);
-            //ViewBag.CMFAndStockList = await _spService.GetDataWithoutParameterAsync<CustomDataRecordAndStockListDto>("USP_GET_CUSTOM_DATA_AND_PRODUCT_STOCK_LIST").ToListAsync();
+            ViewBag.CNFCompanyList = await _unitOfWork.CNFCompanyRepository.GetAllAsync(x => x.IsActive == true);
             return View();
         }
         [HttpPost]
@@ -54,60 +58,74 @@ namespace ERP.WEB.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> SaveCustomDataRecord([FromForm]  CustomDataRecordAndStockDto customDataRecordDto, [FromForm] string BillingData)
-        //{
-        //    try
-        //    {
-        //        if (customDataRecordDto == null)
-        //        {
-        //            TempData["AlertMessage"] = "Invalid Data.";
-        //            TempData["AlertType"] = "error";
-        //            return RedirectToAction("CMFFile");
-        //        }
+        [HttpPost]
+        public async Task<IActionResult> SaveUpdateClearingAndFordwingCNF(ClearingAndForwardingCNFDto save)
+        {
+            try
+            {
+                if (save == null)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("Index");
+                }
 
-        //        var data = await _spService.GetDataWithParameterAsync<InsertResultDto>(new
-        //        {
-        //            LC_ID = customDataRecordDto.LCId,
-        //            USD_RATE_IN_TAKA = customDataRecordDto.USDRateToTaka,
-        //            TOTAL_PRODUCT_WEIGHT = customDataRecordDto.TotalProductWeightKg,
-        //            TOTAL_PRODUCT_PRICE = customDataRecordDto.TotalProductPrice,
-        //            PRICE_PER_KG = customDataRecordDto.ProductPricePerKg,
-        //            TRUCK_NUMBER = customDataRecordDto.TruckNumber,
-        //            USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
-        //        }, "USP_INSERT_CUSTOM_DATA_RECORD_AND_STOCK");
+                var data = await _spService.GetDataWithParameterAsync<ClearingAndForwardingCNFDto>(new
+                {
+                    ID = save.Id,
+                    LC_ID = save.LCId,
+                    CNF_COMPANY_ID = save.CNFCompanyId,
+                    CNF_WEIGHT = save.CNFWeight,
+                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                }, "USP_INSERT_UPDATE_CLEARING_AND_FORWARDING_CNF");
+                
+                string message = save.Id > 0 ? "Clearing & Fordwing Updated Successfully" : "Clearing & Fordwing Saved Successfully";
+                
+                var result = new ResponseResult
+                {
+                    Status = true,
+                    Message = message
+                };
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ClearingAndFordwingList(ClearingAndForwardingCNFDto get)
+        {
+            try
+            {
+                var data = await _spService.GetDataWithParameterAsync<ClearingAndForwardingCNFDto>(new
+                {
+                    LC_ID = get.LCId
+                }, "USP_GET_CLEARING_AND_FORWARDING_BY_LC_ID");
 
-        //        int NewSaveId = data.FirstOrDefault()?.NewRecordId ?? 0;
+                return Json(new ResponseListResult<List<ClearingAndForwardingCNFDto>>
+                {
+                    Status = true,
+                    Data = (List<ClearingAndForwardingCNFDto>)data
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Index", "ClearingAndFordwingCNF");
+            }
+        }
+        #endregion
 
-        //        var billingList = JsonConvert.DeserializeObject<List<CustomDataRecordAndStockBillingDto>>(BillingData);
-
-
-        //        foreach (var item in billingList)
-        //        {
-        //            await _spService.GetDataWithParameterAsync<dynamic>(new
-        //                {
-        //                    CMF_ID = NewSaveId,
-        //                    EXPENSE_DETAILS = item.ExpenseDetails.Trim(),
-        //                    EXPENSE_AMOUNT = item.ExpenseAmount,
-        //                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
-        //                }, "USP_INSERT_CUSTOM_DATA_RECORD_BILLING");
-        //        }
-
-        //        string message = "CMF Save successfully";
-
-        //        return Json(new
-        //        {
-        //            Status = true,
-        //            Message = message
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["AlertMessage"] = "An error occurred. Please try again.";
-        //        TempData["AlertType"] = "error";
-        //        return RedirectToAction("CMFFile");
-        //    }
-        //}
+        #region CNF Payment
+        public async Task<IActionResult> CNFPayment()
+        {
+            ViewBag.LCFileList = await _unitOfWork.LCFileRepository.GetAllAsync(x => x.IsActive == true);
+            return View();
+        }
         #endregion
     }
 }

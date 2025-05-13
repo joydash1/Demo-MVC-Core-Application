@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ERP.DataAccess.Domains
 {
-    public class CustomDataRecordAndStock
+    public class ClearingAndForwardingCNF
     {
         [Key]
         public int ID { get; set; }

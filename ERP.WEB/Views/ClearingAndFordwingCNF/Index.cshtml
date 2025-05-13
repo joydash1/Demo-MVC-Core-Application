@@ -1,7 +1,380 @@
-﻿
+﻿@using ERP.DataAccess.DTOs.BankBranch
+@using ERP.DataAccess.DTOs.Basic_Setup
+@using ERP.DataAccess.DTOs.Buyer
+@using ERP.DataAccess.DTOs.LC_Open
+@using ERP.DataAccess.Domains
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Custom Data Record Of LC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var lcFileList = (List<LCTransaction>)ViewBag.LCFileList;
+    var cnfCompanyList = (List<CNFCompnay>)ViewBag.CNFCompanyList;
 }
 
-<h1>Index</h1>
+<style type="text/css">
+    .row {
+        margin-top: 10px !important;
+    }
 
+    .row {
+        margin-top: 10px !important;
+    }
+
+    .card {
+        border: 1px solid #1890ff !important;
+        border-radius: var(--bs-card-border-radius);
+        box-shadow: var(--bs-card-box-shadow);
+    }
+
+        .card .card-header {
+            border-bottom: 1px solid #1890ff !important;
+        }
+
+    table.table-bordered.dataTable thead tr:first-child th, table.table-bordered.dataTable thead tr:first-child {
+        border: 1px solid #1890ff !important;
+    }
+
+    .table > tbody {
+        border: 1px solid #1890ff !important;
+    }
+
+    .table > tfoot {
+        border: 1px solid #1890ff !important;
+    }
+    hr {
+        border-top: 2px solid #1890ff;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Clearing & Forwarding (CNF)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="cmbLCNumber">
+                                <option value="0">Select LC Number</option>
+                                @foreach (var lc in lcFileList)
+                                {
+                                    <option value="@lc.ID">@("LC No - " + lc.LCNumber)</option>
+                                }
+                            </select>
+                            <label for="cmbLCNumber">LC Number</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnOrganizatioName"></span>
+                            <label for="spnOrganizatioName">Organizatio Name</label>
+                        </div>
+                    </div>
+                </div>
+                <label style="color:#1890ff; font-weight:800;">LC Information</label>
+                <hr/>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnOpeningDate"></span>
+                            <label for="spnOpeningDate">Opening Date</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnProductName"></span>
+                            <label for="spnProductName">Product Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnExporterName"></span>
+                            <label for="spnExporterName">Exporter Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control" id="spnTotalLCWeight"></span>
+                            <label for="spnTotalLCWeight">Total LC Weight(Ton)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnProductWeightKg"></span>
+                            <label for="spnProductWeightKg">Product Weight (Kg)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control" id="spnTotalLCAmount"></span>
+                            <label for="spnTotalLCAmount">Total LC Amount ($)</label>
+                        </div>
+                    </div> 
+                </div>
+                <label style="color:#1890ff; font-weight:800;">CNF Information</label>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="cmbCNFCompany">
+                                <option value="0">Select CNF Company Name</option>
+                                @foreach (var cnf in cnfCompanyList)
+                                {
+                                    <option value="@cnf.Id">@cnf.CNFCompnayName</option>
+                                }
+                            </select>
+                            <label for="cmbCNFCompany">CNF Company Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control" id="spncmbCNFBorder"></span>
+                            <label for="spncmbCNFBorder">CNF Company Border</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="txtCNFWeight" placeholder="CNF Weight (Ton)">
+                            <label for="txtCNFWeight">CNF Weight (Ton)</label>
+                            <small id="weightError" class="text-danger d-none">CNF weight cannot exceed LC weight.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span class="form-control" id="spnRemainingLCWeight"></span>
+                            <label for="spnRemainingLCWeight">Remaining LC Weight (Ton)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <button type="button" id="btnSubmit" data-id="0" class="btn btn-primary px-4 py-2">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>CNF Company List</h5>
+            </div>
+            <div class="card-body">
+                <div class="dt-responsive table-responsive">
+                    <table id="autofill" class="table table-striped table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th class="text-center">LC Number</th>
+                                <th class="text-center">CNF Company Name</th>
+                                <th class="text-center">CNF Border</th>
+                                <th class="text-center">CNF Weight (Ton)</th>
+                                <th class="text-center">CNF Date</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblClearingAndForwarding">
+                           
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-end">Total CNF Weight (Ton):</th>
+                                <th id="totalCNFWeight" class="text-center"></th>
+                                <th colspan="2"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input").on("input", function () {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+            });
+
+            $(document).on("change","#cmbLCNumber",function(){
+                var id = $(this).val();
+                var formData = new FormData();
+                formData.append("Id", id);
+                $.ajax({
+                    url: '@Url.Action("GetLCTransactionInfoById", "ClearingAndFordwingCNF")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.status === true && response.data.length > 0) {
+                            var d = response.data[0];
+                            $("#spnOrganizatioName").html(d.organizatioName);
+                            $("#spnOpeningDate").html(d.openingDate);
+                            $("#spnProductName").html(d.productName);
+                            $("#spnExporterName").html(d.shopName);
+                            $("#spnTotalLCWeight").html(d.productWeightTon);
+                            $("#spnTotalLCAmount").html(d.totalLCAmount);
+                            $("#spnProductWeightKg").html(d.productWeightKg);
+                            GetClearingAndForwardingList(id);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch LC data.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            });
+
+            $(document).on("change","#cmbCNFCompany",function(){
+                var id = $(this).val();
+                var formData = new FormData();
+                formData.append("Id", id);
+                $.ajax({
+                    url: '@Url.Action("GetCNFCompanyById", "BasicSetup")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.status === true && response.data.length > 0) {
+                            var d = response.data[0];
+                            $("#spncmbCNFBorder").html(d.borderName);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch LC data.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            });
+
+            $(document).on('input keyup', '#txtCNFWeight', function () {
+                let totalLCWeight = parseFloat($('#spnTotalLCWeight').text()) || 0;
+                let cnfWeight = parseFloat($(this).val()) || 0;
+
+                if (cnfWeight > totalLCWeight) {
+                    $('#weightError').removeClass('d-none').text('CNF weight cannot exceed LC weight.');
+                    $('#spnRemainingLCWeight').text('');
+                } else {
+                    $('#weightError').addClass('d-none').text('');
+                    let remainingWeight = totalLCWeight - cnfWeight;
+                    $('#spnRemainingLCWeight').text(remainingWeight.toFixed(2));
+                }
+            });
+            
+            $(document).on("click", "#btnSubmit", function (e) {
+                e.preventDefault();
+
+                var isValid = true;
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val()?.trim() || "";
+                    var isDropdown = inputField.is("select");
+
+                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
+                    } else {
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+                //cmbLCNumber txtCNFWeight cmbCNFCompany
+                validateField("#cmbLCNumber");
+                validateField("#txtCNFWeight");
+                validateField("#cmbCNFCompany");
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please fill in all required fields."
+                    });
+                    return;
+                }
+                var Id = $("#btnSubmit").attr("data-id");
+                var LCId = $("#cmbLCNumber option:selected").val();
+                var CNFCompanyId = $("#cmbCNFCompany option:selected").val().trim();
+                var CNFWeight = parseFloat($("#txtCNFWeight").val().trim());
+
+
+
+
+                var formData = new FormData();
+                formData.append("ID", Id);
+                formData.append("LCId", LCId);
+                formData.append("CNFCompanyId", CNFCompanyId);
+                formData.append("CNFWeight", CNFWeight);
+                $.ajax({
+                    url: '@Url.Action("SaveUpdateClearingAndFordwingCNF", "ClearingAndFordwingCNF")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(formData);
+                        if (response && response.status === true) {
+                            Swal.fire("Success!", response.message, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            });
+
+            cnfTable = $('#autofill').DataTable({
+                destroy: true,
+                responsive: true,
+                createdRow: function (row, data, dataIndex) {
+                   $('td', row).addClass('text-center');
+                }
+            });
+        });
+        function GetClearingAndForwardingList(id) {
+            cnfTable.clear().draw();
+            var formData = new FormData();
+            formData.append("LCId", id);
+            $.ajax({
+                url: '@Url.Action("ClearingAndFordwingList", "ClearingAndFordwingCNF")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status && response.data && response.data.length > 0) {
+                        let totalCNFWeight = response.data[0].totalCNFWeightByLC;
+                        console.log(totalCNFWeight);
+                        $.each(response.data, function (i, item) {
+                            console.log(response.data);
+                            cnfTable.row.add([
+                                item.lcNumber,
+                                item.companyName,
+                                item.borderName,
+                                item.cnfWeight,
+                                item.cnfDate,
+                                `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
+                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
+                            ]).draw(false);
+                        });
+                         $('#totalCNFWeight').html(totalCNFWeight.toFixed(2));
+                    }
+                },
+                error: function () {
+                    alert("Failed to load data.");
+                }
+            });
+        }
+    </script>
+}
