@@ -178,7 +178,7 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h5>CNF Company List</h5>
+                <h5>Clearing & Forwarding (CNF) List</h5>
             </div>
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
@@ -313,8 +313,6 @@
                 validateField("#txtCNFWeight");
                 validateField("#cmbCNFCompany");
                 validateField("#txtCNFAmount");
-                validateField("#txtCNFile");
-
 
                 if (!isValid) {
                     Swal.fire({
@@ -332,8 +330,8 @@
                 var LCNumber = $("#cmbLCNumber option:selected").text();
                 var fileInput = $("#txtCNFile")[0];
                 var file = fileInput.files.length > 0 ? fileInput.files[0] : null;
-
-                if(file == ""){
+                
+                if(Id == "0" && file == ""){
                     Swal.fire({
                         icon: "error",
                         title: "Oops...",
@@ -437,6 +435,7 @@
                             $("#txtCNFWeight").val(d.cnfWeight);
                             $("#ShowHide").hide();
                             $("#txtCNFWeight").data("previousWeight", parseFloat(d.cnfWeight) || 0);
+                            $("#txtCNFAmount").val(d.cnfAmount);
                         } else {
                             Swal.fire("Error!", "Failed to fetch Clearing & Fordwing Information.", "error");
                         }
