@@ -151,6 +151,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="txtCNFAmount" placeholder="CNF Amount">
+                            <label for="txtCNFAmount">CNF Amount</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="file" class="form-control" id="txtCNFile">
+                            <label for="txtCNFile">CNF File</label>
+                        </div>
+                    </div>
+                </div>
                 <div class="row mt-4">
                     <div class="col-md-12 text-center">
                         <button type="button" id="btnSubmit" data-id="0" class="btn btn-primary px-4 py-2">Save</button>
@@ -175,7 +189,9 @@
                                 <th class="text-center">CNF Company Name</th>
                                 <th class="text-center">CNF Border</th>
                                 <th class="text-center">CNF Weight (Ton)</th>
+                                <th class="text-center">CNF Amount</th>
                                 <th class="text-center">CNF Date</th>
+                                <th class="text-center">CNF Document</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -183,9 +199,10 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3" class="text-end">Total CNF Weight (Ton):</th>
+                                <th colspan="3" class="text-end">Total CNF :</th>
                                 <th id="totalCNFWeight" class="text-center"></th>
-                                <th colspan="2"></th>
+                                <th id="totalCNFAmount" class="text-center"></th>
+                                <th colspan="3"></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -291,10 +308,13 @@
                         inputField.addClass("is-valid").removeClass("is-invalid");
                     }
                 }
-                //cmbLCNumber txtCNFWeight cmbCNFCompany
+                //cmbLCNumber txtCNFWeight cmbCNFCompany txtCNFAmount txtCNFile
                 validateField("#cmbLCNumber");
                 validateField("#txtCNFWeight");
                 validateField("#cmbCNFCompany");
+                validateField("#txtCNFAmount");
+                validateField("#txtCNFile");
+
 
                 if (!isValid) {
                     Swal.fire({
@@ -308,8 +328,19 @@
                 var LCId = $("#cmbLCNumber option:selected").val();
                 var CNFCompanyId = $("#cmbCNFCompany option:selected").val().trim();
                 var CNFWeight = parseFloat($("#txtCNFWeight").val().trim());
+                var CNFAmount = parseFloat($("#txtCNFAmount").val().trim());
+                var LCNumber = $("#cmbLCNumber option:selected").text();
+                var fileInput = $("#txtCNFile")[0];
+                var file = fileInput.files.length > 0 ? fileInput.files[0] : null;
 
-
+                if(file == ""){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please select CNF File."
+                    });
+                    return;
+                }
 
 
                 var formData = new FormData();
@@ -317,6 +348,13 @@
                 formData.append("LCId", LCId);
                 formData.append("CNFCompanyId", CNFCompanyId);
                 formData.append("CNFWeight", CNFWeight);
+                formData.append("CNFAmount", CNFAmount);
+                formData.append("LCNumber", LCNumber);
+
+                if (file) {
+                    formData.append("File", file);
+                }
+
                 $.ajax({
                     url: '@Url.Action("SaveUpdateClearingAndFordwingCNF", "ClearingAndFordwingCNF")',
                     type: 'POST',
@@ -429,6 +467,8 @@
                 success: function (response) {
                     if (response.status && response.data && response.data.length > 0) {
                         let totalCNFWeight = response.data[0].totalCNFWeightByLC;
+                        let totalCNFAmount = response.data[0].totalCNFAmountByLC;
+
                         console.log(totalCNFWeight);
                         $.each(response.data, function (i, item) {
                             console.log(response.data);
@@ -437,12 +477,15 @@
                                 item.companyName,
                                 item.borderName,
                                 item.cnfWeight,
+                                item.cnfAmount,
                                 item.cnfDate,
+                                `<a href="${item.cnfDocumentFile}" target="_blank" style="text-decoration: underline; color: #007bff;">View Document</a>`,
                                 `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
                                  <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
                             ]).draw(false);
                         });
                          $('#totalCNFWeight').html(totalCNFWeight.toFixed(2));
+                         $('#totalCNFAmount').html(totalCNFAmount.toFixed(2));
                     }
                 },
                 error: function () {
