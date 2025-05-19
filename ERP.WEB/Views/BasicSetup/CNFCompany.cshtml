@@ -110,56 +110,98 @@
     </div>
 </div>
 
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on("click", "#btnSubmit", function (e) {-
-                 e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on("click", "#btnSubmit", function (e) {-
+             e.preventDefault();
 
-                var isValid = true;
+            var isValid = true;
 
-                function validateField(selector) {
-                    var inputField = $(selector);
-                    var value = inputField.val()?.trim() || "";
-                    var isDropdown = inputField.is("select");
+            function validateField(selector) {
+                var inputField = $(selector);
+                var value = inputField.val()?.trim() || "";
+                var isDropdown = inputField.is("select");
 
-                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
-                validateField("#cmbBorder", "Please select border");
-                validateField("#txtCNFCompany", "Please enter CNF Company Name");
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
+                if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                    inputField.addClass("is-invalid").removeClass("is-valid");
+                    isValid = false;
                 } else {
-                    var Id = $("#btnSubmit").attr("data-id");
-                    var BorderId = $("#cmbBorder").val();
-                    var CNFCompnayName = $("#txtCNFCompany").val();
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-                    formData.append("BorderId", BorderId);
-                    formData.append("CNFCompnayName", CNFCompnayName);
+                    inputField.addClass("is-valid").removeClass("is-invalid");
+                }
+            }
+            validateField("#cmbBorder", "Please select border");
+            validateField("#txtCNFCompany", "Please enter CNF Company Name");
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please fill in all required fields."
+                });
+            } else {
+                var Id = $("#btnSubmit").attr("data-id");
+                var BorderId = $("#cmbBorder").val();
+                var CNFCompnayName = $("#txtCNFCompany").val();
+                var formData = new FormData();
+                formData.append("Id", Id);
+                formData.append("BorderId", BorderId);
+                formData.append("CNFCompnayName", CNFCompnayName);
+                $.ajax({
+                    url: '@Url.Action("InsertUpdateCNFCompany", "BasicSetup")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                            Swal.fire("Success!", response.message, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            }
+        });
+
+         $("input").on("input", function () {
+            $(this).removeClass("is-invalid").addClass("is-valid");
+        });
+
+        $(document).on("click", ".delete-btn", function () {
+            var Id = $(this).attr("data-id");
+            var formData = new FormData();
+            formData.append("Id", Id);
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete this CNF Company? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
                     $.ajax({
-                        url: '@Url.Action("InsertUpdateCNFCompany", "BasicSetup")',
+                        url: '@Url.Action("DeleteCNFCompanyById", "BasicSetup")',
                         type: 'POST',
                         data: formData,
                         processData: false,
                         contentType: false,
                         success: function (response) {
                             if (response && response.status === true) {
-                                Swal.fire("Success!", response.message, "success").then(() => {
+                                Swal.fire("Deleted!", response.message, "success").then(() => {
                                     location.reload();
                                 });
                             } else {
-                                Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                                Swal.fire("Error!", "Failed to delete the record.", "error");
                             }
                         },
                         error: function () {
@@ -168,144 +210,102 @@
                     });
                 }
             });
-
-             $("input").on("input", function () {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-            });
-
-            $(document).on("click", ".delete-btn", function () {
-                var Id = $(this).attr("data-id");
-                var formData = new FormData();
-                formData.append("Id", Id);
-
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this CNF Company? This action cannot be undone.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '@Url.Action("DeleteCNFCompanyById", "BasicSetup")',
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function (response) {
-                                if (response && response.status === true) {
-                                    Swal.fire("Deleted!", response.message, "success").then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("Error!", "Failed to delete the record.", "error");
-                                }
-                            },
-                            error: function () {
-                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                            }
-                        });
-                    }
-                });
-            });
-
-            $(document).on("click", ".edit-btn", function () {
-                var Id = $(this).attr("data-id");
-                var formData = new FormData();
-                formData.append("Id", Id);
-                //cmbBorder txtCNFCompany
-                $.ajax({
-                    url: '@Url.Action("GetCNFCompanyById", "BasicSetup")',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if (response && response.status === true) {
-                            var d = response.data[0];
-                            $("#btnSubmit").attr("data-id", d.id);
-                            $("#cmbBorder").val(d.borderId);
-                            $("#txtCNFCompany").val(d.cnfCompnayName);
-                        } else {
-                            Swal.fire("Error!", "Failed to fetch border details.", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                    }
-                });
-            });
-            
-            cnfTable = $('#autofill').DataTable({
-                destroy: true,
-                responsive: true,
-                createdRow: function (row, data, dataIndex) {
-                   $('td', row).addClass('text-center');
-                }
-            });
-            GetCNFCompanyList();
         });
-        // function GetCNFCompanyList(){
-        //     $("#tblCnfCompany").html("");
-        //     $.ajax({
-        //         type: "POST",
-        //         url: '@Url.Action("CNFCompanyList", "BasicSetup")',
-        //         data: JSON.stringify({ Id: 0 }),
-        //         contentType: "application/json; charset=utf-8",
-        //         success: function (response) {
-        //             if (response.status && response.data && response.data.length > 0) {
-        //                 console.log(response.data);
-        //                 $.each(response.data, function (i, item) {
-        //                     let row = `
-        //                         <tr>
-        //                             <td class="text-center">${item.borderName}</td>
-        //                             <td class="text-center">${item.cnfCompnayName}</td>
-        //                             <td class="text-center">
-        //                                 <button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
-        //                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>
-        //                             </td>
-        //                         </tr>`;
-        //                     $("#tblCnfCompany").append(row);
-        //                 });
-        //             } else {
-        //                 $("#tblCnfCompany").html(`<tr><td colspan="3" class="text-center text-danger">No data found.</td></tr>`);
-        //             }
-        //         },
-        //         error: function () {
-        //             alert("Failed to load data.");
-        //         }
-        //     });
-        // }
-        function GetCNFCompanyList() {
-            cnfTable.clear().draw();
 
+        $(document).on("click", ".edit-btn", function () {
+            var Id = $(this).attr("data-id");
+            var formData = new FormData();
+            formData.append("Id", Id);
+            //cmbBorder txtCNFCompany
             $.ajax({
-                type: "POST",
-                url: '@Url.Action("CNFCompanyList", "BasicSetup")',
-                data: JSON.stringify({ Id: 0 }),
-                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetCNFCompanyById", "BasicSetup")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function (response) {
-                    if (response.status && response.data && response.data.length > 0) {
-                        $.each(response.data, function (i, item) {
-                            cnfTable.row.add([
-                                item.borderName,
-                                item.cnfCompnayName,
-                                `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
-                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
-                            ]).draw(false);
-                        });
+                    if (response && response.status === true) {
+                        var d = response.data[0];
+                        $("#btnSubmit").attr("data-id", d.id);
+                        $("#cmbBorder").val(d.borderId);
+                        $("#txtCNFCompany").val(d.cnfCompnayName);
+                    } else {
+                        Swal.fire("Error!", "Failed to fetch border details.", "error");
                     }
                 },
                 error: function () {
-                    alert("Failed to load data.");
+                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
                 }
             });
-        }
+        });
 
-    </script>
-}
+        cnfTable = $('#autofill').DataTable({
+            destroy: true,
+            responsive: true,
+            createdRow: function (row, data, dataIndex) {
+               $('td', row).addClass('text-center');
+            }
+        });
+        GetCNFCompanyList();
+    });
+    // function GetCNFCompanyList(){
+    //     $("#tblCnfCompany").html("");
+    //     $.ajax({
+    //         type: "POST",
+    //         url: '@Url.Action("CNFCompanyList", "BasicSetup")',
+    //         data: JSON.stringify({ Id: 0 }),
+    //         contentType: "application/json; charset=utf-8",
+    //         success: function (response) {
+    //             if (response.status && response.data && response.data.length > 0) {
+    //                 console.log(response.data);
+    //                 $.each(response.data, function (i, item) {
+    //                     let row = `
+    //                         <tr>
+    //                             <td class="text-center">${item.borderName}</td>
+    //                             <td class="text-center">${item.cnfCompnayName}</td>
+    //                             <td class="text-center">
+    //                                 <button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
+    //                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>
+    //                             </td>
+    //                         </tr>`;
+    //                     $("#tblCnfCompany").append(row);
+    //                 });
+    //             } else {
+    //                 $("#tblCnfCompany").html(`<tr><td colspan="3" class="text-center text-danger">No data found.</td></tr>`);
+    //             }
+    //         },
+    //         error: function () {
+    //             alert("Failed to load data.");
+    //         }
+    //     });
+    // }
+    function GetCNFCompanyList() {
+        cnfTable.clear().draw();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CNFCompanyList", "BasicSetup")',
+            data: JSON.stringify({ Id: 0 }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.status && response.data && response.data.length > 0) {
+                    $.each(response.data, function (i, item) {
+                        cnfTable.row.add([
+                            item.borderName,
+                            item.cnfCompnayName,
+                            `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
+                             <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
+                        ]).draw(false);
+                    });
+                }
+            },
+            error: function () {
+                alert("Failed to load data.");
+            }
+        });
+    }
+
+</script>
+
 
 

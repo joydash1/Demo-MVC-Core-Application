@@ -98,53 +98,95 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-                $(document).on("click", "#btnSubmit", function (e) {
-                    e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+            $(document).on("click", "#btnSubmit", function (e) {
+                e.preventDefault();
 
-                    var isValid = true;
+                var isValid = true;
 
-                    function validateField(selector) {
-                        var inputField = $(selector);
-                        var value = inputField.val().trim();
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val().trim();
 
-                        if (value === "") {
-                            inputField.addClass("is-invalid").removeClass("is-valid");
-                            isValid = false;
-                        } else {
-                            inputField.addClass("is-valid").removeClass("is-invalid");
-                        }
-                    }
-
-                    validateField("#txtCategoryName", "Please enter category name");
-
-                    if (!isValid) {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Oops...",
-                            text: "Please fill in all required fields."
-                        });
+                    if (value === "") {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
                     } else {
-                        var Id = $("#btnSubmit").attr("data-id");
-                        var CategoryName = $("#txtCategoryName").val();
-                        var formData = new FormData();
-                        formData.append("Id", Id);
-                        formData.append("CategoryName", CategoryName);
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+
+                validateField("#txtCategoryName", "Please enter category name");
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please fill in all required fields."
+                    });
+                } else {
+                    var Id = $("#btnSubmit").attr("data-id");
+                    var CategoryName = $("#txtCategoryName").val();
+                    var formData = new FormData();
+                    formData.append("Id", Id);
+                    formData.append("CategoryName", CategoryName);
+                    $.ajax({
+                        url: '@Url.Action("InsertUpdateCategory", "BasicSetup")',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Success!", response.message, "success").then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                }
+            });
+
+            $("input").on("input", function () {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+            });
+
+            $(document).on("click", ".delete-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to delete this Product Category? This action cannot be undone.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         $.ajax({
-                            url: '@Url.Action("InsertUpdateCategory", "BasicSetup")',
+                            url: '@Url.Action("DeleteCategoryById", "BasicSetup")',
                             type: 'POST',
                             data: formData,
                             processData: false,
                             contentType: false,
                             success: function (response) {
                                 if (response && response.status === true) {
-                                    Swal.fire("Success!", response.message, "success").then(() => {
+                                    Swal.fire("Deleted!", response.message, "success").then(() => {
                                         location.reload();
                                     });
                                 } else {
-                                    Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                                    Swal.fire("Error!", "Failed to delete the record.", "error");
                                 }
                             },
                             error: function () {
@@ -153,75 +195,33 @@
                         });
                     }
                 });
+            });
 
-                $("input").on("input", function () {
-                    $(this).removeClass("is-invalid").addClass("is-valid");
-                });
+            $(document).on("click", ".edit-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
 
-                $(document).on("click", ".delete-btn", function () {
-                    var Id = $(this).attr("data-id");
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-
-                    Swal.fire({
-                        title: "Are you sure?",
-                        text: "Do you really want to delete this Product Category? This action cannot be undone.",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#3085d6",
-                        confirmButtonText: "Yes, delete it!",
-                        cancelButtonText: "Cancel"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: '@Url.Action("DeleteCategoryById", "BasicSetup")',
-                                type: 'POST',
-                                data: formData,
-                                processData: false,
-                                contentType: false,
-                                success: function (response) {
-                                    if (response && response.status === true) {
-                                        Swal.fire("Deleted!", response.message, "success").then(() => {
-                                            location.reload();
-                                        });
-                                    } else {
-                                        Swal.fire("Error!", "Failed to delete the record.", "error");
-                                    }
-                                },
-                                error: function () {
-                                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                                }
-                            });
+                $.ajax({
+                    url: '@Url.Action("GetCategoryById", "BasicSetup")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                                var d = response.data[0];
+                                $("#btnSubmit").attr("data-id", d.id);
+                                $("#txtCategoryName").val(d.categoryName);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch category details.", "error");
                         }
-                    });
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
                 });
+            });
+    });
+</script>
 
-                $(document).on("click", ".edit-btn", function () {
-                    var Id = $(this).attr("data-id");
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-
-                    $.ajax({
-                        url: '@Url.Action("GetCategoryById", "BasicSetup")',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            if (response && response.status === true) {
-                                    var d = response.data[0];
-                                    $("#btnSubmit").attr("data-id", d.id);
-                                    $("#txtCategoryName").val(d.categoryName);
-                            } else {
-                                Swal.fire("Error!", "Failed to fetch category details.", "error");
-                            }
-                        },
-                        error: function () {
-                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                        }
-                    });
-                });
-        });
-    </script>
-}

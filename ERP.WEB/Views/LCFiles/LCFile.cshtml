@@ -239,93 +239,135 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on("change","#cmbBank",function(){
-                GetOrgAccByBank();
-            });
-             $(document).on("click", "#btnSubmit", function (e) {
-                e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on("change","#cmbBank",function(){
+            GetOrgAccByBank();
+        });
+         $(document).on("click", "#btnSubmit", function (e) {
+            e.preventDefault();
 
-                var isValid = true;
+            var isValid = true;
 
-                function validateField(selector) {
-                    var inputField = $(selector);
-                    var value = inputField.val()?.trim() || "";
-                    var isDropdown = inputField.is("select");
+            function validateField(selector) {
+                var inputField = $(selector);
+                var value = inputField.val()?.trim() || "";
+                var isDropdown = inputField.is("select");
 
-                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
-
-
-                validateField(".txtOpeningDate", "Please enter Opening date");
-                validateField("#txtLCNumber", "Please enter LC Number");
-                validateField("#cmbBank", "Please select bank");
-                validateField("#cmbExporter", "Please select exporter");
-                validateField("#cmbImporter", "Please select importer");
-                validateField("#cmbProduct", "Please select product");
-                validateField("#txtProductWeight", "Please enter weight");
-                validateField("#txtPrice", "Please enter price");
-                validateField("#cmbInsurance", "Please select insurance");
-                validateField("#cmbBorder", "Please select border");
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
+                if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                    inputField.addClass("is-invalid").removeClass("is-valid");
+                    isValid = false;
                 } else {
-                    //txtOpeningDate txtLCNumber cmbBank spnBranch data-branchId  spnAccountNo cmbExporter
-                    //cmbImporter cmbProduct txtProductWeight txtPrice txtTotalPrice cmbInsurance cmbBorder
-                    var Id = $("#btnSubmit").attr("data-id");
-                    var OpeningDate = $(".txtOpeningDate").val();
-                    var LCNumber = $("#txtLCNumber").val();
-                    var OrganizationBankId = $("#cmbBank option:selected").val();
-                    var OrganizationBranchId = $("#spnBranch").attr("data-branchId");
-                    var OrganizationAccountNo = $("#spnAccountNo").html();
-                    var InsuranceId = $("#cmbInsurance option:selected").val();
-                    var ProductWeightTon = $("#txtProductWeight").val();
-                    var AmountPerTon = $("#txtPrice").val();
-                    var TotalLCAmount = $("#txtTotalPrice").html();
-                    var ProductId = $("#cmbProduct option:selected").val();
-                    var BorderId = $("#cmbBorder option:selected").val();
-                    var ImporterId = $("#cmbImporter option:selected").val();
-                    var ExporterId = $("#cmbExporter option:selected").val();
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-                    formData.append("OpeningDate", OpeningDate);
-                    formData.append("LCNumber", LCNumber);
-                    formData.append("OrganizationBankId", OrganizationBankId);
-                    formData.append("OrganizationBranchId", OrganizationBranchId);
-                    formData.append("OrganizationAccountNo", OrganizationAccountNo);
-                    formData.append("InsuranceId", InsuranceId);
-                    formData.append("ProductWeightTon", ProductWeightTon);
-                    formData.append("AmountPerTon", AmountPerTon);
-                    formData.append("TotalLCAmount", TotalLCAmount);
-                    formData.append("ProductId", ProductId);
-                    formData.append("BorderId", BorderId);
-                    formData.append("ImporterId", ImporterId);
-                    formData.append("ExporterId", ExporterId);
+                    inputField.addClass("is-valid").removeClass("is-invalid");
+                }
+            }
+
+
+            validateField(".txtOpeningDate", "Please enter Opening date");
+            validateField("#txtLCNumber", "Please enter LC Number");
+            validateField("#cmbBank", "Please select bank");
+            validateField("#cmbExporter", "Please select exporter");
+            validateField("#cmbImporter", "Please select importer");
+            validateField("#cmbProduct", "Please select product");
+            validateField("#txtProductWeight", "Please enter weight");
+            validateField("#txtPrice", "Please enter price");
+            validateField("#cmbInsurance", "Please select insurance");
+            validateField("#cmbBorder", "Please select border");
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please fill in all required fields."
+                });
+            } else {
+                //txtOpeningDate txtLCNumber cmbBank spnBranch data-branchId  spnAccountNo cmbExporter
+                //cmbImporter cmbProduct txtProductWeight txtPrice txtTotalPrice cmbInsurance cmbBorder
+                var Id = $("#btnSubmit").attr("data-id");
+                var OpeningDate = $(".txtOpeningDate").val();
+                var LCNumber = $("#txtLCNumber").val();
+                var OrganizationBankId = $("#cmbBank option:selected").val();
+                var OrganizationBranchId = $("#spnBranch").attr("data-branchId");
+                var OrganizationAccountNo = $("#spnAccountNo").html();
+                var InsuranceId = $("#cmbInsurance option:selected").val();
+                var ProductWeightTon = $("#txtProductWeight").val();
+                var AmountPerTon = $("#txtPrice").val();
+                var TotalLCAmount = $("#txtTotalPrice").html();
+                var ProductId = $("#cmbProduct option:selected").val();
+                var BorderId = $("#cmbBorder option:selected").val();
+                var ImporterId = $("#cmbImporter option:selected").val();
+                var ExporterId = $("#cmbExporter option:selected").val();
+                var formData = new FormData();
+                formData.append("Id", Id);
+                formData.append("OpeningDate", OpeningDate);
+                formData.append("LCNumber", LCNumber);
+                formData.append("OrganizationBankId", OrganizationBankId);
+                formData.append("OrganizationBranchId", OrganizationBranchId);
+                formData.append("OrganizationAccountNo", OrganizationAccountNo);
+                formData.append("InsuranceId", InsuranceId);
+                formData.append("ProductWeightTon", ProductWeightTon);
+                formData.append("AmountPerTon", AmountPerTon);
+                formData.append("TotalLCAmount", TotalLCAmount);
+                formData.append("ProductId", ProductId);
+                formData.append("BorderId", BorderId);
+                formData.append("ImporterId", ImporterId);
+                formData.append("ExporterId", ExporterId);
+                $.ajax({
+                    url: '@Url.Action("InsertUpdateLCTransaction", "LCFiles")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                            Swal.fire("Success!", response.message, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            }
+        });
+
+        $("input").on("input", function () {
+            $(this).removeClass("is-invalid").addClass("is-valid");
+        });
+
+        $(document).on("click", ".delete-btn", function () {
+            var Id = $(this).attr("data-id");
+            var formData = new FormData();
+            formData.append("Id", Id);
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete this LC? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
                     $.ajax({
-                        url: '@Url.Action("InsertUpdateLCTransaction", "LCFiles")',
+                        url: '@Url.Action("DeleteLCTransactionById", "LCFiles")',
                         type: 'POST',
                         data: formData,
                         processData: false,
                         contentType: false,
                         success: function (response) {
                             if (response && response.status === true) {
-                                Swal.fire("Success!", response.message, "success").then(() => {
+                                Swal.fire("Deleted!", response.message, "success").then(() => {
                                     location.reload();
                                 });
                             } else {
-                                Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                                Swal.fire("Error!", "Failed to delete the record.", "error");
                             }
                         },
                         error: function () {
@@ -334,125 +376,83 @@
                     });
                 }
             });
-
-            $("input").on("input", function () {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-            });
-
-            $(document).on("click", ".delete-btn", function () {
-                var Id = $(this).attr("data-id");
-                var formData = new FormData();
-                formData.append("Id", Id);
-
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this LC? This action cannot be undone.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '@Url.Action("DeleteLCTransactionById", "LCFiles")',
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function (response) {
-                                if (response && response.status === true) {
-                                    Swal.fire("Deleted!", response.message, "success").then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("Error!", "Failed to delete the record.", "error");
-                                }
-                            },
-                            error: function () {
-                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                            }
-                        });
-                    }
-                });
-            });
-
-            $(document).on("click", ".edit-btn", function () {
-                var Id = $(this).attr("data-id");
-                var formData = new FormData();
-                formData.append("Id", Id);
-                $.ajax({
-                    url: '@Url.Action("GetLCTransactionById", "LCFiles")',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                    console.log("Full Response: ", response);
-                        if (response && response.status === true && Array.isArray(response.data) && response.data.length > 0) {
-                            var d = response.data[0];
-                            $("#btnSubmit").attr("data-id", d.Id);
-                            $(".txtOpeningDate").val(d.OpeningDate);
-                            $("#txtLCNumber").val(d.LCNumber);
-                            $("#cmbBank").val(d.OrganizationBankId).change();
-                            $("#cmbInsurance").val(d.InsuranceId);
-                            $("#txtProductWeight").val(d.ProductWeightTon);
-                            $("#txtPrice").val(d.AmountPerTon);
-                            $("#txtTotalPrice").html(d.TotalLCAmount);
-                            $("#cmbProduct").val(d.ProductId);
-                            $("#cmbBorder").val(d.BorderId);
-                            $("#cmbImporter").val(d.ImporterId);
-                            $("#cmbExporter").val(d.ExporterId);
-                        } else {
-                            Swal.fire("Error!", "Failed to fetch LC details.", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                    }
-                });
-            });
-
-            $(document).on("change", "#txtProductWeight, #txtPrice", function () {
-                var weight = parseFloat($("#txtProductWeight").val());
-                var price = parseFloat($("#txtPrice").val());
-
-                weight = isNaN(weight) ? 0 : weight;
-                price = isNaN(price) ? 0 : price;
-
-                var total = weight * price;
-
-                $("#txtTotalPrice").html(total.toFixed(2));
-            });
-
         });
 
-        function GetOrgAccByBank(){
-            var Id =  $("#cmbBank option:selected").val();
+        $(document).on("click", ".edit-btn", function () {
+            var Id = $(this).attr("data-id");
             var formData = new FormData();
             formData.append("Id", Id);
             $.ajax({
-                url: '@Url.Action("GetOrganizationBankAccByBankId", "LCFiles")',
+                url: '@Url.Action("GetLCTransactionById", "LCFiles")',
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    if (response && response.status === true) {
-                       var d = response.data[0];
-                       //spnBranch data-branchId spnAccountNo
-                       $("#spnBranch").html(d.branchName);
-                       $("#spnBranch").attr("data-branchId",d.branchId);
-                       $("#spnAccountNo").html(d.bankAccountNo);
+                console.log("Full Response: ", response);
+                    if (response && response.status === true && Array.isArray(response.data) && response.data.length > 0) {
+                        var d = response.data[0];
+                        $("#btnSubmit").attr("data-id", d.Id);
+                        $(".txtOpeningDate").val(d.OpeningDate);
+                        $("#txtLCNumber").val(d.LCNumber);
+                        $("#cmbBank").val(d.OrganizationBankId).change();
+                        $("#cmbInsurance").val(d.InsuranceId);
+                        $("#txtProductWeight").val(d.ProductWeightTon);
+                        $("#txtPrice").val(d.AmountPerTon);
+                        $("#txtTotalPrice").html(d.TotalLCAmount);
+                        $("#cmbProduct").val(d.ProductId);
+                        $("#cmbBorder").val(d.BorderId);
+                        $("#cmbImporter").val(d.ImporterId);
+                        $("#cmbExporter").val(d.ExporterId);
                     } else {
-                        Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                        Swal.fire("Error!", "Failed to fetch LC details.", "error");
                     }
                 },
                 error: function () {
                     Swal.fire("Error!", "Something went wrong. Please try again.", "error");
                 }
             });
-        }
-    </script>
-}
+        });
+
+        $(document).on("change", "#txtProductWeight, #txtPrice", function () {
+            var weight = parseFloat($("#txtProductWeight").val());
+            var price = parseFloat($("#txtPrice").val());
+
+            weight = isNaN(weight) ? 0 : weight;
+            price = isNaN(price) ? 0 : price;
+
+            var total = weight * price;
+
+            $("#txtTotalPrice").html(total.toFixed(2));
+        });
+
+    });
+
+    function GetOrgAccByBank(){
+        var Id =  $("#cmbBank option:selected").val();
+        var formData = new FormData();
+        formData.append("Id", Id);
+        $.ajax({
+            url: '@Url.Action("GetOrganizationBankAccByBankId", "LCFiles")',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response && response.status === true) {
+                   var d = response.data[0];
+                   //spnBranch data-branchId spnAccountNo
+                   $("#spnBranch").html(d.branchName);
+                   $("#spnBranch").attr("data-branchId",d.branchId);
+                   $("#spnAccountNo").html(d.bankAccountNo);
+                } else {
+                    Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                }
+            },
+            error: function () {
+                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+            }
+        });
+    }
+</script>
+

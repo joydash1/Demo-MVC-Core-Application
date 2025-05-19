@@ -63,37 +63,36 @@
         </div>
     </div>
 </form>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#loginForm").on("click",function (e) {
-                var email = $("#email").val().trim();
-                var pass = $("#password").val().trim();
-                if (email == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter email"
-                    });
-                }
-                if (pass == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter password"
-                    });
-                }
-                if (!$("#customCheckc1").is(":checked")) {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please check 'Keep me signed in' before logging in!"
-                    });
-                }
-            });
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#loginForm").on("click",function (e) {
+            var email = $("#email").val().trim();
+            var pass = $("#password").val().trim();
+            if (email == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter email"
+                });
+            }
+            if (pass == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter password"
+                });
+            }
+            if (!$("#customCheckc1").is(":checked")) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please check 'Keep me signed in' before logging in!"
+                });
+            }
         });
-    </script>
-}
+    });
+</script>

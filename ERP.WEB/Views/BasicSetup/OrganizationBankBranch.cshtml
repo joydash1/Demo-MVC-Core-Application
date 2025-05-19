@@ -147,107 +147,107 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on("change","#cmbBank",function(){
-                GetBranchByBank();
-            })
-            $("#btnSubmit").on("click", function (e) {
-                e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on("change","#cmbBank",function(){
+            GetBranchByBank();
+        })
+        $("#btnSubmit").on("click", function (e) {
+            e.preventDefault();
 
-                var isValid = true;
+            var isValid = true;
 
-               function validateField(selector) {
-                    var inputField = $(selector);
-                    var value = inputField.val()?.trim() || "";
-                    var isDropdown = inputField.is("select");
+           function validateField(selector) {
+                var inputField = $(selector);
+                var value = inputField.val()?.trim() || "";
+                var isDropdown = inputField.is("select");
 
-                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
-
-                validateField("#cmbOrganization", "Please select bank");
-                validateField("#cmbBank", "Please select bank");
-                validateField("#cmbBranch", "Please select branch");
-                validateField("#txtAccountNo", "Please enter routing no");
-
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
+                if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                    inputField.addClass("is-invalid").removeClass("is-valid");
+                    isValid = false;
                 } else {
-                    $("form").submit();
+                    inputField.addClass("is-valid").removeClass("is-invalid");
                 }
-            });
+            }
 
-            $("input").on("input", function () {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-            });
+            validateField("#cmbOrganization", "Please select bank");
+            validateField("#cmbBank", "Please select bank");
+            validateField("#cmbBranch", "Please select branch");
+            validateField("#txtAccountNo", "Please enter routing no");
 
-            $(document).on('click', ".delete-btn", function () {
-                var Id = $(this).attr("data-id");
+
+            if (!isValid) {
                 Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this bank account? This action cannot be undone.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "/BasicSetup/DeleteOrganizationBankBranchById?id=" + Id,
-                            type: "GET",
-                            success: function (response) {
-                                if (response && response.status === true) {
-                                    Swal.fire("Deleted!", response.message, "success").then(() => {
-                                       window.location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("Error!", "Failed to delete the account.", "error");
-                                }
-                            },
-                            error: function () {
-                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                            }
-                        });
-                    }
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please fill in all required fields."
                 });
-            });
+            } else {
+                $("form").submit();
+            }
         });
 
-        function GetBranchByBank(){
-            var Id =  $("#cmbBank option:selected").val();
-             $.ajax({
-                    url: "/BasicSetup/GetBankBranchByBankId?id=" + Id,
-                    type: "GET",
-                    success: function (response) {
-                        if (response && response.status === true) {
-                           var html = "";
-                           html += '<option value="0">select Branch</option>';
-                           $.each(response.data, function(i,d){
-                               html += '<option value='+d.branchId+'>'+d.branchName+'</option>';
-                           });
-                           $("#cmbBranch").html(html);
-                        } else {
-                            Swal.fire("Error!", "Failed to load branch.", "error");
+        $("input").on("input", function () {
+            $(this).removeClass("is-invalid").addClass("is-valid");
+        });
+
+        $(document).on('click', ".delete-btn", function () {
+            var Id = $(this).attr("data-id");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete this bank account? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/BasicSetup/DeleteOrganizationBankBranchById?id=" + Id,
+                        type: "GET",
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Deleted!", response.message, "success").then(() => {
+                                   window.location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "Failed to delete the account.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
                         }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    });
+                }
+            });
+        });
+    });
+
+    function GetBranchByBank(){
+        var Id =  $("#cmbBank option:selected").val();
+         $.ajax({
+                url: "/BasicSetup/GetBankBranchByBankId?id=" + Id,
+                type: "GET",
+                success: function (response) {
+                    if (response && response.status === true) {
+                       var html = "";
+                       html += '<option value="0">select Branch</option>';
+                       $.each(response.data, function(i,d){
+                           html += '<option value='+d.branchId+'>'+d.branchName+'</option>';
+                       });
+                       $("#cmbBranch").html(html);
+                    } else {
+                        Swal.fire("Error!", "Failed to load branch.", "error");
                     }
-                });
-        }
-    </script>
-}
+                },
+                error: function () {
+                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                }
+            });
+    }
+</script>
+
 

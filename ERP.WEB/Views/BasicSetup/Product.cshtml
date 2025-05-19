@@ -57,7 +57,7 @@
                             <input type="text" class="form-control" id="txtProductName" placeholder="Product Name">
                             <label for="txtProductName">Product Name</label>
                         </div>
-                    </div> 
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12 text-center">
@@ -113,56 +113,98 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-                $(document).on("click", "#btnSubmit", function (e) {
-                    e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+            $(document).on("click", "#btnSubmit", function (e) {
+                e.preventDefault();
 
-                    var isValid = true;
+                var isValid = true;
 
-                    function validateField(selector) {
-                        var inputField = $(selector);
-                        var value = inputField.val()?.trim() || "";
-                        var isDropdown = inputField.is("select");
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val()?.trim() || "";
+                    var isDropdown = inputField.is("select");
 
-                        if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                            inputField.addClass("is-invalid").removeClass("is-valid");
-                            isValid = false;
-                        } else {
-                            inputField.addClass("is-valid").removeClass("is-invalid");
-                        }
-                    }
-                    validateField("#cmbCategory", "Please select category");
-                    validateField("#txtProductName", "Please enter product name");
-
-                    if (!isValid) {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Oops...",
-                            text: "Please fill in all required fields."
-                        });
+                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
                     } else {
-                        var Id = $("#btnSubmit").attr("data-id");
-                        var CategoryId = $("#cmbCategory option:selected").val();
-                        var ProductName = $("#txtProductName").val().trim();
-                        var formData = new FormData();
-                        formData.append("Id", Id);
-                        formData.append("CategoryId", CategoryId);
-                        formData.append("ProductName", ProductName);
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+                validateField("#cmbCategory", "Please select category");
+                validateField("#txtProductName", "Please enter product name");
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please fill in all required fields."
+                    });
+                } else {
+                    var Id = $("#btnSubmit").attr("data-id");
+                    var CategoryId = $("#cmbCategory option:selected").val();
+                    var ProductName = $("#txtProductName").val().trim();
+                    var formData = new FormData();
+                    formData.append("Id", Id);
+                    formData.append("CategoryId", CategoryId);
+                    formData.append("ProductName", ProductName);
+                    $.ajax({
+                        url: '@Url.Action("InsertUpdateProduct", "BasicSetup")',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Success!", response.message, "success").then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                }
+            });
+
+            $("input").on("input", function () {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+            });
+
+            $(document).on("click", ".delete-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to delete this Product? This action cannot be undone.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         $.ajax({
-                            url: '@Url.Action("InsertUpdateProduct", "BasicSetup")',
+                            url: '@Url.Action("DeleteProductById", "BasicSetup")',
                             type: 'POST',
                             data: formData,
                             processData: false,
                             contentType: false,
                             success: function (response) {
                                 if (response && response.status === true) {
-                                    Swal.fire("Success!", response.message, "success").then(() => {
+                                    Swal.fire("Deleted!", response.message, "success").then(() => {
                                         location.reload();
                                     });
                                 } else {
-                                    Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                                    Swal.fire("Error!", "Failed to delete the record.", "error");
                                 }
                             },
                             error: function () {
@@ -171,76 +213,34 @@
                         });
                     }
                 });
+            });
 
-                $("input").on("input", function () {
-                    $(this).removeClass("is-invalid").addClass("is-valid");
-                });
+            $(document).on("click", ".edit-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
 
-                $(document).on("click", ".delete-btn", function () {
-                    var Id = $(this).attr("data-id");
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-
-                    Swal.fire({
-                        title: "Are you sure?",
-                        text: "Do you really want to delete this Product? This action cannot be undone.",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#3085d6",
-                        confirmButtonText: "Yes, delete it!",
-                        cancelButtonText: "Cancel"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: '@Url.Action("DeleteProductById", "BasicSetup")',
-                                type: 'POST',
-                                data: formData,
-                                processData: false,
-                                contentType: false,
-                                success: function (response) {
-                                    if (response && response.status === true) {
-                                        Swal.fire("Deleted!", response.message, "success").then(() => {
-                                            location.reload();
-                                        });
-                                    } else {
-                                        Swal.fire("Error!", "Failed to delete the record.", "error");
-                                    }
-                                },
-                                error: function () {
-                                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                                }
-                            });
+                $.ajax({
+                    url: '@Url.Action("GetProductById", "BasicSetup")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                                var d = response.data[0];
+                                $("#btnSubmit").attr("data-id", d.id);
+                                $("#cmbCategory").val(d.categoryId);
+                                $("#txtProductName").val(d.productName);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch product details.", "error");
                         }
-                    });
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
                 });
+            });
+    });
+</script>
 
-                $(document).on("click", ".edit-btn", function () {
-                    var Id = $(this).attr("data-id");
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-
-                    $.ajax({
-                        url: '@Url.Action("GetProductById", "BasicSetup")',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            if (response && response.status === true) {
-                                    var d = response.data[0];
-                                    $("#btnSubmit").attr("data-id", d.id);
-                                    $("#cmbCategory").val(d.categoryId);
-                                    $("#txtProductName").val(d.productName);
-                            } else {
-                                Swal.fire("Error!", "Failed to fetch product details.", "error");
-                            }
-                        },
-                        error: function () {
-                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                        }
-                    });
-                });
-        });
-    </script>
-}

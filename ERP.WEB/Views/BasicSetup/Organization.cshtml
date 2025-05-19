@@ -143,81 +143,81 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#btnSubmit").on("click", function (e) {
-                e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnSubmit").on("click", function (e) {
+            e.preventDefault();
 
-                var isValid = true;
+            var isValid = true;
 
-                function validateField(selector, message) {
-                    var inputField = $(selector);
-                    var value = inputField.val().trim();
+            function validateField(selector, message) {
+                var inputField = $(selector);
+                var value = inputField.val().trim();
 
-                    if (value === "") {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
-
-                validateField("#txtOrganizationName", "Please enter company name");
-                validateField("#txtOwnerName", "Please enter owner name");
-                validateField("#txtMobileNo", "Please enter mobile no");
-                validateField("#txtTinNumber", "Please enter TIN No.");
-                validateField("#txtCompanyAddress", "Please enter Company Address.");
-
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
+                if (value === "") {
+                    inputField.addClass("is-invalid").removeClass("is-valid");
+                    isValid = false;
                 } else {
-                    $("form").submit();
+                    inputField.addClass("is-valid").removeClass("is-invalid");
+                }
+            }
+
+            validateField("#txtOrganizationName", "Please enter company name");
+            validateField("#txtOwnerName", "Please enter owner name");
+            validateField("#txtMobileNo", "Please enter mobile no");
+            validateField("#txtTinNumber", "Please enter TIN No.");
+            validateField("#txtCompanyAddress", "Please enter Company Address.");
+
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please fill in all required fields."
+                });
+            } else {
+                $("form").submit();
+            }
+        });
+
+        $("input").on("input", function () {
+            $(this).removeClass("is-invalid").addClass("is-valid");
+        });
+
+        $(document).on('click', ".delete-btn", function () {
+            var Id = $(this).attr("data-id");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete this organization? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/BasicSetup/DeleteOrganizationById?id=" + Id,
+                        type: "GET",
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Deleted!", response.message, "success").then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "Failed to delete the organization.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
                 }
             });
-
-            $("input").on("input", function () {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-            });
-
-            $(document).on('click', ".delete-btn", function () {
-                var Id = $(this).attr("data-id");
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this organization? This action cannot be undone.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "/BasicSetup/DeleteOrganizationById?id=" + Id,
-                            type: "GET",
-                            success: function (response) {
-                                if (response && response.status === true) {
-                                    Swal.fire("Deleted!", response.message, "success").then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("Error!", "Failed to delete the organization.", "error");
-                                }
-                            },
-                            error: function () {
-                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                            }
-                        });
-                    }
-                });
-            });
-
         });
-    </script>
-}
+
+    });
+</script>
+

@@ -78,7 +78,7 @@
                             <label for="txtEmail">Email Address</label>
                         </div>
                     </div>
-                </div> 
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-0">
@@ -117,7 +117,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                             @if (sellerList.Any())
+                            @if (sellerList.Any())
                             {
                                 @foreach (var seller in sellerList)
                                 {
@@ -147,70 +147,112 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-                $(document).on("click", "#btnSubmit", function (e) {
-                    e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+            $(document).on("click", "#btnSubmit", function (e) {
+                e.preventDefault();
 
-                    var isValid = true;
+                var isValid = true;
 
-                    function validateField(selector) {
-                        var inputField = $(selector);
-                        var value = inputField.val().trim();
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val().trim();
 
-                        if (value === "") {
-                            inputField.addClass("is-invalid").removeClass("is-valid");
-                            isValid = false;
-                        } else {
-                            inputField.addClass("is-valid").removeClass("is-invalid");
-                        }
-                    }
-                    //txtMobile txtEmail
-                    validateField("#txtSellerName", "Please enter seller name");
-                    validateField("#txtShopName", "Please enter shop name");
-                    validateField("#txtAddress", "Please enter address");
-                    validateField("#txtMobile", "Please enter mobile no");
-                    validateField("#txtEmail", "Please enter email address");
-
-                    if (!isValid) {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Oops...",
-                            text: "Please fill in all required fields."
-                        });
+                    if (value === "") {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
                     } else {
-                        var Id = $("#btnSubmit").attr("data-id");
-                        var SellerName = $("#txtSellerName").val();
-                        var ShopName = $("#txtShopName").val();
-                        var Address = $("#txtAddress").val();
-                        var Website = $("#txtWebsite").val();
-                        var TINNumber = $("#txtTIN").val();
-                        var MobileNo = $("#txtMobile").val();
-                        var EmailAddress = $("#txtEmail").val();
-                        var formData = new FormData();
-                        formData.append("Id", Id);
-                        formData.append("SellerName", SellerName);
-                        formData.append("ShopName", ShopName);
-                        formData.append("Address", Address);
-                        formData.append("Website", Website);
-                        formData.append("TINNumber", TINNumber);
-                        formData.append("MobileNo", MobileNo);
-                        formData.append("EmailAddress", EmailAddress);
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+                //txtMobile txtEmail
+                validateField("#txtSellerName", "Please enter seller name");
+                validateField("#txtShopName", "Please enter shop name");
+                validateField("#txtAddress", "Please enter address");
+                validateField("#txtMobile", "Please enter mobile no");
+                validateField("#txtEmail", "Please enter email address");
 
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please fill in all required fields."
+                    });
+                } else {
+                    var Id = $("#btnSubmit").attr("data-id");
+                    var SellerName = $("#txtSellerName").val();
+                    var ShopName = $("#txtShopName").val();
+                    var Address = $("#txtAddress").val();
+                    var Website = $("#txtWebsite").val();
+                    var TINNumber = $("#txtTIN").val();
+                    var MobileNo = $("#txtMobile").val();
+                    var EmailAddress = $("#txtEmail").val();
+                    var formData = new FormData();
+                    formData.append("Id", Id);
+                    formData.append("SellerName", SellerName);
+                    formData.append("ShopName", ShopName);
+                    formData.append("Address", Address);
+                    formData.append("Website", Website);
+                    formData.append("TINNumber", TINNumber);
+                    formData.append("MobileNo", MobileNo);
+                    formData.append("EmailAddress", EmailAddress);
+
+                    $.ajax({
+                        url: '@Url.Action("InsertUpdateBangladeshiSeller", "BuyerSeller")',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Success!", response.message, "success").then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                }
+            });
+
+            $("input").on("input", function () {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+            });
+
+            $(document).on("click", ".delete-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to delete this Bangladeshi seller? This action cannot be undone.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         $.ajax({
-                            url: '@Url.Action("InsertUpdateBangladeshiSeller", "BuyerSeller")',
+                            url: '@Url.Action("DeleteBangladeshiSellerById", "BuyerSeller")',
                             type: 'POST',
                             data: formData,
                             processData: false,
                             contentType: false,
                             success: function (response) {
                                 if (response && response.status === true) {
-                                    Swal.fire("Success!", response.message, "success").then(() => {
+                                    Swal.fire("Deleted!", response.message, "success").then(() => {
                                         location.reload();
                                     });
                                 } else {
-                                    Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                                    Swal.fire("Error!", "Failed to delete the record.", "error");
                                 }
                             },
                             error: function () {
@@ -219,83 +261,41 @@
                         });
                     }
                 });
+            });
 
-                $("input").on("input", function () {
-                    $(this).removeClass("is-invalid").addClass("is-valid");
-                });
+            $(document).on("click", ".edit-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
 
-                $(document).on("click", ".delete-btn", function () {
-                    var Id = $(this).attr("data-id");
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-
-                    Swal.fire({
-                        title: "Are you sure?",
-                        text: "Do you really want to delete this Bangladeshi seller? This action cannot be undone.",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#3085d6",
-                        confirmButtonText: "Yes, delete it!",
-                        cancelButtonText: "Cancel"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: '@Url.Action("DeleteBangladeshiSellerById", "BuyerSeller")',
-                                type: 'POST',
-                                data: formData,
-                                processData: false,
-                                contentType: false,
-                                success: function (response) {
-                                    if (response && response.status === true) {
-                                        Swal.fire("Deleted!", response.message, "success").then(() => {
-                                            location.reload();
-                                        });
-                                    } else {
-                                        Swal.fire("Error!", "Failed to delete the record.", "error");
-                                    }
-                                },
-                                error: function () {
-                                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                                }
-                            });
+                $.ajax({
+                    url: '@Url.Action("GetBangladeshiSellerById", "BuyerSeller")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                                var d = response.data[0];
+                                $("#btnSubmit").attr("data-id", d.id);
+                                $("#txtSellerName").val(d.sellerName);
+                                $("#txtShopName").val(d.shopName);
+                                $("#txtAddress").val(d.address);
+                                $("#txtWebsite").val(d.website);
+                                $("#txtTIN").val(d.tinNumber);
+                                $("#txtMobile").val(d.mobileNo);
+                                $("#txtEmail").val(d.emailAddress);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch seller details.", "error");
                         }
-                    });
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
                 });
+            });
+    });
+</script>
 
-                $(document).on("click", ".edit-btn", function () {
-                    var Id = $(this).attr("data-id");
-                    var formData = new FormData();
-                    formData.append("Id", Id);
-
-                    $.ajax({
-                        url: '@Url.Action("GetBangladeshiSellerById", "BuyerSeller")',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            if (response && response.status === true) {
-                                    var d = response.data[0];
-                                    $("#btnSubmit").attr("data-id", d.id);
-                                    $("#txtSellerName").val(d.sellerName);
-                                    $("#txtShopName").val(d.shopName);
-                                    $("#txtAddress").val(d.address);
-                                    $("#txtWebsite").val(d.website);
-                                    $("#txtTIN").val(d.tinNumber);
-                                    $("#txtMobile").val(d.mobileNo);
-                                    $("#txtEmail").val(d.emailAddress);
-                            } else {
-                                Swal.fire("Error!", "Failed to fetch seller details.", "error");
-                            }
-                        },
-                        error: function () {
-                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                        }
-                    });
-                });
-        });
-    </script>
-}
 
 

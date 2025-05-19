@@ -9,7 +9,7 @@
     var lcFileList = (List<LCTransaction>)ViewBag.LCFileList;
     var cnfCompanyList = (List<CNFCompnay>)ViewBag.CNFCompanyList;
 }
-
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <style type="text/css">
     .row {
         margin-top: 10px !important;
@@ -211,286 +211,288 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("input").on("input", function () {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-            });
-
-            $(document).on("change","#cmbLCNumber",function(){
-                var id = $(this).val();
-                var formData = new FormData();
-                formData.append("Id", id);
-                $.ajax({
-                    url: '@Url.Action("GetLCTransactionInfoById", "ClearingAndFordwingCNF")',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if (response.status === true && response.data.length > 0) {
-                            var d = response.data[0];
-                            $("#spnOrganizatioName").html(d.organizatioName);
-                            $("#spnOpeningDate").html(d.openingDate);
-                            $("#spnProductName").html(d.productName);
-                            $("#spnExporterName").html(d.shopName);
-                            $("#spnTotalLCWeight").html(d.productWeightTon);
-                            $("#spnTotalLCAmount").html(d.totalLCAmount);
-                            $("#spnProductWeightKg").html(d.productWeightKg);
-                            GetClearingAndForwardingList(id);
-                        } else {
-                            Swal.fire("Error!", "Failed to fetch LC data.", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                    }
-                });
-            });
-
-            $(document).on("change","#cmbCNFCompany",function(){
-                var id = $(this).val();
-                var formData = new FormData();
-                formData.append("Id", id);
-                $.ajax({
-                    url: '@Url.Action("GetCNFCompanyById", "BasicSetup")',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if (response.status === true && response.data.length > 0) {
-                            var d = response.data[0];
-                            $("#spncmbCNFBorder").html(d.borderName);
-                        } else {
-                            Swal.fire("Error!", "Failed to fetch LC data.", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                    }
-                });
-            });
-
-                $(document).on('input keyup', '#txtCNFWeight', function () {
-                    $("#ShowHide").show();
-
-                    let totalLCWeight = parseFloat($('#spnTotalLCWeight').text()) || 0;
-                    let cnfWeight = parseFloat($(this).val()) || 0;
-                    let previousWeight = parseFloat($(this).data("previousWeight")) || 0;
-
-                    let adjustedTotalLCWeight = totalLCWeight + previousWeight;
-
-                    if (cnfWeight > adjustedTotalLCWeight) {
-                        $('#weightError').removeClass('d-none').text('CNF weight cannot exceed available LC weight.');
-                        $('#spnRemainingLCWeight').text('');
-                    } else {
-                        $('#weightError').addClass('d-none').text('');
-                        let remainingWeight = adjustedTotalLCWeight - cnfWeight;
-                        $('#spnRemainingLCWeight').text(remainingWeight.toFixed(2));
-                    }
-                });
-
-            $(document).on("click", "#btnSubmit", function (e) {
-                e.preventDefault();
-
-                var isValid = true;
-                function validateField(selector) {
-                    var inputField = $(selector);
-                    var value = inputField.val()?.trim() || "";
-                    var isDropdown = inputField.is("select");
-
-                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
-                //cmbLCNumber txtCNFWeight cmbCNFCompany txtCNFAmount txtCNFile
-                validateField("#cmbLCNumber");
-                validateField("#txtCNFWeight");
-                validateField("#cmbCNFCompany");
-                validateField("#txtCNFAmount");
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
-                    return;
-                }
-                var Id = $("#btnSubmit").attr("data-id");
-                var LCId = $("#cmbLCNumber option:selected").val();
-                var CNFCompanyId = $("#cmbCNFCompany option:selected").val().trim();
-                var CNFWeight = parseFloat($("#txtCNFWeight").val().trim());
-                var CNFAmount = parseFloat($("#txtCNFAmount").val().trim());
-                var LCNumber = $("#cmbLCNumber option:selected").text();
-                var fileInput = $("#txtCNFile")[0];
-                var file = fileInput.files.length > 0 ? fileInput.files[0] : null;
-                
-                if(Id == "0" && file == ""){
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please select CNF File."
-                    });
-                    return;
-                }
-
-
-                var formData = new FormData();
-                formData.append("ID", Id);
-                formData.append("LCId", LCId);
-                formData.append("CNFCompanyId", CNFCompanyId);
-                formData.append("CNFWeight", CNFWeight);
-                formData.append("CNFAmount", CNFAmount);
-                formData.append("LCNumber", LCNumber);
-
-                if (file) {
-                    formData.append("File", file);
-                }
-
-                $.ajax({
-                    url: '@Url.Action("SaveUpdateClearingAndFordwingCNF", "ClearingAndFordwingCNF")',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        console.log(formData);
-                        if (response && response.status === true) {
-                            Swal.fire("Success!", response.message, "success").then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire("Error!", "There is something wrong. Please try again.", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                    }
-                });
-            });
-
-            $(document).on("click", ".delete-btn", function () {
-                var Id = $(this).attr("data-id");
-                var formData = new FormData();
-                formData.append("Id", Id);
-
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this CNF? This action cannot be undone.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '@Url.Action("DeleteClearingAndFordwingById", "ClearingAndFordwingCNF")',
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function (response) {
-                                if (response && response.status === true) {
-                                    Swal.fire("Deleted!", response.message, "success").then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("Error!", "Failed to delete the record.", "error");
-                                }
-                            },
-                            error: function () {
-                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                            }
-                        });
-                    }
-                  });
-                });
-
-            $(document).on("click", ".edit-btn", function () {
-                var Id = $(this).attr("data-id");
-                var formData = new FormData();
-                formData.append("Id", Id);
-                $.ajax({
-                    url: '@Url.Action("GetClearingAndFordwingById", "ClearingAndFordwingCNF")',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                    console.log("Full Response: ", response);
-                        if (response && response.status === true && Array.isArray(response.data) && response.data.length > 0) {
-                            var d = response.data[0];
-                            console.log(d);
-                            $("#btnSubmit").attr("data-id", d.id);
-                            $("#cmbLCNumber").val(d.lcId);
-                            $("#cmbCNFCompany").val(d.cnfCompanyId).change();
-                            $("#txtCNFWeight").val(d.cnfWeight);
-                            $("#ShowHide").hide();
-                            $("#txtCNFWeight").data("previousWeight", parseFloat(d.cnfWeight) || 0);
-                            $("#txtCNFAmount").val(d.cnfAmount);
-                        } else {
-                            Swal.fire("Error!", "Failed to fetch Clearing & Fordwing Information.", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                    }
-                });
-            });
-            cnfTable = $('#autofill').DataTable({
-                destroy: true,
-                responsive: true,
-                createdRow: function (row, data, dataIndex) {
-                   $('td', row).addClass('text-center');
-                }
-            });
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("input").on("input", function () {
+            $(this).removeClass("is-invalid").addClass("is-valid");
         });
-        function GetClearingAndForwardingList(id) {
-            cnfTable.clear().draw();
+
+        $(document).on("change","#cmbLCNumber",function(){
+            var id = $(this).val();
             var formData = new FormData();
-            formData.append("LCId", id);
+            formData.append("Id", id);
             $.ajax({
-                url: '@Url.Action("ClearingAndFordwingList", "ClearingAndFordwingCNF")',
+                url: '@Url.Action("GetLCTransactionInfoById", "ClearingAndFordwingCNF")',
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    if (response.status && response.data && response.data.length > 0) {
-                        let totalCNFWeight = response.data[0].totalCNFWeightByLC;
-                        let totalCNFAmount = response.data[0].totalCNFAmountByLC;
-
-                        console.log(totalCNFWeight);
-                        $.each(response.data, function (i, item) {
-                            console.log(response.data);
-                            cnfTable.row.add([
-                                item.lcNumber,
-                                item.companyName,
-                                item.borderName,
-                                item.cnfWeight,
-                                item.cnfAmount,
-                                item.cnfDate,
-                                `<a href="${item.cnfDocumentFile}" target="_blank" style="text-decoration: underline; color: #007bff;">View Document</a>`,
-                                `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
-                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
-                            ]).draw(false);
-                        });
-                         $('#totalCNFWeight').html(totalCNFWeight.toFixed(2));
-                         $('#totalCNFAmount').html(totalCNFAmount.toFixed(2));
+                    if (response.status === true && response.data.length > 0) {
+                        var d = response.data[0];
+                        $("#spnOrganizatioName").html(d.organizatioName);
+                        $("#spnOpeningDate").html(d.openingDate);
+                        $("#spnProductName").html(d.productName);
+                        $("#spnExporterName").html(d.shopName);
+                        $("#spnTotalLCWeight").html(d.productWeightTon);
+                        $("#spnTotalLCAmount").html(d.totalLCAmount);
+                        $("#spnProductWeightKg").html(d.productWeightKg);
+                        GetClearingAndForwardingList(id);
+                    } else {
+                        Swal.fire("Error!", "Failed to fetch LC data.", "error");
                     }
                 },
                 error: function () {
-                    alert("Failed to load data.");
+                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
                 }
             });
-        }
-    </script>
-}
+        });
+
+        $(document).on("change","#cmbCNFCompany",function(){
+            var id = $(this).val();
+            var formData = new FormData();
+            formData.append("Id", id);
+            $.ajax({
+                url: '@Url.Action("GetCNFCompanyById", "BasicSetup")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === true && response.data.length > 0) {
+                        var d = response.data[0];
+                        $("#spncmbCNFBorder").html(d.borderName);
+                    } else {
+                        Swal.fire("Error!", "Failed to fetch LC data.", "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                }
+            });
+        });
+
+        $(document).on('input keyup', '#txtCNFWeight', function () {
+                $("#ShowHide").show();
+
+                let totalLCWeight = parseFloat($('#spnTotalLCWeight').text()) || 0;
+                let cnfWeight = parseFloat($(this).val()) || 0;
+                let previousWeight = parseFloat($(this).data("previousWeight")) || 0;
+
+                let adjustedTotalLCWeight = totalLCWeight + previousWeight;
+
+                if (cnfWeight > adjustedTotalLCWeight) {
+                    $('#weightError').removeClass('d-none').text('CNF weight cannot exceed available LC weight.');
+                    $('#spnRemainingLCWeight').text('');
+                } else {
+                    $('#weightError').addClass('d-none').text('');
+                    let remainingWeight = adjustedTotalLCWeight - cnfWeight;
+                    $('#spnRemainingLCWeight').text(remainingWeight.toFixed(2));
+                }
+            });
+
+        $(document).on("click", "#btnSubmit", function (e) {
+            e.preventDefault();
+
+            var isValid = true;
+            function validateField(selector) {
+                var inputField = $(selector);
+                var value = inputField.val()?.trim() || "";
+                var isDropdown = inputField.is("select");
+
+                if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                    inputField.addClass("is-invalid").removeClass("is-valid");
+                    isValid = false;
+                } else {
+                    inputField.addClass("is-valid").removeClass("is-invalid");
+                }
+            }
+            //cmbLCNumber txtCNFWeight cmbCNFCompany txtCNFAmount txtCNFile
+            validateField("#cmbLCNumber");
+            validateField("#txtCNFWeight");
+            validateField("#cmbCNFCompany");
+            validateField("#txtCNFAmount");
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please fill in all required fields."
+                });
+                return;
+            }
+            var Id = $("#btnSubmit").attr("data-id");
+            var LCId = $("#cmbLCNumber option:selected").val();
+            var CNFCompanyId = $("#cmbCNFCompany option:selected").val().trim();
+            var CNFWeight = parseFloat($("#txtCNFWeight").val().trim());
+            var CNFAmount = parseFloat($("#txtCNFAmount").val().trim());
+            var LCNumber = $("#cmbLCNumber option:selected").text();
+            var fileInput = $("#txtCNFile")[0];
+            var file = fileInput.files.length > 0 ? fileInput.files[0] : null;
+
+            if(Id == "0" && file == ""){
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please select CNF File."
+                });
+                return;
+            }
+
+
+            var formData = new FormData();
+            formData.append("ID", Id);
+            formData.append("LCId", LCId);
+            formData.append("CNFCompanyId", CNFCompanyId);
+            formData.append("CNFWeight", CNFWeight);
+            formData.append("CNFAmount", CNFAmount);
+            formData.append("LCNumber", LCNumber);
+
+            if (file) {
+                formData.append("File", file);
+            }
+
+            $.ajax({
+                url: '@Url.Action("SaveUpdateClearingAndFordwingCNF", "ClearingAndFordwingCNF")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(formData);
+                    if (response && response.status === true) {
+                        Swal.fire("Success!", response.message, "success").then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                }
+            });
+        });
+
+        $(document).on("click", ".delete-btn", function () {
+            var Id = $(this).attr("data-id");
+            var formData = new FormData();
+            formData.append("Id", Id);
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete this CNF? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteClearingAndFordwingById", "ClearingAndFordwingCNF")',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Deleted!", response.message, "success").then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "Failed to delete the record.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                }
+              });
+            });
+
+        $(document).on("click", ".edit-btn", function () {
+            var Id = $(this).attr("data-id");
+            var formData = new FormData();
+            formData.append("Id", Id);
+            $.ajax({
+                url: '@Url.Action("GetClearingAndFordwingById", "ClearingAndFordwingCNF")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                console.log("Full Response: ", response);
+                    if (response && response.status === true && Array.isArray(response.data) && response.data.length > 0) {
+                        var d = response.data[0];
+                        console.log(d);
+                        $("#btnSubmit").attr("data-id", d.id);
+                        $("#cmbLCNumber").val(d.lcId);
+                        $("#cmbCNFCompany").val(d.cnfCompanyId).change();
+                        $("#txtCNFWeight").val(d.cnfWeight);
+                        $("#ShowHide").hide();
+                        $("#txtCNFWeight").data("previousWeight", parseFloat(d.cnfWeight) || 0);
+                        $("#txtCNFAmount").val(d.cnfAmount);
+                    } else {
+                        Swal.fire("Error!", "Failed to fetch Clearing & Fordwing Information.", "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                }
+            });
+        });
+        
+        cnfTable = $('#autofill').DataTable({
+            destroy: true,
+            responsive: true,
+            createdRow: function (row, data, dataIndex) {
+               $('td', row).addClass('text-center');
+            }
+        });
+    });
+    function GetClearingAndForwardingList(id) {
+        cnfTable.clear().draw();
+        var formData = new FormData();
+        formData.append("LCId", id);
+        $.ajax({
+            url: '@Url.Action("ClearingAndFordwingList", "ClearingAndFordwingCNF")',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status && response.data && response.data.length > 0) {
+                    let totalCNFWeight = response.data[0].totalCNFWeightByLC;
+                    let totalCNFAmount = response.data[0].totalCNFAmountByLC;
+
+                    console.log(totalCNFWeight);
+                    $.each(response.data, function (i, item) {
+                        console.log(response.data);
+                        cnfTable.row.add([
+                            item.lcNumber,
+                            item.companyName,
+                            item.borderName,
+                            item.cnfWeight,
+                            item.cnfAmount,
+                            item.cnfDate,
+                            `<a href="${item.cnfDocumentFile}" target="_blank" style="text-decoration: underline; color: #007bff;">View Document</a>`,
+                            `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
+                             <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
+                        ]).draw(false);
+                    });
+                     $('#totalCNFWeight').html(totalCNFWeight.toFixed(2));
+                     $('#totalCNFAmount').html(totalCNFAmount.toFixed(2));
+                }
+            },
+            error: function () {
+                alert("Failed to load data.");
+            }
+        });
+    }
+</script>

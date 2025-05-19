@@ -125,106 +125,106 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            //GetBankBranchList();
-            $("#btnSubmit").on("click", function (e) {
-                e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //GetBankBranchList();
+        $("#btnSubmit").on("click", function (e) {
+            e.preventDefault();
 
-                var isValid = true;
-                
-                function validateField(selector) {
-                    var inputField = $(selector);
-                    var value = inputField.val()?.trim() || "";
-                    var isDropdown = inputField.is("select");
+            var isValid = true;
 
-                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
+            function validateField(selector) {
+                var inputField = $(selector);
+                var value = inputField.val()?.trim() || "";
+                var isDropdown = inputField.is("select");
 
-                validateField("#cmbBank", "Please select bank");
-                validateField("#txtBranchName", "Please enter branch name");
-                validateField("#txtRoutingNo", "Please enter routing no");
-
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
+                if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                    inputField.addClass("is-invalid").removeClass("is-valid");
+                    isValid = false;
                 } else {
-                    $("form").submit();
+                    inputField.addClass("is-valid").removeClass("is-invalid");
                 }
-            });
+            }
 
-            $("input").on("input", function () {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-            });
+            validateField("#cmbBank", "Please select bank");
+            validateField("#txtBranchName", "Please enter branch name");
+            validateField("#txtRoutingNo", "Please enter routing no");
 
-            $(document).on('click', ".delete-btn", function () {
-                var Id = $(this).attr("data-id");
+
+            if (!isValid) {
                 Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this branch? This action cannot be undone.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "/BasicSetup/DeleteBranchById?id=" + Id,
-                            type: "GET",
-                            success: function (response) {
-                                if (response && response.status === true) {
-                                    Swal.fire("Deleted!", response.message, "success").then(() => {
-                                       window.location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("Error!", "Failed to delete the branch.", "error");
-                                }
-                            },
-                            error: function () {
-                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                            }
-                        });
-                    }
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please fill in all required fields."
                 });
+            } else {
+                $("form").submit();
+            }
+        });
+
+        $("input").on("input", function () {
+            $(this).removeClass("is-invalid").addClass("is-valid");
+        });
+
+        $(document).on('click', ".delete-btn", function () {
+            var Id = $(this).attr("data-id");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete this branch? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/BasicSetup/DeleteBranchById?id=" + Id,
+                        type: "GET",
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Deleted!", response.message, "success").then(() => {
+                                   window.location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "Failed to delete the branch.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                }
             });
         });
-        // function GetBankBranchList(){
-        //     $("#tblBankBranch").html("");
-        //     $.ajax({
-        //         url: "/Home/GetBankBranchList",
-        //         type: "GET",
-        //         success: function (response) {
-        //             if (response && response.status === true) {
-        //                 var html ="";
-        //                 $.each(response.dataList, function(i,d){
-        //                     html += '<tr>';
-        //                     html += '<td class="text-center">'+d.bankName+'</td>';
-        //                     html += '<td class="text-center">'+d.branchName+'</td>';
-        //                     html += '<td class="text-center">'+d.routingNo+'</td>';
-        //                     html += '<td class="text-center"><a class="btn btn-sm btn-danger delete-btn" data-id="'+d.id+'"><i class="ti ti-archive"></i></a></td>';
-        //                     html += '</tr>';
-        //                 });
-        //                 $("#tblBankBranch").html(html);
-        //             } else {
-        //                 Swal.fire("Error!", "Failed to load data.", "error");
-        //             }
-        //         },
-        //         error: function () {
-        //             Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-        //         }
-        //     });
-        //}
-    </script>
-}
+    });
+    // function GetBankBranchList(){
+    //     $("#tblBankBranch").html("");
+    //     $.ajax({
+    //         url: "/Home/GetBankBranchList",
+    //         type: "GET",
+    //         success: function (response) {
+    //             if (response && response.status === true) {
+    //                 var html ="";
+    //                 $.each(response.dataList, function(i,d){
+    //                     html += '<tr>';
+    //                     html += '<td class="text-center">'+d.bankName+'</td>';
+    //                     html += '<td class="text-center">'+d.branchName+'</td>';
+    //                     html += '<td class="text-center">'+d.routingNo+'</td>';
+    //                     html += '<td class="text-center"><a class="btn btn-sm btn-danger delete-btn" data-id="'+d.id+'"><i class="ti ti-archive"></i></a></td>';
+    //                     html += '</tr>';
+    //                 });
+    //                 $("#tblBankBranch").html(html);
+    //             } else {
+    //                 Swal.fire("Error!", "Failed to load data.", "error");
+    //             }
+    //         },
+    //         error: function () {
+    //             Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+    //         }
+    //     });
+    //}
+</script>
+

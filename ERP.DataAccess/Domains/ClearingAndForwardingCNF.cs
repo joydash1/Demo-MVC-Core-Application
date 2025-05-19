@@ -12,6 +12,7 @@ namespace ERP.DataAccess.Domains
         public decimal CNFWeight { get; set; }
         public decimal CNFAmount { get; set; }
         public string CNFDocumentFile { get; set; }
+        public bool IsFullPaid { get; set; } = false;
         public int EntryUserId { get; set; }
         public DateTime EntryDate { get; set; }
         public int? UpdateUserId { get; set; }

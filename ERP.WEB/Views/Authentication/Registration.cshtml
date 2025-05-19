@@ -80,7 +80,7 @@
                                     <input type="file" asp-for="Image" id="profilePictureInput" class="form-control" accept="image/*">
                                 </div>
                             </div>
-                          @*   <div class="col-md-6">
+                            @*   <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label class="form-label">User Role</label>
                                     <selct class="form-select" id="cmbUserRole">
@@ -125,122 +125,121 @@
         </div>
     </div>
 </form>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#profilePictureInput").on("change", function (event) {
-                var file = event.target.files[0];
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#profilePictureInput").on("change", function (event) {
+            var file = event.target.files[0];
 
-                if (file) {
-                    var reader = new FileReader();
+            if (file) {
+                var reader = new FileReader();
 
-                    reader.onload = function (e) {
-                        $("#profilePreview").attr("src", e.target.result);
-                        $(".preview-div").show();
-                    };
+                reader.onload = function (e) {
+                    $("#profilePreview").attr("src", e.target.result);
+                    $(".preview-div").show();
+                };
 
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            $("#confirmPassword").on("keyup", function () {
-                var password = $("#password").val();
-                var confirmPassword = $(this).val();
-
-                if (password !== confirmPassword) {
-                    $("#passwordError").show();
-                } else {
-                    $("#passwordError").hide();
-                }
-            });
-
-            $(".toggle-password").click(function () {
-                var target = $($(this).attr("data-target"));
-                var type = target.attr("type") === "password" ? "text" : "password";
-                target.attr("type", type);
-                $(this).toggleClass("fa-eye fa-eye-slash");
-            });
-
-            $(document).on("click","#btnRegistration", function (e) {
-                var firstName = $("#name").val().trim();
-                var title = $("#title").val().trim();
-                var employeeCode = $("#code").val().trim();
-                var mobileNo = $("#mobile").val().trim();
-                var email = $("#email").val().trim();
-                var password = $("#password").val().trim();
-                var confirmPassword = $("#confirmPassword").val().trim();
-                if (firstName == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter your Name"
-                    });
-                    return false;
-                }
-                if (title == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter your job title"
-                    });
-                    return false;
-                }
-                if (employeeCode == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter your Employee Code"
-                    });
-                    return false;
-                }
-                if (mobileNo == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter your Mobile No"
-                    });
-                    return false;
-                }
-                if (email == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter your Email"
-                    });
-                    return false;
-                }
-                if (password == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter your Password"
-                    });
-                    return false;
-                }
-                if (confirmPassword == "") {
-                    e.preventDefault();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please enter your Confirm Password"
-                    });
-                    return false;
-                }
-                if (password !== confirmPassword) {
-                    e.preventDefault();
-                    $("#passwordError").show();
-                    return false;
-                } else {
-                    $("#passwordError").hide();
-                }
-            });
-
+                reader.readAsDataURL(file);
+            }
         });
-    </script>
-}
+
+        $("#confirmPassword").on("keyup", function () {
+            var password = $("#password").val();
+            var confirmPassword = $(this).val();
+
+            if (password !== confirmPassword) {
+                $("#passwordError").show();
+            } else {
+                $("#passwordError").hide();
+            }
+        });
+
+        $(".toggle-password").click(function () {
+            var target = $($(this).attr("data-target"));
+            var type = target.attr("type") === "password" ? "text" : "password";
+            target.attr("type", type);
+            $(this).toggleClass("fa-eye fa-eye-slash");
+        });
+
+        $(document).on("click","#btnRegistration", function (e) {
+            var firstName = $("#name").val().trim();
+            var title = $("#title").val().trim();
+            var employeeCode = $("#code").val().trim();
+            var mobileNo = $("#mobile").val().trim();
+            var email = $("#email").val().trim();
+            var password = $("#password").val().trim();
+            var confirmPassword = $("#confirmPassword").val().trim();
+            if (firstName == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter your Name"
+                });
+                return false;
+            }
+            if (title == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter your job title"
+                });
+                return false;
+            }
+            if (employeeCode == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter your Employee Code"
+                });
+                return false;
+            }
+            if (mobileNo == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter your Mobile No"
+                });
+                return false;
+            }
+            if (email == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter your Email"
+                });
+                return false;
+            }
+            if (password == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter your Password"
+                });
+                return false;
+            }
+            if (confirmPassword == "") {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please enter your Confirm Password"
+                });
+                return false;
+            }
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                $("#passwordError").show();
+                return false;
+            } else {
+                $("#passwordError").hide();
+            }
+        });
+
+    });
+</script>

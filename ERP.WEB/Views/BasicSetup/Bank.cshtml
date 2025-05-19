@@ -10,20 +10,22 @@
     .row {
         margin-top: 10px !important;
     }
-    .card{
+
+    .card {
         border: 1px solid #1890ff !important;
         border-radius: var(--bs-card-border-radius);
         box-shadow: var(--bs-card-box-shadow);
     }
-    .card .card-header {
-        border-bottom: 1px solid #1890ff !important;
-    }
 
-    table.table-bordered.dataTable thead tr:first-child th, table.table-bordered.dataTable thead tr:first-child{
+        .card .card-header {
+            border-bottom: 1px solid #1890ff !important;
+        }
+
+    table.table-bordered.dataTable thead tr:first-child th, table.table-bordered.dataTable thead tr:first-child {
         border: 1px solid #1890ff !important;
     }
 
-    .table > tbody{
+    .table > tbody {
         border: 11px solid #1890ff !important;
     }
 </style>
@@ -96,77 +98,77 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#btnSubmit").on("click", function (e) {
-                e.preventDefault();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnSubmit").on("click", function (e) {
+            e.preventDefault();
 
-                var isValid = true;
+            var isValid = true;
 
-                function validateField(selector, message) {
-                    var inputField = $(selector);
-                    var value = inputField.val().trim();
+            function validateField(selector, message) {
+                var inputField = $(selector);
+                var value = inputField.val().trim();
 
-                    if (value === "") {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
-
-                validateField("#txtBankName", "Please enter bank name");
-
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
+                if (value === "") {
+                    inputField.addClass("is-invalid").removeClass("is-valid");
+                    isValid = false;
                 } else {
-                    $("form").submit();
+                    inputField.addClass("is-valid").removeClass("is-invalid");
+                }
+            }
+
+            validateField("#txtBankName", "Please enter bank name");
+
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please fill in all required fields."
+                });
+            } else {
+                $("form").submit();
+            }
+        });
+
+        $("input").on("input", function () {
+            $(this).removeClass("is-invalid").addClass("is-valid");
+        });
+
+        $(document).on('click', ".delete-btn", function () {
+            var Id = $(this).attr("data-id");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete this bank? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/BasicSetup/DeleteBankById?id=" + Id,
+                        type: "GET",
+                        success: function (response) {
+                            if (response && response.status === true) {
+                                Swal.fire("Deleted!", response.message, "success").then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "Failed to delete the organization.", "error");
+                            }
+                        },
+                        error: function () {
+                            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                        }
+                    });
                 }
             });
-
-            $("input").on("input", function () {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-            });
-
-            $(document).on('click', ".delete-btn", function () {
-                var Id = $(this).attr("data-id");
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this bank? This action cannot be undone.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "/BasicSetup/DeleteBankById?id=" + Id,
-                            type: "GET",
-                            success: function (response) {
-                                if (response && response.status === true) {
-                                    Swal.fire("Deleted!", response.message, "success").then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire("Error!", "Failed to delete the organization.", "error");
-                                }
-                            },
-                            error: function () {
-                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                            }
-                        });
-                    }
-                });
-            });
-
         });
-    </script>
-}
+
+    });
+</script>
+

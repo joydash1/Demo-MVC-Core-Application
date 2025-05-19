@@ -1,6 +1,7 @@
 ﻿using ERP.DataAccess.Domains;
 using ERP.DataAccess.DTOs.APIResponses;
 using ERP.DataAccess.DTOs.ClearingAndFordwingCNF;
+using ERP.DataAccess.DTOs.ClearingAndForwardingCNF;
 using ERP.DataAccess.DTOs.LC_Open;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
@@ -72,7 +73,7 @@ namespace ERP.WEB.Controllers
                 {
                     var ext = Path.GetExtension(save.File.FileName);
                     var fileName = Guid.NewGuid().ToString() + ext;
-                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","CNFDocuments",save.LCNumber);
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "CNFDocuments", save.LCNumber);
 
                     if (!Directory.Exists(folderPath))
                         Directory.CreateDirectory(folderPath);
@@ -212,6 +213,30 @@ namespace ERP.WEB.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetNonPaidCnfPaymentList()
+        {
+            try
+            {
+                var data = await _spService.GetDataWithoutParameterAsync<NonPaidCNFPaymentListDtos>("USP_GET_CNF_PAYMENT_LIST");
+
+                return Json(new ResponseListResult<List<NonPaidCNFPaymentListDtos>>
+                {
+                    Status = true,
+                    Data = (List<NonPaidCNFPaymentListDtos>)data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = false,
+                    Message = ex.GetBaseException()
+                });
+            }
+        }
+
         #endregion CNF Payment
+
     }
 }

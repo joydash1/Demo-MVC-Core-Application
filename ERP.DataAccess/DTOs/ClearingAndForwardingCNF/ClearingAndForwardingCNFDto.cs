@@ -11,7 +11,7 @@ namespace ERP.DataAccess.DTOs.ClearingAndFordwingCNF
         public decimal CNFWeight { get; set; }
         public decimal CNFAmount { get; set; }
         public string CNFDocumentFile { get; set; }
-
+        public int? IsFullPaid { get; set; }
         public string? LCNumber { get; set; }
         public string? CompanyName { get; set; }
         public string? CNFDate { get; set; }

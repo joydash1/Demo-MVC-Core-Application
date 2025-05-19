@@ -55,7 +55,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="dt-responsive table-responsive">
-                            <table id="autofill" class="table table-striped table-bordered nowrap">
+                            <table class="table table-striped table-bordered nowrap">
                                 <thead>
                                     <tr>
                                         <th class="text-center">LC Number</th>
@@ -74,127 +74,139 @@
                 <label style="color:#1890ff; font-weight:800;">CNF Payment List</label>
                 <hr />
                 <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnLCNumbers"></span>
+                            <label for="spnLCNumbers">LC Numbers</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <span type="text" class="form-control" id="spnTotalPayableAmount"></span>
+                            <label for="spnTotalPayableAmount">Total Amount</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="row mt-4">
                     <div class="col-md-12 text-center">
-                        <button type="button" id="btnSubmit" data-id="0" class="btn btn-primary px-4 py-2">Save</button>
+                        <button type="button" id="btnSubmit" data-CMFId="" data-id="0" class="btn btn-primary px-4 py-2">Save</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("input").on("input", function () {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-            });
-            $(document).on("click", "#btnSubmit", function (e) {
-                e.preventDefault();
-
-                var isValid = true;
-                function validateField(selector) {
-                    var inputField = $(selector);
-                    var value = inputField.val()?.trim() || "";
-                    var isDropdown = inputField.is("select");
-
-                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                        inputField.addClass("is-invalid").removeClass("is-valid");
-                        isValid = false;
-                    } else {
-                        inputField.addClass("is-valid").removeClass("is-invalid");
-                    }
-                }
-                //cmbLCNumber txtCNFWeight cmbCNFCompany
-                validateField("#cmbLCNumber");
-                validateField("#txtCNFWeight");
-                validateField("#cmbCNFCompany");
-
-                if (!isValid) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Please fill in all required fields."
-                    });
-                    return;
-                }
-                var Id = $("#btnSubmit").attr("data-id");
-                var LCId = $("#cmbLCNumber option:selected").val();
-                var CNFCompanyId = $("#cmbCNFCompany option:selected").val().trim();
-                var CNFWeight = parseFloat($("#txtCNFWeight").val().trim());
-
-
-
-
-                var formData = new FormData();
-                formData.append("ID", Id);
-                formData.append("LCId", LCId);
-                formData.append("CNFCompanyId", CNFCompanyId);
-                formData.append("CNFWeight", CNFWeight);
-                $.ajax({
-                    url: '@Url.Action("SaveUpdateClearingAndFordwingCNF", "ClearingAndFordwingCNF")',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        console.log(formData);
-                        if (response && response.status === true) {
-                            Swal.fire("Success!", response.message, "success").then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire("Error!", "There is something wrong. Please try again.", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                    }
-                });
-            });
-
-            cnfTable = $('#autofill').DataTable({
-                destroy: true,
-                responsive: true,
-                paging: false,
-                info: false,
-                lengthChange: false,
-                createdRow: function (row, data, dataIndex) {
-                   $('td', row).addClass('text-center');
-                }
-            });
-            GetClearingAndForwardingList();
+<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("input").on("input", function () {
+            $(this).removeClass("is-invalid").addClass("is-valid");
         });
-        function GetClearingAndForwardingList() {
-            cnfTable.clear().draw();
-            var formData = new FormData();
-            formData.append("LCId", 0);
-            $.ajax({
-                url: '@Url.Action("ClearingAndFordwingList", "ClearingAndFordwingCNF")',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.status && response.data && response.data.length > 0) {
-                        
-                        $.each(response.data, function (i, item) {
-                            console.log(response.data);
-                            cnfTable.row.add([
-                                item.lcNumber,
-                                item.cnfWeight,
-                                item.cnfAmount,
-                                item.cnfDate,
-                                `<a data-id='${item.id}'><input class="form-check-input input-success" type="checkbox" id="customCheckc3"></a>`
-                            ]).draw(false);
-                        });
-                    }
-                },
-                error: function () {
-                    alert("Failed to load data.");
+        GetNonPaidCnfPaymentList();
+        let totalAmount = 0;
+
+        $(document).on("click", ".btn-pay", function () {
+            const $btn = $(this);
+            const $row = $btn.closest("tr");
+            const id = $btn.data("id");
+
+            // Add to data-CMFId
+            const $submitBtn = $("#btnSubmit");
+            let ids = $submitBtn.attr("data-CMFId").split(',').filter(x => x);
+            if (!ids.includes(String(id))) {
+                ids.push(id);
+            }
+            $submitBtn.attr("data-CMFId", ids.join(','));
+
+            // Get data
+            const lcNumber = $row.find("td:eq(0)").text().trim();
+            const cnfAmount = parseFloat($row.find("td:eq(2)").text().trim());
+
+            // Highlight the row
+            $row.css("background-color", "#f8d7da");
+
+            // Append LC Number
+            const $lcNumbers = $("#spnLCNumbers");
+            const currentLCs = $lcNumbers.text().trim().split(", ").filter(x => x);
+            if (!currentLCs.includes(lcNumber)) {
+                currentLCs.push(lcNumber);
+            }
+            $lcNumbers.text(currentLCs.join(", "));
+
+            // Add amount
+            totalAmount += isNaN(cnfAmount) ? 0 : cnfAmount;
+            $("#spnTotalPayableAmount").text(totalAmount.toFixed(2));
+
+            // Toggle buttons
+            $btn.hide();
+            $btn.after(`<a class="btn btn-danger btn-sm btn-delete" data-id="${id}" data-amount="${cnfAmount}" data-lc="${lcNumber}">Delete</a>`);
+        });
+
+        $(document).on("click", ".btn-delete", function () {
+            const $btn = $(this);
+            const $row = $btn.closest("tr");
+            const id = $btn.data("id");
+
+            // Remove from data-CMFId
+            const $submitBtn = $("#btnSubmit");
+            let ids = $submitBtn.attr("data-CMFId").split(',').filter(x => x && x !== String(id));
+            $submitBtn.attr("data-CMFId", ids.join(','));
+
+            const cnfAmount = parseFloat($btn.data("amount"));
+            const lcNumber = String($btn.data("lc")).trim();
+
+            // Unhighlight row
+            $row.css("background-color", "");
+
+            // Remove LC Number
+            const $lcNumbers = $("#spnLCNumbers");
+            let currentLCs = $lcNumbers.text().trim().split(", ")
+                .map(x => x.trim())
+                .filter(x => x && x !== lcNumber);
+            $lcNumbers.text(currentLCs.join(", "));
+
+            // Subtract amount
+            totalAmount -= isNaN(cnfAmount) ? 0 : cnfAmount;
+            $("#spnTotalPayableAmount").text(totalAmount.toFixed(2));
+
+            // Toggle buttons
+            $row.find(".btn-pay").show();
+            $btn.remove();
+        });
+    });
+
+    function GetNonPaidCnfPaymentList() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetNonPaidCnfPaymentList", "ClearingAndFordwingCNF")',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (res) {
+                if (res.status) {
+                    const tbody = $("#tblClearingAndForwarding");
+                    tbody.empty();
+                    console.log("Response Data:", res.data);
+                    $.each(res.data, function (i, item) {
+                        const row = `
+                            <tr>
+                                <td class="text-center" data-lcId=${item.lcId}>${item.lcNumber}</td>
+                                <td class="text-center">${item.cnfWeight}</td>
+                                <td class="text-center">${item.cnfAmount}</td>
+                                <td class="text-center">${item.cnfDate}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-success btn-sm btn-pay" data-id="${item.id}">Pay</a>
+                                </td>
+                            </tr>`;
+                        tbody.append(row);
+                    });
+                } else {
+                    alert("Error: " + res.Message);
                 }
-            });
-        }
-    </script>
-}
+            },
+            error: function (xhr, status, error) {
+                alert("AJAX Error: " + error);
+            }
+        });
+    }
+
+</script>
