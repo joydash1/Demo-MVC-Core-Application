@@ -1,5 +1,6 @@
 ﻿using ERP.DataAccess.Domains;
 using ERP.DataAccess.DTOs.APIResponses;
+using ERP.DataAccess.DTOs.BankBranch;
 using ERP.DataAccess.DTOs.ClearingAndFordwingCNF;
 using ERP.DataAccess.DTOs.ClearingAndForwardingCNF;
 using ERP.DataAccess.DTOs.LC_Open;
@@ -210,6 +211,7 @@ namespace ERP.WEB.Controllers
         {
             ViewBag.LCFileList = await _unitOfWork.LCFileRepository.GetAllAsync(x => x.IsActive == true);
             ViewBag.CollectionModeList = await _unitOfWork.CollectionModeRepository.GetAllAsync(x => x.IsActive == 1);
+            ViewBag.OrganizationBankAccountList = await _spService.GetDataWithoutParameterAsync<OrganizationAccountListDto>("USP_GET_ORGANIZATION_BANK_ACCOUNT_LIST").ToListAsync();
             return View();
         }
 

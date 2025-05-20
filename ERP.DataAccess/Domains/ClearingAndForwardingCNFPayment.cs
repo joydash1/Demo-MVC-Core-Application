@@ -7,12 +7,9 @@ namespace ERP.DataAccess.Domains
         [Key]
         public int ID { get; set; }
 
-        public int CNFId { get; set; }
-        public int CNFCompanyId { get; set; }
-        public int? CollectionModeId { get; set; }
-        public int? BankId { get; set; }
-        public int? BranchId { get; set; }
-        public string? RoutingNo { get; set; }
+        public string CNFId { get; set; }
+        public decimal TotalAmount { get; set; }
+
         public decimal PaidAmount { get; set; }
         public decimal? DueAmount { get; set; }
         public int EntryUserId { get; set; }
