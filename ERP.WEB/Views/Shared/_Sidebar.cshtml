@@ -1,0 +1,228 @@
+﻿<!-- [ Sidebar Menu ] start -->
+<nav class="pc-sidebar">
+    <div class="navbar-wrapper">
+        <div class="m-header">
+            <a asp-action="Index" asp-controller="Home" class="b-brand text-primary">
+                <img src="~/assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
+            </a>
+        </div>
+        <div class="navbar-content">
+            <ul class="pc-navbar">
+                <li class="pc-item">
+                    <a asp-action="Index" asp-controller="Home" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+                        <span class="pc-mtext">Dashboard</span>
+                    </a>
+                    <hr />
+                </li>
+                <!-- Basic Setup -->
+                <li class="pc-item pc-hasmenu">
+                    <a href="#" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                            Basic Setup
+                        </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item">
+                            <a asp-action="Organization" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-building-community"></i></span>
+                                <span class="pc-mtext">Organization</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="Bank" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-building-bank"></i></span>
+                                <span class="pc-mtext">Bank</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="Branch" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-building-bank"></i></span>
+                                <span class="pc-mtext">Bank Branch</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="OrganizationBankBranch" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-report-money"></i></span>
+                                <span class="pc-mtext">Account Setup</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="Category" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-apps"></i></span>
+                                <span class="pc-mtext">Product Category</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="Product" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-brand-producthunt"></i></span>
+                                <span class="pc-mtext">Product</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="Insurance" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-float-left"></i></span>
+                                <span class="pc-mtext">Insurance</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="Border" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-flag"></i></span>
+                                <span class="pc-mtext">Border</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="CNFCompany" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-smart-home"></i></span>
+                                <span class="pc-mtext">CNF Company</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--Buyer And Seller -->
+                <li class="pc-item pc-hasmenu">
+                    <a href="#" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                            Buyer & Seller Setup
+                        </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item">
+                            <a asp-action="IndianBuyer" asp-controller="BuyerSeller" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-user"></i></span>
+                                <span class="pc-mtext">Indian Buyer</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="BangladeshiSeller" asp-controller="BuyerSeller" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-user"></i></span>
+                                <span class="pc-mtext">Bangladeshi Seller</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--LC Opening -->
+                <li class="pc-item pc-hasmenu">
+                    <a href="#" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                            LC Open
+                        </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item">
+                            <a asp-action="LCFile" asp-controller="LCFiles" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-file-text"></i></span>
+                                <span class="pc-mtext">LC File Open</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--CMF File Opening -->
+                <li class="pc-item pc-hasmenu">
+                    <a href="#" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                            Clearing & Forwarding
+                        </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item">
+                            <a asp-action="Index" asp-controller="ClearingAndFordwingCNF" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-apps"></i></span>
+                                <span class="pc-mtext">CNF</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="CNFPayment" asp-controller="ClearingAndFordwingCNF" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-currency-dollar"></i></span>
+                                <span class="pc-mtext">CNF Payment</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                @*    <li class="pc-item pc-hasmenu">
+                        <a href="#" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Product Stock
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a asp-action="Stock" asp-controller="ProductStock" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-building-warehouse"></i></span>
+                                    <span class="pc-mtext">Warehouse</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li> *@
+                <!-- Authenticatios -->
+                @* <li class="pc-item pc-caption">
+                        <label>Authenticatios</label>
+                        <i class="ti ti-news"></i>
+                        ti ti-letter-b
+                    </li> *@
+                <li class="pc-item pc-hasmenu">
+                    <a href="#" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                            Authenticatios
+                        </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item">
+                            <a asp-action="Registration" asp-controller="Authentication" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
+                                <span class="pc-mtext">User Registration</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--Project Report-->
+                <li class="pc-item pc-hasmenu">
+                    <a href="#" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                            Reports
+                        </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item">
+                            <a asp-action="ShowReport" asp-controller="Home" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-file-report"></i></span>
+                                <span class="pc-mtext">Organization Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!--Database Backup-->
+                <li class="pc-item pc-hasmenu">
+                    <a href="#" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                            Database Backup
+                        </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item">
+                            <a asp-action="BackupDatabase" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-letter-b"></i></span>
+                                <span class="pc-mtext">Backup</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="DownloadDatabase" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-download"></i></span>
+                                <span class="pc-mtext">Download</span>
+                            </a>
+                        </li>
+                        <li class="pc-item">
+                            <a asp-action="DemoBulkInsert" asp-controller="BasicSetup" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-radioactive"></i></span>
+                                <span class="pc-mtext">Bulk Insert</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- [ Sidebar Menu ] end --> 
