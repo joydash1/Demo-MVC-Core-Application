@@ -17,6 +17,8 @@ namespace ERP.DataAccess.Domains
         public int? BankId { get; set; }
         public int? BranchId { get; set; }
         public string? RoutingNo { get; set; }
+
+        public string? ChequeNo { get; set; }
         public decimal Amount { get; set; }
         public int EntryUserId { get; set; }
         public DateTime EntryDate { get; set; }
