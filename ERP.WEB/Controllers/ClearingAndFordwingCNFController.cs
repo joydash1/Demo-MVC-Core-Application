@@ -212,6 +212,7 @@ namespace ERP.WEB.Controllers
             ViewBag.LCFileList = await _unitOfWork.LCFileRepository.GetAllAsync(x => x.IsActive == true);
             ViewBag.CollectionModeList = await _unitOfWork.CollectionModeRepository.GetAllAsync(x => x.IsActive == 1);
             ViewBag.OrganizationBankAccountList = await _spService.GetDataWithoutParameterAsync<OrganizationAccountListDto>("USP_GET_ORGANIZATION_BANK_ACCOUNT_LIST").ToListAsync();
+            ViewBag.CNFCompanyList = await _unitOfWork.CNFCompanyRepository.GetAllAsync(x => x.IsActive == true);
             return View();
         }
 
@@ -220,7 +221,7 @@ namespace ERP.WEB.Controllers
         {
             try
             {
-                var data = await _spService.GetDataWithoutParameterAsync<NonPaidCNFPaymentListDtos>("USP_GET_CNF_PAYMENT_LIST");
+                var data = await _spService.GetDataWithoutParameterAsync<NonPaidCNFPaymentListDtos>("USP_GET_DUE_CNF_PAYMENT_LIST_BY_CNF_COMPANY");
 
                 return Json(new ResponseListResult<List<NonPaidCNFPaymentListDtos>>
                 {
@@ -239,6 +240,5 @@ namespace ERP.WEB.Controllers
         }
 
         #endregion CNF Payment
-
     }
 }
