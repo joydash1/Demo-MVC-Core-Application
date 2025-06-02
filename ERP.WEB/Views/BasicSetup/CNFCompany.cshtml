@@ -109,11 +109,10 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(document).on("click", "#btnSubmit", function (e) {-
+@section Scripts {
+ <script type="text/javascript">
+    jQuery(document).ready(function($){
+        $(document).on("click", "#btnSubmit", function (e) {
              e.preventDefault();
 
             var isValid = true;
@@ -189,7 +188,7 @@
                 cancelButtonText: "Cancel"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.ajax({
+                   $.ajax({
                         url: '@Url.Action("DeleteCNFCompanyById", "BasicSetup")',
                         type: 'POST',
                         data: formData,
@@ -240,56 +239,30 @@
         });
 
         cnfTable = $('#autofill').DataTable({
-            destroy: true,
-            responsive: true,
-            createdRow: function (row, data, dataIndex) {
-               $('td', row).addClass('text-center');
-            }
+                destroy: true,
+                responsive: true,
+                columns: [
+                    { title: "Border Name" },
+                    { title: "CNF Company" },
+                    { title: "Actions" }
+                ],
+                createdRow: function (row, data, dataIndex) {
+                    $('td', row).addClass('text-center');
+                }
         });
         GetCNFCompanyList();
     });
-    // function GetCNFCompanyList(){
-    //     $("#tblCnfCompany").html("");
-    //     $.ajax({
-    //         type: "POST",
-    //         url: '@Url.Action("CNFCompanyList", "BasicSetup")',
-    //         data: JSON.stringify({ Id: 0 }),
-    //         contentType: "application/json; charset=utf-8",
-    //         success: function (response) {
-    //             if (response.status && response.data && response.data.length > 0) {
-    //                 console.log(response.data);
-    //                 $.each(response.data, function (i, item) {
-    //                     let row = `
-    //                         <tr>
-    //                             <td class="text-center">${item.borderName}</td>
-    //                             <td class="text-center">${item.cnfCompnayName}</td>
-    //                             <td class="text-center">
-    //                                 <button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
-    //                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>
-    //                             </td>
-    //                         </tr>`;
-    //                     $("#tblCnfCompany").append(row);
-    //                 });
-    //             } else {
-    //                 $("#tblCnfCompany").html(`<tr><td colspan="3" class="text-center text-danger">No data found.</td></tr>`);
-    //             }
-    //         },
-    //         error: function () {
-    //             alert("Failed to load data.");
-    //         }
-    //     });
-    // }
     function GetCNFCompanyList() {
         cnfTable.clear().draw();
 
-        $.ajax({
+        jQuery.ajax({
             type: "POST",
             url: '@Url.Action("CNFCompanyList", "BasicSetup")',
             data: JSON.stringify({ Id: 0 }),
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.status && response.data && response.data.length > 0) {
-                    $.each(response.data, function (i, item) {
+                   jQuery.each(response.data, function (i, item) {
                         cnfTable.row.add([
                             item.borderName,
                             item.cnfCompnayName,
@@ -306,6 +279,7 @@
     }
 
 </script>
+}
 
 
 
