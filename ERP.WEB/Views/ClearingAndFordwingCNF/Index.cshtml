@@ -44,7 +44,16 @@
     hr {
         border-top: 2px solid #1890ff;
     }
-</style>
+
+    div.dataTables_wrapper div.dataTables_filter label {
+        margin-bottom:10px;
+    }
+
+    div.dataTables_wrapper div.dataTables_length select {
+        width: 50px !important;
+        display: inline-block !important;
+    }
+</style> 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -211,11 +220,9 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+@section Scripts {
 <script type="text/javascript">
-    $(document).ready(function () {
+    jQuery(document).ready(function($){
         $("input").on("input", function () {
             $(this).removeClass("is-invalid").addClass("is-valid");
         });
@@ -294,87 +301,177 @@
                 }
             });
 
+        // $(document).on("click", "#btnSubmit", function (e) {
+        //     e.preventDefault();
+
+        //     var isValid = true;
+        //     function validateField(selector) {
+        //         var inputField = $(selector);
+        //         var value = inputField.val()?.trim() || "";
+        //         var isDropdown = inputField.is("select");
+
+        //         if (value === "" || value === "0" || (isDropdown && value === "0")) {
+        //             inputField.addClass("is-invalid").removeClass("is-valid");
+        //             isValid = false;
+        //         } else {
+        //             inputField.addClass("is-valid").removeClass("is-invalid");
+        //         }
+        //     }
+        //     //cmbLCNumber txtCNFWeight cmbCNFCompany txtCNFAmount txtCNFile
+        //     validateField("#cmbLCNumber");
+        //     validateField("#txtCNFWeight");
+        //     validateField("#cmbCNFCompany");
+        //     validateField("#txtCNFAmount");
+
+        //     if (!isValid) {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: "Oops...",
+        //             text: "Please fill in all required fields."
+        //         });
+        //         return;
+        //     }
+        //     var Id = $("#btnSubmit").attr("data-id");
+        //     var LCId = $("#cmbLCNumber option:selected").val();
+        //     var CNFCompanyId = $("#cmbCNFCompany option:selected").val().trim();
+        //     var CNFWeight = parseFloat($("#txtCNFWeight").val().trim());
+        //     var CNFAmount = parseFloat($("#txtCNFAmount").val().trim());
+        //     var LCNumber = $("#cmbLCNumber option:selected").text();
+        //     var fileInput = $("#txtCNFile")[0];
+        //     var file = fileInput.files.length > 0 ? fileInput.files[0] : null;
+
+        //     if(Id == "0" && file == ""){
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: "Oops...",
+        //             text: "Please select CNF File."
+        //         });
+        //         return;
+        //     }
+
+
+        //     var formData = new FormData();
+        //     formData.append("ID", Id);
+        //     formData.append("LCId", LCId);
+        //     formData.append("CNFCompanyId", CNFCompanyId);
+        //     formData.append("CNFWeight", CNFWeight);
+        //     formData.append("CNFAmount", CNFAmount);
+        //     formData.append("LCNumber", LCNumber);
+
+        //     if (file) {
+        //         formData.append("File", file);
+        //     }
+
+        //     $.ajax({
+        //         url: '@Url.Action("SaveUpdateClearingAndFordwingCNF", "ClearingAndFordwingCNF")',
+        //         type: 'POST',
+        //         data: formData,
+        //         processData: false,
+        //         contentType: false,
+        //         success: function (response) {
+        //             console.log(formData);
+        //             if (response && response.status === true) {
+        //                 Swal.fire("Success!", response.message, "success").then(() => {
+        //                     location.reload();
+        //                 });
+        //             } else {
+        //                 Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+        //             }
+        //         },
+        //         error: function () {
+        //             Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+        //         }
+        //     });
+        // });
         $(document).on("click", "#btnSubmit", function (e) {
-            e.preventDefault();
+                e.preventDefault();
 
-            var isValid = true;
-            function validateField(selector) {
-                var inputField = $(selector);
-                var value = inputField.val()?.trim() || "";
-                var isDropdown = inputField.is("select");
+                var isValid = true;
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val()?.trim() || "";
+                    var isDropdown = inputField.is("select");
 
-                if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                    inputField.addClass("is-invalid").removeClass("is-valid");
-                    isValid = false;
-                } else {
-                    inputField.addClass("is-valid").removeClass("is-invalid");
-                }
-            }
-            //cmbLCNumber txtCNFWeight cmbCNFCompany txtCNFAmount txtCNFile
-            validateField("#cmbLCNumber");
-            validateField("#txtCNFWeight");
-            validateField("#cmbCNFCompany");
-            validateField("#txtCNFAmount");
-
-            if (!isValid) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Please fill in all required fields."
-                });
-                return;
-            }
-            var Id = $("#btnSubmit").attr("data-id");
-            var LCId = $("#cmbLCNumber option:selected").val();
-            var CNFCompanyId = $("#cmbCNFCompany option:selected").val().trim();
-            var CNFWeight = parseFloat($("#txtCNFWeight").val().trim());
-            var CNFAmount = parseFloat($("#txtCNFAmount").val().trim());
-            var LCNumber = $("#cmbLCNumber option:selected").text();
-            var fileInput = $("#txtCNFile")[0];
-            var file = fileInput.files.length > 0 ? fileInput.files[0] : null;
-
-            if(Id == "0" && file == ""){
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Please select CNF File."
-                });
-                return;
-            }
-
-
-            var formData = new FormData();
-            formData.append("ID", Id);
-            formData.append("LCId", LCId);
-            formData.append("CNFCompanyId", CNFCompanyId);
-            formData.append("CNFWeight", CNFWeight);
-            formData.append("CNFAmount", CNFAmount);
-            formData.append("LCNumber", LCNumber);
-
-            if (file) {
-                formData.append("File", file);
-            }
-
-            $.ajax({
-                url: '@Url.Action("SaveUpdateClearingAndFordwingCNF", "ClearingAndFordwingCNF")',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    console.log(formData);
-                    if (response && response.status === true) {
-                        Swal.fire("Success!", response.message, "success").then(() => {
-                            location.reload();
-                        });
+                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
                     } else {
-                        Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                        inputField.addClass("is-valid").removeClass("is-invalid");
                     }
-                },
-                error: function () {
-                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
                 }
-            });
+                //cmbLCNumber txtCNFWeight cmbCNFCompany txtCNFAmount txtCNFile
+                validateField("#cmbLCNumber");
+                validateField("#txtCNFWeight");
+                validateField("#cmbCNFCompany");
+                validateField("#txtCNFAmount");
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please fill in all required fields."
+                    });
+                    return;
+                }
+                var Id = $("#btnSubmit").attr("data-id");
+                var LCId = $("#cmbLCNumber option:selected").val();
+                var CNFCompanyId = $("#cmbCNFCompany option:selected").val().trim();
+                var CNFWeight = parseFloat($("#txtCNFWeight").val().trim());
+                var CNFAmount = parseFloat($("#txtCNFAmount").val().trim());
+                var LCNumber = $("#cmbLCNumber option:selected").text();
+                var fileInput = $("#txtCNFile")[0];
+                var file = fileInput.files.length > 0 ? fileInput.files[0] : null;
+
+                if(Id == "0" && file == ""){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Please select CNF File."
+                    });
+                    return;
+                }
+
+
+                var formData = new FormData();
+                formData.append("ID", Id);
+                formData.append("LCId", LCId);
+                formData.append("CNFCompanyId", CNFCompanyId);
+                formData.append("CNFWeight", CNFWeight);
+                formData.append("CNFAmount", CNFAmount);
+                formData.append("LCNumber", LCNumber);
+
+                if (file) {
+                    formData.append("File", file);
+                }
+
+                $.ajax({
+                    url: '@Url.Action("SaveUpdateClearingAndFordwingCNF", "ClearingAndFordwingCNF")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                            Swal.fire("Success!", response.message, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            // Check if this is our specific error message
+                            if (response.message && response.message.includes("Cannot update CNF record because payment has already been made")) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Update Not Allowed",
+                                    text: response.message
+                                });
+                            } else {
+                                Swal.fire("Error!", response.message || "There is something wrong. Please try again.", "error");
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
         });
 
         $(document).on("click", ".delete-btn", function () {
@@ -447,20 +544,31 @@
                 }
             });
         });
-        
-        cnfTable = $('#autofill').DataTable({
+
+        dataTable = $('#autofill').DataTable({
             destroy: true,
             responsive: true,
+            columns: [
+                { title: "LC Number" },
+                { title: "CNF Company Name" },
+                { title: "CNF Border" },
+                { title: "CNF Weight (Ton)" },
+                { title: "CNF Amount" },
+                { title: "CNF Date" },
+                { title: "CNF Document" },
+                { title: "Action" }
+            ],
             createdRow: function (row, data, dataIndex) {
-               $('td', row).addClass('text-center');
+                $('td', row).addClass('text-center');
             }
         });
     });
+    
     function GetClearingAndForwardingList(id) {
-        cnfTable.clear().draw();
+        dataTable.clear().draw();
         var formData = new FormData();
         formData.append("LCId", id);
-        $.ajax({
+        jQuery.ajax({
             url: '@Url.Action("ClearingAndFordwingList", "ClearingAndFordwingCNF")',
             type: 'POST',
             data: formData,
@@ -471,10 +579,10 @@
                     let totalCNFWeight = response.data[0].totalCNFWeightByLC;
                     let totalCNFAmount = response.data[0].totalCNFAmountByLC;
 
-                    console.log(totalCNFWeight);
-                    $.each(response.data, function (i, item) {
+                    console.log(response.data);
+                    jQuery.each(response.data, function (i, item) {
                         console.log(response.data);
-                        cnfTable.row.add([
+                        dataTable.row.add([
                             item.lcNumber,
                             item.companyName,
                             item.borderName,
@@ -486,8 +594,8 @@
                              <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
                         ]).draw(false);
                     });
-                     $('#totalCNFWeight').html(totalCNFWeight.toFixed(2));
-                     $('#totalCNFAmount').html(totalCNFAmount.toFixed(2));
+                    jQuery('#totalCNFWeight').html(totalCNFWeight.toFixed(2));
+                    jQuery('#totalCNFAmount').html(totalCNFAmount.toFixed(2));
                 }
             },
             error: function () {
@@ -496,3 +604,4 @@
         });
     }
 </script>
+}
