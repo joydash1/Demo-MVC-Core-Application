@@ -1,4 +1,6 @@
-﻿using ERP.DataAccess.DTOs.Buyer;
+﻿using ERP.DataAccess.Domains;
+using ERP.DataAccess.DTOs.Buyer;
+using ERP.DataAccess.DTOs.ClearingAndFordwingCNF;
 using ERP.DataAccess.DTOs.Seller;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
@@ -138,6 +140,27 @@ namespace ERP.WEB.Controllers
         {
             ViewBag.BangladeshiSellerList = await _spService.GetDataWithParameterAsync<BangladeshiSellerDto>(new { ID = 0 }, "USP_GET_BANGLADESHI_SELLER_LIST").ToListAsync();
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BangladeshiSellerList(BangladeshiSellerDto get)
+        {
+            try
+            {
+                var data = await _spService.GetDataWithParameterAsync<BangladeshiSellerDto>(new { ID = 0 }, "USP_GET_BANGLADESHI_SELLER_LIST").ToListAsync();
+
+                return Json(new ResponseListResult<List<BangladeshiSellerDto>>
+                {
+                    Status = true,
+                    Data = (List<BangladeshiSellerDto>)data
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("BangladeshiSeller", "BuyerSeller");
+            }
         }
 
         [HttpPost]
