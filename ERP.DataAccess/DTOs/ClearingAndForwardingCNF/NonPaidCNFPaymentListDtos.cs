@@ -8,11 +8,12 @@ namespace ERP.DataAccess.DTOs.ClearingAndForwardingCNF
 {
     public class NonPaidCNFPaymentListDtos
     {
-        public int Id { get; set; }
-        public int LCId { get; set; }
-        public decimal CNFWeight { get; set; }
-        public decimal CNFAmount { get; set; }
-        public string CnfDate { get; set; }
+        public int ID { get; set; }
         public string LCNumber { get; set; }
+        public string ProductName { get; set; }
+        public decimal CNFWeight { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal PaidAmount { get; set; }
+        public decimal DueAmount { get; set; }
     }
 }

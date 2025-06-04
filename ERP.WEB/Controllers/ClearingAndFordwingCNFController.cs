@@ -288,16 +288,21 @@ namespace ERP.WEB.Controllers
             ViewBag.CollectionModeList = await _unitOfWork.CollectionModeRepository.GetAllAsync(x => x.IsActive == 1);
             ViewBag.OrganizationBankAccountList = await _spService.GetDataWithoutParameterAsync<OrganizationAccountListDto>("USP_GET_ORGANIZATION_BANK_ACCOUNT_LIST").ToListAsync();
             ViewBag.CNFCompanyList = await _unitOfWork.CNFCompanyRepository.GetAllAsync(x => x.IsActive == true);
+            ViewBag.BankList = await _unitOfWork.BankRepository.GetAllAsync(x => x.IsActive == true);
+            ViewBag.BranchList = await _unitOfWork.BankBranchRepository.GetAllAsync(x => x.IsActive == true);
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetNonPaidCnfPaymentList()
+        public async Task<IActionResult> GetNonPaidCnfPaymentList([FromBody]NonPaidCNFPaymentListDtos get)
         {
             try
             {
-                var data = await _spService.GetDataWithoutParameterAsync<NonPaidCNFPaymentListDtos>("USP_GET_DUE_CNF_PAYMENT_LIST_BY_CNF_COMPANY");
-
+                var data = await _spService.GetDataWithParameterAsync<NonPaidCNFPaymentListDtos>( new
+                    {
+                        CNF_COMPANY_ID = get.ID
+                    }, "USP_GET_DUE_CNF_PAYMENT_LIST_BY_CNF_COMPANY");
+                    
                 return Json(new ResponseListResult<List<NonPaidCNFPaymentListDtos>>
                 {
                     Status = true,

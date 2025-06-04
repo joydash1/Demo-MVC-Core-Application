@@ -15,6 +15,9 @@
 
     var orgAccList = (List<OrganizationAccountListDto>)ViewBag.OrganizationBankAccountList;
     var orgAccListModeJson = JsonConvert.SerializeObject(orgAccList);
+
+    var bankList = (List<Bank>)ViewBag.BankList;
+    var branchList = (List<BankBranch>)ViewBag.BranchList;
 }
 
 <style type="text/css">
@@ -51,10 +54,6 @@
     hr {
         border-top: 2px solid #1890ff;
     }
-
-    /* .d-none {
-                    display: none;
-                } */
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -78,6 +77,90 @@
                     </div>
                 </div>
                 <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtPaymentDate" placeholder="Select Payment date" id="pc-datepicker-2" style="padding:19px;">
+                            <span class="input-group-text">
+                                <i class="feather icon-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <select class="form-select" id="cmbPaymentMode">
+                                <option value="0">Select Payment Mode</option>
+                                @foreach (var mode in collectionModeList)
+                                {
+                                    <option value="@mode.Id">@mode.CollectionModeName</option>
+                                }
+                            </select>
+                            <label for="cmbBorder">CNF Companay</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row chequeSection">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <select class="form-select" id="cmbBank">
+                                <option value="0">select Organization Bank</option>
+                                @foreach (var b in orgAccList)
+                                {
+                                    <option value="@b.Id">@b.BankName</option>
+                                }
+                            </select>
+                            <label for="cmbBank">Bank</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <span class="form-control" id="spnBranch" data-branchId=""></span>
+                            <label for="spnBranch">Branch</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row chequeSection">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtChequeNo" placeholder="Cheque No">
+                            <label for="txtPrice">Cheque No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtChequeDate" placeholder="Select Payment date" id="pc-datepicker-2" style="padding:19px;">
+                            <span class="input-group-text">
+                                <i class="feather icon-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dt-responsive table-responsive">
+                            <table class="table table-striped table-bordered nowrap" id="tblCNFPayment">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">LC Number</th>
+                                        <th class="text-center">Product Name</th>
+                                        <th class="text-center">Product Weight</th>
+                                        <th class="text-center">Total Due Amount</th>
+                                        <th class="text-center">Pay Now</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" id="btnSubmit" data-id="" class="btn btn-light-primary">Save</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -85,7 +168,71 @@
 @section Scripts {
     <script type="text/javascript">
         jQuery(document).ready(function($){
-            
+            $(document).on("change","#cmbCNFCompanay",function(){
+                var cnfCompanyId = $(this).val();
+                LoadNonPaidCnfPaymentList(cnfCompanyId);
+            });
+
+            $(document).on("change","#cmbBank",function(){
+                GetOrgAccByBank();
+            });
         });
+
+        function LoadNonPaidCnfPaymentList(cnfCompanyId) {
+            jQuery.ajax({
+                type: "POST",
+                url: '@Url.Action("GetNonPaidCnfPaymentList", "ClearingAndFordwingCNF")',
+                data: JSON.stringify({ ID: cnfCompanyId }),
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    var $tbody = jQuery("#tblCNFPayment tbody");
+                    $tbody.empty();
+
+                    if (response.status && response.data.length > 0) {
+                        jQuery("#btnSubmit").attr("data-id",response.data[0].id);
+                        jQuery.each(response.data, function (i, item) {
+                            var row = `<tr>
+                                <td><input type="text" class="form-control text-center" value="${item.lcNumber}" readonly /></td>
+                                <td><input type="text" class="form-control text-center" value="${item.productName}" readonly /></td>
+                                <td><input type="text" class="form-control text-center" value="${item.cnfWeight}" readonly /></td>
+                                <td><input type="text" class="form-control text-center" value="${item.totalAmount}" readonly /></td>
+                                <td><input type="text" class="form-control text-center pay-now" value="" /></td>
+                            </tr>`;
+                            $tbody.append(row);
+                        });
+                    } else {
+                        $tbody.append(`<tr><td colspan="7" class="text-center text-danger">No records found.</td></tr>`);
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Failed to load CNF payment list.", "error");
+                }
+            });
+        }
+
+        function GetOrgAccByBank(){
+            var Id =  jQuery("#cmbBank option:selected").val();
+            var formData = new FormData();
+            formData.append("Id", Id);
+            jQuery.ajax({
+                url: '@Url.Action("GetOrganizationBankAccByBankId", "LCFiles")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response && response.status === true) {
+                       var d = response.data[0];
+                       jQuery("#spnBranch").html(d.branchName);
+                       jQuery("#spnBranch").attr("data-branchId",d.branchId);
+                    } else {
+                        Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                }
+            });
+        }
     </script>
 }

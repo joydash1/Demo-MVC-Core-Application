@@ -20,9 +20,9 @@ namespace ERP.DataAccess.Domains
 
         public int? BranchId { get; set; }
 
-        public string RoutingNo { get; set; }
-
         public string ChequeNo { get; set; }
+
+        public string ChequeDate { get; set; }
 
         public decimal Amount { get; set; }
 
