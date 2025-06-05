@@ -114,6 +114,7 @@ namespace ERP.WEB.Controllers
         //        return RedirectToAction("Index");
         //    }
         //}
+
         [HttpPost]
         public async Task<IActionResult> SaveUpdateClearingAndFordwingCNF(ClearingAndForwardingCNFDto save)
         {
@@ -288,21 +289,19 @@ namespace ERP.WEB.Controllers
             ViewBag.CollectionModeList = await _unitOfWork.CollectionModeRepository.GetAllAsync(x => x.IsActive == 1);
             ViewBag.OrganizationBankAccountList = await _spService.GetDataWithoutParameterAsync<OrganizationAccountListDto>("USP_GET_ORGANIZATION_BANK_ACCOUNT_LIST").ToListAsync();
             ViewBag.CNFCompanyList = await _unitOfWork.CNFCompanyRepository.GetAllAsync(x => x.IsActive == true);
-            ViewBag.BankList = await _unitOfWork.BankRepository.GetAllAsync(x => x.IsActive == true);
-            ViewBag.BranchList = await _unitOfWork.BankBranchRepository.GetAllAsync(x => x.IsActive == true);
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetNonPaidCnfPaymentList([FromBody]NonPaidCNFPaymentListDtos get)
+        public async Task<IActionResult> GetNonPaidCnfPaymentList([FromBody] NonPaidCNFPaymentListDtos get)
         {
             try
             {
-                var data = await _spService.GetDataWithParameterAsync<NonPaidCNFPaymentListDtos>( new
-                    {
-                        CNF_COMPANY_ID = get.ID
-                    }, "USP_GET_DUE_CNF_PAYMENT_LIST_BY_CNF_COMPANY");
-                    
+                var data = await _spService.GetDataWithParameterAsync<NonPaidCNFPaymentListDtos>(new
+                {
+                    CNF_COMPANY_ID = get.ID
+                }, "USP_GET_DUE_CNF_PAYMENT_LIST_BY_CNF_COMPANY");
+
                 return Json(new ResponseListResult<List<NonPaidCNFPaymentListDtos>>
                 {
                     Status = true,
@@ -316,6 +315,44 @@ namespace ERP.WEB.Controllers
                     Status = false,
                     Message = ex.GetBaseException()
                 });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveCNFPayments([FromBody] List<CNFPaymentSaveDto> payments)
+        {
+            try
+            {
+                foreach (var item in payments)
+                {
+                    await _spService.GetDataWithParameterAsync<CNFPaymentSaveDto>(new
+                    {
+                        CNF_PAYMENT_ID = item.CNFPaymentId,
+                        PAID_AMOUNT = item.PaidAmount,
+                        DUE_AMOUNT = item.DueAmount,
+                        PAYMENT_DATE = ReportHelpers.FormatDateToString(item.PaymentDate),
+                        COLLECTION_MODE_ID = item.CollectionModeId,
+                        ORG_BANK_ID = item.OrgBankId,
+                        CHEQUE_NO = item.ChequeNo,
+                        CHEQUE_DATE = ReportHelpers.FormatDateToString(item.ChequeDate),
+                        USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                    }, "USP_SAVE_CLEARING_AND_FORWRDING_PAYMENT");
+                }
+                var result = new ResponseResult
+                {
+                    Status = true,
+                    Message = "Payments saved successfully."
+                };
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                var result = new ResponseResult
+                {
+                    Status = false,
+                    Message = "An error occurred. Please try again."
+                };
+                return Json(result);
             }
         }
 

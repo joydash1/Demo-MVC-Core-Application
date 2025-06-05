@@ -13,16 +13,14 @@ namespace ERP.DataAccess.Domains
         public int ID { get; set; }
 
         public int CNFPaymentId { get; set; }
+        public DateTime? PaymentDate { get; set; }
+        public int CollectionModeId { get; set; }
 
-        public int? CollectionModeId { get; set; }
-
-        public int? BankId { get; set; }
-
-        public int? BranchId { get; set; }
+        public int OrganizationBankId { get; set; }
 
         public string ChequeNo { get; set; }
 
-        public string ChequeDate { get; set; }
+        public DateTime? ChequeDate { get; set; }
 
         public decimal Amount { get; set; }
 
