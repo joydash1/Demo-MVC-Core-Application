@@ -4,7 +4,7 @@ namespace ERP.Utility.Helpers
 {
     public static class ReportHelpers
     {
-        private static string CompanyName = "Firoz Enterprise.";
+        private static string CompanyName = "MS. Firoz Enterprise";
         private static string CompanyAddress = "Head office : Firoz Plaza, 3rd Floor Bhomra Land port, Bhomra Satkhira-9400";
         private static string MobileNo = "01705230260";
         private static string Website = "www.firozenterprise.com";
