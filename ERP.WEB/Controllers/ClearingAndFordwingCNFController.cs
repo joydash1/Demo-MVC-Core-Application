@@ -330,11 +330,11 @@ namespace ERP.WEB.Controllers
                         CNF_PAYMENT_ID = item.CNFPaymentId,
                         PAID_AMOUNT = item.PaidAmount,
                         DUE_AMOUNT = item.DueAmount,
-                        PAYMENT_DATE = ReportHelpers.FormatDateToString(item.PaymentDate),
+                        PAYMENT_DATE = ReportHelpers.TryParseDate(item.PaymentDate),
                         COLLECTION_MODE_ID = item.CollectionModeId,
                         ORG_BANK_ID = item.OrgBankId,
                         CHEQUE_NO = item.ChequeNo,
-                        CHEQUE_DATE = ReportHelpers.FormatDateToString(item.ChequeDate),
+                        CHEQUE_DATE = item.CollectionModeId == 1 ? null : ReportHelpers.TryParseDate(item.ChequeDate),
                         USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
                     }, "USP_SAVE_CLEARING_AND_FORWRDING_PAYMENT");
                 }

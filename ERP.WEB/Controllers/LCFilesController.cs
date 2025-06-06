@@ -51,7 +51,7 @@ namespace ERP.WEB.Controllers
                 var data = await _spService.GetDataWithParameterAsync<LCTransactionDto>(new
                 {
                     ID = lcTransaction.Id,
-                    OPENING_DATE = ReportHelpers.FormatDateToString(lcTransaction.OpeningDate),
+                    OPENING_DATE = ReportHelpers.TryParseDate(lcTransaction.OpeningDate),
                     BANK_ID = lcTransaction.OrganizationBankId,
                     BRANCH_ID = lcTransaction.OrganizationBranchId,
                     ACCOUNT_NUMBER = lcTransaction.OrganizationAccountNo,

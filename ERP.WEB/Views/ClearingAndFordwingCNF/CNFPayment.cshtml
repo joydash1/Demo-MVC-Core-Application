@@ -51,6 +51,23 @@
     hr {
         border-top: 2px solid #1890ff;
     }
+
+    .pay-now {
+        border: 2px solid #28a745;
+        background-color: #f9fff9;
+        font-weight: bold;
+        color: #155724;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.2);
+    }
+
+    .pay-now:focus {
+        outline: none;
+        border-color: #218838;
+        background-color: #eaffea;
+        box-shadow: 0 0 10px rgba(33, 136, 56, 0.5);
+    }
+
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -200,97 +217,12 @@
                 }
             });
 
-            // $(document).on("click", "#btnSubmit", function () {
-            //     var collectionModeId = $("#cmbPaymentMode").val();
-            //     var orgBankId = $("#cmbOrganizationBank").val();
-            //     var chequeNo = $("#txtChequeNo").val();
-            //     var chequeDate = $(".txtChequeDate").val();
-            //     var paymentDate = $(".txtPaymentDate").val();
-
-            //     var paymentList = [];
-
-            //     $("#tblCNFPayment tbody tr").each(function () {
-            //         var $row = $(this);
-            //         var cnfPaymentId = $row.data("id");
-            //         var totalAmount = parseFloat($row.find("td:eq(3) input").val()) || 0;
-            //         var payNow = parseFloat($row.find(".pay-now").val()) || 0;
-            //         var dueAmount = totalAmount - payNow;
-
-            //         if (payNow > 0) {
-            //             paymentList.push({
-            //                 CNFPaymentId: cnfPaymentId,
-            //                 PaidAmount: payNow,
-            //                 DueAmount: dueAmount,
-            //                 PaymentDate: paymentDate,
-            //                 CollectionModeId: collectionModeId,
-            //                 OrgBankId: orgBankId,
-            //                 ChequeNo: chequeNo,
-            //                 ChequeDate: chequeDate,
-            //             });
-            //         }
-            //     });
-
-            //     if (paymentList.length === 0) {
-            //         Swal.fire("Warning", "Please enter at least one payment.", "warning");
-            //         return;
-            //     }
-
-            //     $.ajax({
-            //         url: '@Url.Action("SaveCNFPayments", "ClearingAndFordwingCNF")',
-            //         type: 'POST',
-            //         contentType: "application/json",
-            //         data: JSON.stringify(paymentList),
-            //         success: function (response) {
-            //             if (response.status) {
-            //                 Swal.fire("Success", response.message, "success").then(() => {
-            //                     location.reload();
-            //                 });
-            //             } else {
-            //                 Swal.fire("Error", response.message, "error");
-            //             }
-            //         },
-            //         error: function () {
-            //             Swal.fire("Error", "Failed to save payment.", "error");
-            //         }
-            //     });
-            // });
             $(document).on("click", "#btnSubmit", function () {
                 var collectionModeId = parseInt($("#cmbPaymentMode").val());
                 var orgBankId = $("#cmbOrganizationBank").val();
                 var chequeNo = $("#txtChequeNo").val();
                 var chequeDate = $(".txtChequeDate").val();
                 var paymentDate = $(".txtPaymentDate").val();
-
-                var isValid = true;
-
-                // // Required if mode is cheque (id == 2)
-                // if (collectionModeId === 2) {
-                //     if (!chequeNo || chequeNo.trim() === "") {
-                //         $("#txtChequeNo").addClass("is-invalid").removeClass("is-valid");
-                //         isValid = false;
-                //     } else {
-                //         $("#txtChequeNo").addClass("is-valid").removeClass("is-invalid");
-                //     }
-
-                //     if (!chequeDate || chequeDate.trim() === "") {
-                //         $(".txtChequeDate").addClass("is-invalid").removeClass("is-valid");
-                //         isValid = false;
-                //     } else {
-                //         $(".txtChequeDate").addClass("is-valid").removeClass("is-invalid");
-                //     }
-                // } else {
-                //     // Clear error state if not cheque
-                //     $("#txtChequeNo").removeClass("is-invalid is-valid");
-                //     $(".txtChequeDate").removeClass("is-invalid is-valid");
-                // }
-
-                // // Optional: check for payment date
-                // if (!paymentDate || paymentDate.trim() === "") {
-                //     $(".txtPaymentDate").addClass("is-invalid").removeClass("is-valid");
-                //     isValid = false;
-                // } else {
-                //     $(".txtPaymentDate").addClass("is-valid").removeClass("is-invalid");
-                // }
 
                 var paymentList = [];
 
@@ -314,16 +246,40 @@
                         });
                     }
                 });
-
-                if (!isValid) {
-                    Swal.fire("Error", "Please fill in all required fields.", "error");
+                if (paymentDate == "")
+                {
+                    Swal.fire("Error", "Please enter payment date", "error");
                     return;
                 }
-
-                if (paymentList.length === 0) {
-                    Swal.fire("Warning", "Please enter at least one payment.", "warning");
+                if (collectionModeId == 0)
+                {
+                    Swal.fire("Error", "Please enter payment mode", "error");
                     return;
                 }
+                if ($("#txtAmount").val() == "")
+                {
+                    Swal.fire("Error", "Please enter payment amount", "error");
+                    return;
+                }
+                if(collectionModeId == 2)
+                {
+                    if (orgBankId == "" || orgBankId == 0)
+                    {
+                        Swal.fire("Error", "Please select Organization Bank", "error");
+                        return;
+                    }
+                    if (chequeNo == "")
+                    {
+                        Swal.fire("Error", "Please enter cheque no", "error");
+                        return;
+                    }
+                    if (chequeDate == "")
+                    {
+                        Swal.fire("Error", "Please enter cheque date", "error");
+                        return;
+                    }
+                }
+
 
                 $.ajax({
                     url: '@Url.Action("SaveCNFPayments", "ClearingAndFordwingCNF")',

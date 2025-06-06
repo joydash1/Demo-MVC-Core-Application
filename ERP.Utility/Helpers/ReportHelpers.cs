@@ -10,17 +10,21 @@ namespace ERP.Utility.Helpers
         private static string Website = "www.firozenterprise.com";
         private static string Email = "firozenterprise02gmail.com";
 
-        public static DateTime FormatDateToString(string date)
+        public static DateTime? TryParseDate(string date)
         {
             try
             {
-                //DateTime parsedDate = DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime parsedDate = DateTime.ParseExact(date, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                return parsedDate;
+                if (string.IsNullOrWhiteSpace(date))
+                    return null;
+
+                if (DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                    return parsedDate;
+
+                return null;
             }
             catch (FormatException)
             {
-                return DateTime.Now;
+                return null;
             }
         }
 
