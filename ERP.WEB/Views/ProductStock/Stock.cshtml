@@ -219,7 +219,7 @@
                 }
 
                 // Collecting Values
-                var Id = $("#btnSubmitStock").attr("data-id") || 0;
+                var Id = $("#btnSubmit").attr("data-id") || 0;
                 var LCId = $("#cmbLCNumber").val();
                 var StockInTon = parseFloat($("#txtStockInWeight").val()) || 0;
                 var StockInKg = parseFloat($("#spnStockInWeightKg").text()) || 0;
@@ -292,6 +292,39 @@
                     }
                 });
             });
+
+            $(document).on("click", ".edit-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                //cmbLCNumber txtStockInWeight spnStockInWeightKg txtStockPricePerKg spnStockTotalPrice
+                formData.append("Id", Id);
+                $.ajax({
+                    url: '@Url.Action("GetProductStockById", "ProductStock")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                            var d = response.data[0];
+                            console.log(d);
+                            $("#btnSubmit").attr("data-id", Id);
+                            $("#cmbLCNumber").val(d.lcId).change();
+                            $("#txtStockInWeight").val(d.totalStockInQuantityTon);
+                            $("#spnStockInWeightKg").html(d.totalStockInQuantityKg);
+                            $("#txtStockPricePerKg").val(d.stockPricePerKg);
+                            $("#spnStockTotalPrice").html(d.stockTotalPriceTk);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch border details.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    }
+                });
+            });
+
+
             stockTable = $('#autofill').DataTable({
                 destroy: true,
                 responsive: true,

@@ -156,6 +156,37 @@ namespace ERP.WEB.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetProductStockById(ProductStockByIdDto get)
+        {
+            try
+            {
+                if (get.Id == 0)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("Stock");
+                }
+
+                var data = await _spService.GetDataWithParameterAsync<ProductStockByIdDto>(new
+                {
+                    ID = get.Id
+                }, "USP_GET_PRODUCT_STOCK_BY_ID");
+
+                return Json(new ResponseListResult<List<ProductStockByIdDto>>
+                {
+                    Status = true,
+                    Data = data.ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData["AlertMessage"] = "An error occurred. Please try again.";
+                TempData["AlertType"] = "error";
+                return RedirectToAction("Stock");
+            }
+        }
+
         #endregion Product Stock
     }
 }
