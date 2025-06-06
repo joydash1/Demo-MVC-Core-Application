@@ -6,13 +6,6 @@
 @{
     ViewData["Title"] = "Stock";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // var organization = (List<Organization>)ViewBag.Organization;
-    // var orgBankAccount = (List<OrganizationAccountListDto>)ViewBag.OrganizationBankAccountList;
-    // var productList = (List<ProductDto>)ViewBag.ProductList;
-    // var insuranceList = (List<InsuranceDto>)ViewBag.InsuranceList;
-    // var borderList = (List<BorderDto>)ViewBag.BorderList;
-    // var indianBuyerList = (List<IndianBuyerDto>)ViewBag.IndianBuyerList;
-
     var lcFileList = (List<LCTransaction>)ViewBag.LCFileList;
 }
 
@@ -62,76 +55,49 @@
                 </div>
                 <hr />
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-floating mb-0">
                             <span type="text" class="form-control" id="spnProductName"></span>
                             <label for="spnProductName">Product Name</label>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-floating mb-0">
-                            <span type="text" class="form-control" id="spnExporterName"></span>
-                            <label for="spnExporterName">Exporter Name</label>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-floating mb-0">
                             <span class="form-control" id="spnTotalLCWeight"></span>
                             <label for="spnTotalLCWeight">Total LC Weight(Ton)</label>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-floating mb-0">
-                            <span class="form-control" id="spnTotalLCAmount"></span>
-                            <label for="spnTotalLCAmount">Total LC Amount ($)</label>
-                        </div>
-                    </div>
                 </div>
                 <hr />
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-0">
-                            <span type="text" class="form-control" id="spnProductWeightKg"></span>
-                            <label for="spnProductWeightKg">Product Weight (Kg)</label>
+                            <input type="text" class="form-control" id="txtStockInWeight" />
+                            <label for="txtStockInWeight">Stock In Weight (Ton)</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-0">
-                            <input class="form-control" id="txtUsdRate" placeholder="">
-                            <label for="txtUsdRate">Today's USD Rate in (Tk)</label>
+                            <span class="form-control" id="spnStockInWeightKg"></span>
+                            <label for="spnStockInWeightKg">Stock In Weight (Kg)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtStockPricePerKg" />
+                            <label for="txtStockPricePerKg">Price Per (Kg)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <span class="form-control" id="spnStockTotalPrice"></span>
+                            <label for="spnStockTotalPrice">Stock Total Price</label>
                         </div>
                     </div>
                 </div>
                 <hr />
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <span type="text" class="form-control" id="spnTotalProductPriceTk"></span>
-                            <label for="spnTotalProductPriceTk">Total Price (Tk)</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <span type="text" class="form-control" id="spnPricePerKg"></span>
-                            <label for="spnPricePerKg">Price Per (Kg)</label>
-                        </div>
-                    </div>
-                </div>
-                <hr />
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input class="form-control" id="txtTruckNo" placeholder="">
-                            <label for="txtTruckNo">Truck No</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-0">
-                            <input class="form-control" id="txtTotalBags" placeholder="">
-                            <label for="txtTotalBags">Total Bags</label>
-                        </div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <button type="button" id="btnSubmit" data-id="0" class="btn btn-light-primary">Save</button>
@@ -141,180 +107,241 @@
         </div>
     </div>
 </div>
-@* <div class="row">
+<div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h5>LC File List</h5>
-                <small></small>
+                <h5>Product Stock List</h5>
             </div>
             <div class="card-body">
                 <div class="dt-responsive table-responsive">
                     <table id="autofill" class="table table-striped table-bordered nowrap">
                         <thead>
                             <tr>
-                                <th class="text-center">Date</th>
-                                <th class="text-center">LC No.</th>
-                                <th class="text-center">Importer Name</th>
+                                <th class="text-center">LC Number</th>
                                 <th class="text-center">Product Name</th>
-                                <th class="text-center">Weight (Ton)</th>
-                                <th class="text-center">Rate/Ton</th>
-                                <th class="text-center">Total Amount</th>
+                                <th class="text-center">Total Weight (Kg)</th>
+                                <th class="text-center">Price Per (Kg)</th>
+                                <th class="text-center">Total Price (Tk)</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @if (lcFileList.Any())
-                            {
-                                @foreach (var lc in lcFileList)
-                                {
-                                    <tr>
-                                        <td class="text-center">@lc.OpeningDate</td>
-                                        <td class="text-center">@lc.LCNumber</td>
-                                        <td class="text-center">@lc.ShopName</td>
-                                        <td class="text-center">@lc.ProductName</td>
-                                        <td class="text-center">@lc.ProductWeightTon</td>
-                                        <td class="text-center">@lc.AmountPerTon</td>
-                                        <td class="text-center">@lc.TotalLCAmount</td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-warning edit-btn" data-id="@lc.Id"><i class="ti ti-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="@lc.Id"><i class="ti ti-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="2" class="text-center">No records found.</td>
-                                </tr>
-                            }
+                        <tbody id="tblProductStock">
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-</div> *@
-<script type="text/javascript" src="~/assets/js/Jquery.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("input").on("input", function () {
-            $(this).removeClass("is-invalid").addClass("is-valid");
-        });
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        jQuery(document).ready(function($){
 
-        $(document).on("change","#cmbLCNumber",function(){
-            var id = $(this).val();
-            var formData = new FormData();
-            formData.append("Id", id);
-            $.ajax({
-                url: '@Url.Action("GetLCTransactionInfoById", "CMFFiles")',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.status === true && response.data.length > 0) {
-                        var d = response.data[0];
-                        console.log(d);
-                        $("#spnProductName").html(d.productName);
-                        $("#spnExporterName").html(d.shopName);
-                        $("#spnTotalLCWeight").html(d.productWeightTon);
-                        $("#spnTotalLCAmount").html(d.totalLCAmount);
-                        $("#spnProductWeightKg").html(d.productWeightKg);
-                    } else {
-                        Swal.fire("Error!", "Failed to fetch LC data.", "error");
+            $(document).on("change","#cmbLCNumber",function(){
+                var id = $(this).val();
+                var formData = new FormData();
+                formData.append("Id", id);
+                $.ajax({
+                    url: '@Url.Action("GetLCTransactionById", "ProductStock")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.status === true && response.data.length > 0) {
+                            var d = response.data[0];
+                            console.log(d);
+                            $("#spnProductName").html(d.ProductName);
+                            $("#spnTotalLCWeight").html(d.MainLcWeightTon);
+                        } else {
+                            Swal.fire("Error!", "Failed to fetch LC data.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Something went wrong. Please try again.", "error");
                     }
-                },
-                error: function () {
-                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-                }
+                });
             });
-        });
 
-        $(document).on("change","#txtUsdRate",function(){
-            var weightText = $("#spnProductWeightKg").text().trim();
-            var usdRate = parseFloat($("#txtUsdRate").val());
+            $('#txtStockInWeight').on('input', function () {
+                const ton = parseFloat($(this).val());
+                const kg = !isNaN(ton) ? (ton * 1000).toFixed(2) : '';
+                $('#spnStockInWeightKg').text(kg);
+            });
 
-            if (!isNaN(weightText) && !isNaN(usdRate)) {
-                var weightKg = parseFloat(weightText);
-                var totalPrice = weightKg * usdRate;
-                var pricePerKg = usdRate;
+             $('#txtStockPricePerKg').on('input', function () {
+                const weightKg = parseFloat($('#spnStockInWeightKg').text());
+                const pricePerKg = parseFloat($(this).val());
 
-                $("#spnTotalProductPriceTk").text(totalPrice.toFixed(2));
-                $("#spnPricePerKg").text(pricePerKg.toFixed(2));
-            }
-        });
-
-        $(document).on("click", "#btnSubmit", function (e) {
-            e.preventDefault();
-
-            var isValid = true;
-            function validateField(selector) {
-                var inputField = $(selector);
-                var value = inputField.val()?.trim() || "";
-                var isDropdown = inputField.is("select");
-
-                if (value === "" || value === "0" || (isDropdown && value === "0")) {
-                    inputField.addClass("is-invalid").removeClass("is-valid");
-                    isValid = false;
+                if (!isNaN(weightKg) && !isNaN(pricePerKg)) {
+                    const totalPrice = (weightKg * pricePerKg).toFixed(2);
+                    $('#spnStockTotalPrice').text(totalPrice);
                 } else {
-                    inputField.addClass("is-valid").removeClass("is-invalid");
+                    $('#spnStockTotalPrice').text('');
                 }
-            }
-
-            validateField("#cmbLCNumber");
-            validateField("#txtUsdRate");
-            validateField("#txtTruckNo");
-            validateField("#txtTotalBags");
-
-            if (!isValid) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Please fill in all required fields."
             });
-               return;
-            }
 
-            var Id = $("#btnSubmit").attr("data-id");
-            var LCId = $("#cmbLCNumber").val();
-            var ProductWeightKg = $("#spnProductWeightKg").text().trim();
-            var USDRate = $("#txtUsdRate").val().trim();
-            var TotalProductPrice = $("#spnTotalProductPriceTk").text().trim();
-            var PricePerkg = $("#spnPricePerKg").text().trim();
-            var TruckNo = $("#txtTruckNo").val().trim();
-            var TotalBags = $("#txtTotalBags").val().trim();
+            $("input").on("input", function () {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+            });
 
-            var formData = new FormData();
-            formData.append("ID", Id);
-            formData.append("LCId", LCId);
-            formData.append("ProductWeightKg", ProductWeightKg);
-            formData.append("USDRate", USDRate);
-            formData.append("TotalProductPrice", TotalProductPrice);
-            formData.append("PricePerkg", PricePerkg);
-            formData.append("TruckNo", TruckNo);
-            formData.append("TotalBags", TotalBags);
-            $.ajax({
-                url: '@Url.Action("InsertUpdateProductStock", "ProductStock")',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
+            $(document).on("click", "#btnSubmit", function (e) {
+                e.preventDefault();
+
+                var isValid = true;
+
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val()?.trim() || "";
+                    var isDropdown = inputField.is("select");
+
+                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
+                    } else {
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+
+                // Validation
+                validateField("#cmbLCNumber");
+                validateField("#txtStockInWeight");
+                validateField("#txtStockPricePerKg");
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Missing Data",
+                        text: "Please fill in all required fields."
+                    });
+                    return;
+                }
+
+                // Collecting Values
+                var Id = $("#btnSubmitStock").attr("data-id") || 0;
+                var LCId = $("#cmbLCNumber").val();
+                var StockInTon = parseFloat($("#txtStockInWeight").val()) || 0;
+                var StockInKg = parseFloat($("#spnStockInWeightKg").text()) || 0;
+                var PricePerKg = parseFloat($("#txtStockPricePerKg").val()) || 0;
+                var TotalPrice = parseFloat($("#spnStockTotalPrice").text()) || 0;
+
+                var formData = new FormData();
+                formData.append("Id", Id);
+                formData.append("LCId", LCId);
+                formData.append("TotalStockInQuantityTon", StockInTon);
+                formData.append("TotalStockInQuantityKg", StockInKg);
+                formData.append("StockPricePerKg", PricePerKg);
+                formData.append("StockTotalPriceTk", TotalPrice);
+
+                $.ajax({
+                    url: '@Url.Action("SaveUpdateProductStock", "ProductStock")',
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                            Swal.fire("Success!", response.message, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Error!", response.message || "Something went wrong.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Server error. Please try again.", "error");
+                    }
+                });
+            });
+            $(document).on("click", ".delete-btn", function () {
+                var Id = $(this).attr("data-id");
+                var formData = new FormData();
+                formData.append("Id", Id);
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to delete this product stock? This action cannot be undone.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                       $.ajax({
+                            url: '@Url.Action("DeleteProductStockById", "ProductStock")',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                if (response && response.status === true) {
+                                    Swal.fire("Deleted!", response.message, "success").then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire("Error!", "Failed to delete the record.", "error");
+                                }
+                            },
+                            error: function () {
+                                Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                            }
+                        });
+                    }
+                });
+            });
+            stockTable = $('#autofill').DataTable({
+                destroy: true,
+                responsive: true,
+                columns: [
+                         { title: "LC Number" },
+                         { title: "Product Name" },
+                         { title: "Total Weight (Kg)" },
+                         { title: "Price Per (Kg)" },
+                         { title: "Total Price (Tk)" },
+                         { title: "Action" }
+                ],
+                createdRow: function (row, data, dataIndex) {
+                    $('td', row).addClass('text-center');
+                }
+            });
+            GetProductStockList();
+        });
+
+        function GetProductStockList() {
+            stockTable.clear().draw();
+
+            jQuery.ajax({
+                type: "POST",
+                url: '@Url.Action("GetProductStockList", "ProductStock")',
+                data: JSON.stringify({}),
+                contentType: "application/json; charset=utf-8",
                 success: function (response) {
-                    if (response && response.status === true) {
-                        Swal.fire("Success!", response.message, "success").then(() => {
-                            location.reload();
+                    if (response.status && response.data && response.data.length > 0) {
+                        jQuery.each(response.data, function (i, item) {
+                            stockTable.row.add([
+                                item.lcNumber,
+                                item.productName,
+                                item.totalStockInQuantityKg,
+                                item.stockPricePerKg,
+                                item.stockTotalPriceTk,
+                                `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
+                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
+                            ]).draw(false);
                         });
                     } else {
-                        Swal.fire("Error!", "There is something wrong. Please try again.", "error");
+                        var jQuerytbody = $('#stockTable tbody');
+                        jQuerytbody.empty();
+                        jQuerytbody.append(`<tr><td colspan="6" class="text-center text-danger fw-bold">No records found.</td></tr>`);
                     }
                 },
                 error: function () {
-                    Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+                    Swal.fire("Error!", "Failed to load data.", "error");
                 }
             });
-        });
-    });
-</script>
+        }
 
+    </script>
+}

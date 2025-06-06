@@ -16,6 +16,7 @@
         string ShopName,
         int? BorderId,
         int? ImporterId,
-        int? ExporterId
+        int? ExporterId,
+        decimal MainLcWeightTon
     );
 }

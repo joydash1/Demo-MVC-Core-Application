@@ -59,5 +59,7 @@ namespace ERP.DataAccess.Domains
 
         [Required]
         public bool IsActive { get; set; }
+
+        public decimal MainLcWeightTon { get; set; }
     }
 }

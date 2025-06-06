@@ -56,65 +56,6 @@ namespace ERP.WEB.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> SaveUpdateClearingAndFordwingCNF(ClearingAndForwardingCNFDto save)
-        //{
-        //    try
-        //    {
-        //        if (save == null)
-        //        {
-        //            TempData["AlertMessage"] = "Invalid Data.";
-        //            TempData["AlertType"] = "error";
-        //            return RedirectToAction("Index");
-        //        }
-        //        // File upload Part
-        //        string? filePath = null;
-
-        //        if (save.File != null && save.LCNumber != null)
-        //        {
-        //            var ext = Path.GetExtension(save.File.FileName);
-        //            var fileName = Guid.NewGuid().ToString() + ext;
-        //            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "CNFDocuments", save.LCNumber);
-
-        //            if (!Directory.Exists(folderPath))
-        //                Directory.CreateDirectory(folderPath);
-
-        //            filePath = Path.Combine(folderPath, fileName);
-        //            using (var stream = new FileStream(filePath, FileMode.Create))
-        //            {
-        //                await save.File.CopyToAsync(stream);
-        //            }
-        //            save.CNFDocumentFile = Path.Combine("/CNFDocuments", save.LCNumber, fileName).Replace("\\", "/");
-        //        }
-        //        //End
-        //        var data = await _spService.GetDataWithParameterAsync<ClearingAndForwardingCNFDto>(new
-        //        {
-        //            ID = save.Id,
-        //            LC_ID = save.LCId,
-        //            CNF_COMPANY_ID = save.CNFCompanyId,
-        //            CNF_WEIGHT = save.CNFWeight,
-        //            CNF_AMOUNT = save.CNFAmount,
-        //            CNF_DOCUMENT = save.CNFDocumentFile ?? "",
-        //            USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
-        //        }, "USP_INSERT_UPDATE_CLEARING_AND_FORWARDING_CNF");
-
-        //        string message = save.Id > 0 ? "Clearing & Fordwing Updated Successfully" : "Clearing & Fordwing Saved Successfully";
-
-        //        var result = new ResponseResult
-        //        {
-        //            Status = true,
-        //            Message = message
-        //        };
-        //        return Json(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["AlertMessage"] = "An error occurred. Please try again.";
-        //        TempData["AlertType"] = "error";
-        //        return RedirectToAction("Index");
-        //    }
-        //}
-
         [HttpPost]
         public async Task<IActionResult> SaveUpdateClearingAndFordwingCNF(ClearingAndForwardingCNFDto save)
         {

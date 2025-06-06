@@ -28,6 +28,9 @@ namespace ERP.DataAccess.Domains
         [Required]
         public decimal StockPricePerKg { get; set; }
 
+        [Required]
+        public decimal StockTotalPriceTk { get; set; }
+
         public int EntryUserId { get; set; }
         public DateTime EntryDate { get; set; }
         public int? UpdateUserId { get; set; }
