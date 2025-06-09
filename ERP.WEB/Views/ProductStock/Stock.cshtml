@@ -3,10 +3,12 @@
 @using ERP.DataAccess.DTOs.Buyer
 @using ERP.DataAccess.DTOs.LC_Open
 @using ERP.DataAccess.Domains
+@using ERP.DataAccess.DTOs.Seller
 @{
     ViewData["Title"] = "Stock";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var lcFileList = (List<LCTransaction>)ViewBag.LCFileList;
+    var sellerList = (List<BangladeshiSellerDto>)ViewBag.BangladeshiSellerList;
 }
 
 <style type="text/css">
@@ -30,6 +32,16 @@
 
     .table > tbody {
         border: 11px solid #1890ff !important;
+    }
+
+    #exampleModalCenter .modal-dialog {
+        max-width: 800px;
+        height: auto;
+    }
+
+    #exampleModalCenter .modal-content {
+        height: 100%;
+        overflow-y: auto;
     }
 </style>
 <div class="row">
@@ -107,6 +119,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -134,6 +147,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script type="text/javascript">
         jQuery(document).ready(function($){
@@ -170,7 +184,7 @@
                 $('#spnStockInWeightKg').text(kg);
             });
 
-             $('#txtStockPricePerKg').on('input', function () {
+            $('#txtStockPricePerKg').on('input', function () {
                 const weightKg = parseFloat($('#spnStockInWeightKg').text());
                 const pricePerKg = parseFloat($(this).val());
 
@@ -254,6 +268,7 @@
                     }
                 });
             });
+            
             $(document).on("click", ".delete-btn", function () {
                 var Id = $(this).attr("data-id");
                 var formData = new FormData();
@@ -324,7 +339,6 @@
                 });
             });
 
-
             stockTable = $('#autofill').DataTable({
                 destroy: true,
                 responsive: true,
@@ -340,7 +354,9 @@
                     $('td', row).addClass('text-center');
                 }
             });
+            
             GetProductStockList();
+            
             $('#txtStockInWeight').on('change', function () {
                 let totalWeight = parseFloat($('#spnTotalLCWeight').text().trim()) || 0;
                 let stockInWeight = parseFloat($(this).val()) || 0;
@@ -351,6 +367,22 @@
                     $("#spnStockInWeightKg").html("");
                     $("#txtStockPricePerKg").val("");
                 }
+            });
+
+            $(document).on('click', '.btn-sell', function () {
+                let itemId = $(this).data('id');
+                let productName = $(this).data('productname').trim();
+                console.log(productName);
+                let weight = $(this).data('weight');
+                let price = $(this).data('price');
+
+                $('#spnSellProductName').text(productName);
+                $('#spnTotalWeight').text(weight);
+                $('#spnPricePerKg').text(price);
+                $('#exampleModalCenter .btn-secondary[data-bs-dismiss="modal"]').attr('data-ProductStockId', itemId);
+
+                var myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
+                myModal.show();
             });
         });
 
@@ -372,7 +404,8 @@
                                 item.stockPricePerKg,
                                 item.stockTotalPriceTk,
                                 `<button class="btn btn-sm btn-warning edit-btn" data-id='${item.id}'><i class="ti ti-edit"></i></button>
-                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>`
+                                 <button class="btn btn-sm btn-danger delete-btn" data-id='${item.id}'><i class="ti ti-trash"></i></button>
+                                 <button class="btn btn-sm btn-info btn-sell" data-id='${item.id}' data-productName='${item.productName}' data-Weight='${item.totalStockInQuantityKg}' data-Price='${item.stockPricePerKg}'><i class="ti ti-shopping-cart"></i></button>`
                             ]).draw(false);
                         });
                     } else {
@@ -389,3 +422,55 @@
 
     </script>
 }
+<div id="exampleModalCenter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Product Sell</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-floating mb-0">
+                            <span type="text" class="form-control" id="spnSellProductName"></span>
+                            <label for="spnSellProductName">Product Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-0">
+                            <span class="form-control" id="spnTotalWeight"></span>
+                            <label for="spnTotalWeight">Weight Kg</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-0">
+                            <span class="form-control" id="spnPricePerKg"></span>
+                            <label for="spnPricePerKg">price/Kg</label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <select class="form-select" id="cmbBangladeshiSeller">
+                                <option value="0">Select Bangaldeshi Seller</option>
+                                @foreach (var seller in sellerList)
+                                {
+                                    <option value="@seller.Id">@seller.SellerName</option>
+                                }
+                            </select>
+                            <label for="cmbBangladeshiSeller">Seller</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-ProductStockId="">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -4,6 +4,7 @@ using ERP.DataAccess.DTOs.Basic_Setup;
 using ERP.DataAccess.DTOs.ClearingAndFordwingCNF;
 using ERP.DataAccess.DTOs.LC_Open;
 using ERP.DataAccess.DTOs.ProductStock;
+using ERP.DataAccess.DTOs.Seller;
 using ERP.Infrastructure.Interfaces;
 using ERP.Utility.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ namespace ERP.WEB.Controllers
         public async Task<IActionResult> Stock()
         {
             ViewBag.LCFileList = await _unitOfWork.LCFileRepository.GetAllAsync();
+            ViewBag.BangladeshiSellerList = await _spService.GetDataWithParameterAsync<BangladeshiSellerDto>(new { ID = 0 }, "USP_GET_BANGLADESHI_SELLER_LIST").ToListAsync();
             return View();
         }
 
