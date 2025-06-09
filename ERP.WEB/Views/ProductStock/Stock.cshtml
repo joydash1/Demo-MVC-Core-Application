@@ -341,6 +341,17 @@
                 }
             });
             GetProductStockList();
+            $('#txtStockInWeight').on('change', function () {
+                let totalWeight = parseFloat($('#spnTotalLCWeight').text().trim()) || 0;
+                let stockInWeight = parseFloat($(this).val()) || 0;
+
+                if (stockInWeight > totalWeight) {
+                    Swal.fire("Error!", "Not enough weight available in LC.", "error");
+                    $(this).val('');
+                    $("#spnStockInWeightKg").html("");
+                    $("#txtStockPricePerKg").val("");
+                }
+            });
         });
 
         function GetProductStockList() {
