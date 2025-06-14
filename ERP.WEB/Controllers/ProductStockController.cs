@@ -190,5 +190,48 @@ namespace ERP.WEB.Controllers
         }
 
         #endregion Product Stock
+
+        #region Product Sale 
+        [HttpPost]
+        public async Task<IActionResult> SaveProductSale(ProductSaleDto save)
+        {
+            try
+            {
+                if (save == null)
+                {
+                    TempData["AlertMessage"] = "Invalid Data.";
+                    TempData["AlertType"] = "error";
+                    return RedirectToAction("Stock");
+                }
+                var data = await _spService.GetDataWithParameterAsync<ProductSaleDto>(new
+                {
+                    PRODUCT_STOCK_MASTER_ID  = save.ProductStockMasterId,
+                    SALE_QUANTITY_KG  = save.QuantityKg,
+                    SALE_AMOUNT = save.TotalAmount,
+                    SALE_DATE  = ReportHelpers.TryParseDate(save.SaleDate),
+                    CUSTOMER_ID = save.SellerId,
+                    USER_ID = SessionHelper.GetLoggedInUserId(HttpContext)
+                }, "USP_INSERT_PRODUCT_SELL_LEDGER");
+
+                string message = "Product Sale Successfully";
+
+                var result = new ResponseResult
+                {
+                    Status = true,
+                    Message = message
+                };
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                var result = new ResponseResult
+                {
+                    Status = false,
+                    Message = "An error occurred. Please try again."
+                };
+                return Json(result);
+            }
+        }
+        #endregion
     }
 }

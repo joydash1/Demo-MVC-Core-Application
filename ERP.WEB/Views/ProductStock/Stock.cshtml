@@ -268,7 +268,7 @@
                     }
                 });
             });
-            
+
             $(document).on("click", ".delete-btn", function () {
                 var Id = $(this).attr("data-id");
                 var formData = new FormData();
@@ -354,9 +354,9 @@
                     $('td', row).addClass('text-center');
                 }
             });
-            
+
             GetProductStockList();
-            
+
             $('#txtStockInWeight').on('change', function () {
                 let totalWeight = parseFloat($('#spnTotalLCWeight').text().trim()) || 0;
                 let stockInWeight = parseFloat($(this).val()) || 0;
@@ -378,12 +378,86 @@
 
                 $('#spnSellProductName').text(productName);
                 $('#spnTotalWeight').text(weight);
-                $('#spnPricePerKg').text(price);
+                $('#spnSalePricePerKg').text(price);
                 $('#exampleModalCenter .btn-secondary[data-bs-dismiss="modal"]').attr('data-ProductStockId', itemId);
 
                 var myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
                 myModal.show();
             });
+
+            $(document).on('input','#txtSaleQuantityKg', function () {
+                calculateTotal();
+            });
+
+            $(document).on("click", "#btnProductSale", function (e) {
+                e.preventDefault();
+
+                var isValid = true;
+
+                function validateField(selector) {
+                    var inputField = $(selector);
+                    var value = inputField.val()?.trim() || "";
+                    var isDropdown = inputField.is("select");
+
+                    if (value === "" || value === "0" || (isDropdown && value === "0")) {
+                        inputField.addClass("is-invalid").removeClass("is-valid");
+                        isValid = false;
+                    } else {
+                        inputField.addClass("is-valid").removeClass("is-invalid");
+                    }
+                }
+
+                // Validate required fields
+                validateField("#cmbBangladeshiSeller");
+                validateField("#txtSaleQuantityKg");
+                validateField(".txtSaleDate");
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Missing Data",
+                        text: "Please fill in all required fields."
+                    });
+                    return;
+                }
+
+                // Collect data
+                var ProductStockMasterId = $('#exampleModalCenter .btn-secondary[data-bs-dismiss="modal"]').attr('data-ProductStockId');
+                var QuantityKg = parseFloat($("#txtSaleQuantityKg").val()) || 0;
+                var SellerId = $("#cmbBangladeshiSeller option:selected").val();
+                var TotalAmount = parseFloat($("#spnTotalSaleAmountTk").text()) || 0;
+                var SaleDate = $(".txtSaleDate").val();
+
+                // Prepare form data
+                var formData = new FormData();
+                formData.append("ProductStockMasterId", ProductStockMasterId);
+                formData.append("QuantityKg", QuantityKg);
+                formData.append("SellerId", SellerId);
+                formData.append("TotalAmount", TotalAmount);
+                formData.append("SaleDate", SaleDate);
+
+                $.ajax({
+                    url: '@Url.Action("SaveProductSale", "ProductStock")',
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response && response.status === true) {
+                            $("#exampleModalCenter").modal('toggle');
+                            Swal.fire("Success!", response.message, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Error!", response.message || "Something went wrong.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Error!", "Server error. Please try again.", "error");
+                    }
+                });
+            });
+
         });
 
         function GetProductStockList() {
@@ -420,6 +494,13 @@
             });
         }
 
+        function calculateTotal() {
+            var price = parseFloat(jQuery('#spnSalePricePerKg').text()) || 0;
+            var qty = parseFloat(jQuery('#txtSaleQuantityKg').val()) || 0;
+            var total = price * qty;
+
+            jQuery('#spnTotalSaleAmountTk').text(total.toFixed(2));
+        }
     </script>
 }
 <div id="exampleModalCenter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -445,8 +526,8 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-floating mb-0">
-                            <span class="form-control" id="spnPricePerKg"></span>
-                            <label for="spnPricePerKg">price/Kg</label>
+                            <span class="form-control" id="spnSalePricePerKg"></span>
+                            <label for="spnSalePricePerKg">price/Kg</label>
                         </div>
                     </div>
                 </div>
@@ -464,11 +545,34 @@
                             <label for="cmbBangladeshiSeller">Seller</label>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <input type="text" class="form-control" id="txtSaleQuantityKg" />
+                            <label for="txtSaleQuantityKg">Sale Quantity (Kg)</label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-0">
+                            <span class="form-control" id="spnTotalSaleAmountTk"></span>
+                            <label for="spnTotalSaleAmountTk">Total price (Kg)</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtSaleDate" placeholder="Select Sale date" id="pc-datepicker-2" style="padding:19px;">
+                            <span class="input-group-text">
+                                <i class="feather icon-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-ProductStockId="">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" id="btnProductSale">Save changes</button>
             </div>
         </div>
     </div>
